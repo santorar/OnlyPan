@@ -1,60 +1,70 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class ="h-full bg-white">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - OnlyPan</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OnlyPan</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+  <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true"/>
+  <link rel="stylesheet" href="~/css/normalize.css" asp-append-version="true"/>
 </head>
-<body>
+<body class="h-full">
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-orange-200 border-bottom box-shadow mb-3 font-bold">
-        <div class="container-fluid">
-            <a class="navbar-brand lg:text-3xl logo font-bold hover:text-amber-600" asp-area="" asp-controller="Home" asp-action="Index">Only<span class="logo2">Pan</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!--Navbar items-->
-            <div class="navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 "
-                           asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
-                           asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" 
-                           asp-area="" asp-controller="User" asp-action="List">Listado Usuarios</a>
-                    </li>
-                </ul>
-            </div>
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-orange-200 border-bottom box-shadow mb-3 font-bold">
+    <div class="container-fluid">
+      <a class="navbar-brand lg:text-3xl logo font-bold hover:text-amber-600" asp-area="" asp-controller="Home"
+         asp-action="Index">Only<span class="logo2">Pan</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!--Navbar items-->
+      <div class="navbar-collapse d-sm-inline-flex justify-content-between">
+        <ul class="navbar-nav flex-grow-1">
+          <li class="nav-item">
+            <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 "
+               asp-area="" asp-controller="Home" asp-action="Index">
+              Inicio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+               asp-area="" asp-controller="Home" asp-action="Bio">
+              ¿Quienes Somos?
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+               asp-area="" asp-controller="User" asp-action="List">
+              Listado Usuarios
+            </a>
+          </li>
+        </ul>
+      </div>
 
 
-            <!--Login buttons-->
-            <ul class="flex lg:flex-row sm:flex-col items-center">
-                <li class="nav-item">
-                    <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white
+      <!--Login buttons-->
+      <ul class="flex lg:flex-row sm:flex-col items-center">
+        <li class="nav-item">
+          <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white
                         rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="Login">Iniciar Sesión</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
-                       asp-area="" asp-controller="User" asp-action="Register">Registrate</a>
-                </li>
-            </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+             asp-area="" asp-controller="User" asp-action="Register">
+            Registrate
+          </a>
+        </li>
+      </ul>
 
-        </div>
-    </nav>
+    </div>
+  </nav>
 </header>
 <div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
+  <main role="main" class="pb-3">
+    @RenderBody()
+  </main>
 </div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

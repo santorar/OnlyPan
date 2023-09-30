@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Areas\Usuario\Controllers\" />
+      <Folder Include="Areas\Usuario\Data\" />
+      <Folder Include="Areas\Usuario\Models\" />
+      <Folder Include="Areas\Usuario\Views\" />
       <Folder Include="Repositories\" />
       <Folder Include="Scripts\" />
       <Folder Include="Services\" />
@@ -14,11 +18,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.22" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
