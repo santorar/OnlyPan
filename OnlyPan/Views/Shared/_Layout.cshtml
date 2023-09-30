@@ -17,24 +17,34 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <!--Navbar items-->
             <div class="navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 " asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                        <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 "
+                           asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
+                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+                           asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" 
+                           asp-area="" asp-controller="User" asp-action="List">Listado Usuarios</a>
                     </li>
                 </ul>
             </div>
 
 
+            <!--Login buttons-->
             <ul class="flex lg:flex-row sm:flex-col items-center">
                 <li class="nav-item">
-                    <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="InicioSesion">Iniciar Sesión</a>
+                    <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white
+                        rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="Login">Iniciar Sesión</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="Registro">Registrate</a>
+                    <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+                       asp-area="" asp-controller="User" asp-action="Register">Registrate</a>
                 </li>
             </ul>
 

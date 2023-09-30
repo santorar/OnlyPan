@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using OnlyPan.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<OnlyPanContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OnlyPanContext"));
+});
 
 var app = builder.Build();
 

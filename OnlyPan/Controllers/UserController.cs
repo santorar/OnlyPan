@@ -1,27 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OnlyPan.Models;
 
 namespace OnlyPan.Controllers;
 
 public class UserController : Controller
 {
+    private readonly OnlyPanContext _context;
     // GET
+    public UserController(OnlyPanContext context)
+    {
+        _context = context;
+    }
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Registro()
+    public IActionResult Register()
     {
         return View();
     }
 
-    public IActionResult InicioSesion()
+    public IActionResult Login()
     {
         return View();
     }
 
-    public IActionResult Listado()
+    public async Task<IActionResult> List()
     {
-        return View();
+        var users = _context.Usuarios.Include(u => u.RolNavigation);
+        return View(await users.ToListAsync());
     }
 }
