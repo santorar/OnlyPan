@@ -1,18 +1,13 @@
-html {
-  font-size: 14px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root{
+  --first-color:#BC0119;
+  --second-color: #C7814A;
+  --third-color:  #BCA693;
+  --fourth-color:#1D4E17;
+  --black: #0B100C;  
 }
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
+.navbar{
+  background-color: rgb(254,215,170);
 }

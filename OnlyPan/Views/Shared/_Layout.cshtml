@@ -6,27 +6,38 @@
     <title>@ViewData["Title"] - OnlyPan</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/OnlyPan.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true"/>
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-orange-200 border-bottom box-shadow mb-3 font-bold">
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlyPan</a>
+            <a class="navbar-brand lg:text-3xl logo font-bold hover:text-amber-600" asp-area="" asp-controller="Home" asp-action="Index">Only<span class="logo2">Pan</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 " asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
                     </li>
                 </ul>
             </div>
+
+
+            <ul class="flex lg:flex-row sm:flex-col items-center">
+                <li class="nav-item">
+                    <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="InicioSesion">Iniciar Sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="Registro">Registrate</a>
+                </li>
+            </ul>
+
         </div>
     </nav>
 </header>
@@ -36,14 +47,10 @@
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2023 - OnlyPan - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
