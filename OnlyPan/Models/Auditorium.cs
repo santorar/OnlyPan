@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace OnlyPan.Models;
 
-namespace OnlyPan.Models;
-
-public partial class Auditorium
+public class Auditorium
 {
-    public int? IdAuditoria { get; set; }
+  public int? IdAuditoria { get; set; }
 
-    public int? Usuario { get; set; }
+  public int? Usuario { get; set; }
 
-    public string? Accion { get; set; }
+  public string? Accion { get; set; }
 
-    public string? Tabla { get; set; }
+  public string? Tabla { get; set; }
 
-    public string? Sq { get; set; }
+  public string? Sq { get; set; }
 
-    public DateTime? Fecha { get; set; }
+  public DateTime? Fecha { get; set; }
 }

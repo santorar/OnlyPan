@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace OnlyPan.Models;
 
-namespace OnlyPan.Models;
-
-public partial class Rol
+public class Rol
 {
-    public int IdRol { get; set; }
+  public int IdRol { get; set; }
 
-    public string? NombreRol { get; set; }
+  public string? NombreRol { get; set; }
 
-    public virtual ICollection<SolicitudRol> SolicitudRols { get; set; } = new List<SolicitudRol>();
+  public virtual ICollection<SolicitudRol> SolicitudRols { get; set; } = new List<SolicitudRol>();
 
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+  public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

@@ -3,33 +3,33 @@
 <h1>Usuarios</h1>
 
 <table class="table">
-    <thead>
+  <thead>
+  <tr>
+    <th>
+      Id
+    </th>
+    <th>
+      Nombre
+    </th>
+    <th>
+      Rol
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  @foreach (var vaUsuario in Model)
+  {
     <tr>
-        <th>
-            Id
-        </th>
-        <th>
-            Nombre
-        </th>
-        <th>
-            Rol
-        </th>
+      <td>
+        @Html.DisplayFor(m => vaUsuario.IdUsuario)
+      </td>
+      <td>
+        @Html.DisplayFor(m => vaUsuario.Nombre)
+      </td>
+      <td>
+        @Html.DisplayFor(m => vaUsuario.RolNavigation!.NombreRol)
+      </td>
     </tr>
-    </thead>
-    <tbody>
-        @foreach (var vaUsuario in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(m=> vaUsuario.IdUsuario)
-                </td>
-                <td>
-                    @Html.DisplayFor(m=> vaUsuario.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(m=> vaUsuario.RolNavigation!.NombreRol)
-                </td>
-            </tr>
-        }
-    </tbody>
+  }
+  </tbody>
 </table>

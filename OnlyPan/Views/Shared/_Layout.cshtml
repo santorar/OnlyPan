@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class ="h-full bg-white">
+<html lang="en" class="h-full bg-white">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,7 +14,9 @@
   <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-orange-200 border-bottom box-shadow mb-3 font-bold">
     <div class="container-fluid">
       <a class="navbar-brand lg:text-3xl logo font-bold hover:text-amber-600" asp-area="" asp-controller="Home"
-         asp-action="Index">Only<span class="logo2">Pan</span></a>
+         asp-action="Index">
+        Only<span class="logo2">Pan</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -71,6 +73,6 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 <script src="https://cdn.tailwindcss.com"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>
