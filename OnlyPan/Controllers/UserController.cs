@@ -10,7 +10,6 @@ public class UserController : Controller
 {
   private readonly OnlyPanContext _context;
 
-  // GET
   public UserController(OnlyPanContext context)
   {
     _context = context;
@@ -30,7 +29,6 @@ public class UserController : Controller
   [HttpPost]
   public async Task<IActionResult> Register(UsuarioViewModel model)
   {
-    
     {
       var user = new Usuario()
       {
