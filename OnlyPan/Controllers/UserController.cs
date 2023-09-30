@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
+using OnlyPan.Models.ViewModels;
 
 namespace OnlyPan.Controllers;
 
@@ -24,10 +26,23 @@ public class UserController : Controller
     return View();
   }
 
+  [ValidateAntiForgeryToken]
   [HttpPost]
-  public IActionResult Register(int a)
+  public async Task<IActionResult> Register(UsuarioViewModel model)
   {
-    return View();
+    
+    {
+      var user = new Usuario()
+      {
+        Nombre = model.Nombre,
+        Correo = model.Correo,
+        Contraseña = model.Contrasena
+      };
+      _context.Add(user);
+      await _context.SaveChangesAsync();
+      return RedirectToAction(nameof(Login));
+    }
+    return View(model);
   }
 
   public IActionResult Login()
