@@ -19,12 +19,13 @@ public class UserController : Controller
   {
     return View();
   }
-
+  //Register Views
   public IActionResult Register()
   {
     return View();
   }
-
+  //Register a user into the platform
+  //TODO make a way to encrypt the password of the user and his personal data directy in the register
   [ValidateAntiForgeryToken]
   [HttpPost]
   public async Task<IActionResult> Register(RegisterViewModel model)
@@ -43,11 +44,13 @@ public class UserController : Controller
     return View(model);
   }
 
+  //Login Views and controller
+  //TODO make a method to log in and authenticate the user
+  [HttpGet]
   public IActionResult Login()
   {
     return View();
   }
-
   public async Task<IActionResult> List()
   {
     var users = _context.Usuarios.Include(u => u.RolNavigation);
