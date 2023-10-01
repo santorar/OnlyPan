@@ -5,10 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Areas\Usuario\Controllers\"/>
-    <Folder Include="Areas\Usuario\Data\"/>
-    <Folder Include="Areas\Usuario\Models\"/>
-    <Folder Include="Areas\Usuario\Views\"/>
     <Folder Include="Repositories\"/>
     <Folder Include="Scripts\"/>
     <Folder Include="Services\"/>

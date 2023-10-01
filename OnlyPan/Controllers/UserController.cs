@@ -9,10 +9,13 @@ namespace OnlyPan.Controllers;
 public class UserController : Controller
 {
   private readonly OnlyPanContext _context;
-
-  public UserController(OnlyPanContext context)
+  private readonly SignInManager<Usuario> _signManager; 
+  private readonly UserManager<Usuario> _userManager;
+  public UserController(OnlyPanContext context, UserManager<Usuario> userManager, SignInManager<Usuario> signManager)
   {
     _context = context;
+    _userManager = userManager;
+    _signManager = signManager;
   }
 
   public IActionResult Index()
@@ -30,7 +33,7 @@ public class UserController : Controller
   [HttpPost]
   public async Task<IActionResult> Register(RegisterViewModel model)
   {
-    {
+    if(ModelState.IsValid){
       var user = new Usuario()
       {
         Nombre = model.Nombre,
@@ -38,7 +41,10 @@ public class UserController : Controller
         Contraseña = model.Contrasena
       };
       _context.Add(user);
-      await _context.SaveChangesAsync();
+      var result = await _context.SaveChangesAsync();
+      {
+        
+      }
       return RedirectToAction(nameof(Login));
     }
     return View(model);
