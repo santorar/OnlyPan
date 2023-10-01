@@ -51,9 +51,4 @@ public class UserController : Controller
   {
     return View();
   }
-  public async Task<IActionResult> List()
-  {
-    var users = _context.Usuarios.Include(u => u.RolNavigation);
-    return View(await users.ToListAsync());
-  }
 }
