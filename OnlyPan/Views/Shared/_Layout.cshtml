@@ -11,48 +11,92 @@
 </head>
 <body class="h-full">
 <header>
-  <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-orange-200 border-bottom box-shadow mb-3 font-bold">
+  <!-- NavBar OnlyPan-->
+  <nav class="navbar navbar-expand-lg bg-orange-200 navbar-page ">
     <div class="container-fluid">
+      <!--Logo-->
       <a class="navbar-brand lg:text-3xl logo font-bold hover:text-amber-600" asp-area="" asp-controller="Home"
          asp-action="Index">
         Only<span class="logo2">Pan</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!--Navbar items-->
+
+      @* Navbar navigation links *@
       <div class="navbar-collapse d-sm-inline-flex justify-content-between">
         <ul class="navbar-nav flex-grow-1">
-          <li class="nav-item">
-            <a class="nav-link text-dark  hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 "
-               asp-area="" asp-controller="Home" asp-action="Index">
-              Inicio
-            </a>
+          <li class="nav-item font-bold">
+            <a class="nav-link text-black hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 " asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
-               asp-area="" asp-controller="Home" asp-action="Bio">
-              ¿Quienes Somos?
-            </a>
+          <li class="nav-item font-bold">
+            <a class="nav-link text-black hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
           </li>
         </ul>
       </div>
 
-
+      @* Search Bar *@
+      <form class="d-flex m-1.5 space-x-1.5" role="search">
+        <input class="form-control rounded-md" type="search" placeholder="¿Qué Cocinaremos Hoy?" aria-label="Search">
+        <button class="btn bg-green-600 btn-success text-white" type="submit">Buscar</button>
+      </form>
       <!--Login buttons-->
-      <ul class="flex lg:flex-row sm:flex-col items-center">
+      <ul class="flex lg:flex-row sm:flex-col items-center space-x-1.5">
         <li class="nav-item">
-          <a class="nav-link text-dark text-right w-[8.5rem] hover:bg-amber-600 hover:text-white
-                        rounded-md px-3 py-2" asp-area="" asp-controller="User" asp-action="Login">Iniciar Sesión</a>
+          <a class="btn btn-primary bg-blue-500" asp-area="" asp-controller="User" asp-action="Login">Iniciar Sesión</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark hover:bg-amber-600 hover:text-white rounded-md px-3 py-2"
+          <a class="btn btn-primary bg-blue-500"
              asp-area="" asp-controller="User" asp-action="Register">
             Registrate
           </a>
         </li>
       </ul>
+      @{
+        /*
+      <<div class="space-x-1.5">
+        @* Register Modal *@
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary bg-blue-500 rounded-md" data-bs-toggle="modal" data-bs-target="#RegisterModal">
+          Regístrate
+        </button>
+        @* TODO add icons to the project and put a close icon for now x is a placeholder*@
+        @* TODO Add the funcionality of a register and login modals for better UX*@
+        <!-- Modal -->
+        <div class="modal fade" id="RegisterModal" tabindex="-1" aria-labelledby="RegisterModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="RegisterModalLabel">Register</h1>
+                <button type="button" class="btn-close text-black" data-bs-dismiss="modal" aria-label="Close">x</button>
+              </div>
+              <div class="modal-body">
+                Registro
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @* Login Modal *@
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary bg-blue-500 rounded-md" data-bs-toggle="modal" data-bs-target="#LoginModal">
+          Iniciar Sesión
+        </button>
+
+        @* TODO add icons to the project and put a close icon *@
+        <!-- Modal -->
+        <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="LoginModalLabel">Inicio de sesion</h1>
+                <button type="button" class="btn-close text-black text-xl font-bold" data-bs-dismiss="modal" aria-label="Close">x</button>
+              </div>
+              <div class="modal-body">
+                Inicio de sesion
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */
+      }
 
     </div>
   </nav>
