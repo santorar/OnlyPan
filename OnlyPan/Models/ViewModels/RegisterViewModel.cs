@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlyPan.Models.ViewModels;
 
-public class UsuarioViewModel
+public class RegisterViewModel
 {
   [Display(Name = "Nombre de usuario")] public string Nombre { get; set; }
 

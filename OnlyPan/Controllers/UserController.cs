@@ -27,7 +27,7 @@ public class UserController : Controller
 
   [ValidateAntiForgeryToken]
   [HttpPost]
-  public async Task<IActionResult> Register(UsuarioViewModel model)
+  public async Task<IActionResult> Register(RegisterViewModel model)
   {
     {
       var user = new Usuario()
