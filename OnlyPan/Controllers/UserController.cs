@@ -37,39 +37,14 @@ public class UserController : Controller
   [HttpPost]
   public async Task<IActionResult> Login(LoginViewModel user)
   {
-    //TODO move the logic to the UserServices
-    EncryptionService enc = new EncryptionService();
-    var encryptionHash1 = enc.Encrypt(user.Contra);
-    var encryptionHash2 = enc.Encrypt(encryptionHash1);
-    try
+    var us = new UserServices();
+    var result = await us.LoginUsuario(_context,user,HttpContext);
+    if (result)
     {
-      var userdb =
-        _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", user.Correo, encryptionHash2).ToList()[0] ??
-        throw new SystemException();
-      List<Claim> c = new List<Claim>()
-      {
-        new Claim(ClaimTypes.NameIdentifier, userdb.IdUsuario.ToString()),
-        new Claim(ClaimTypes.Email, user.Correo),
-        new Claim(ClaimTypes.Name, userdb.Nombre),
-        new Claim(ClaimTypes.Role, userdb.Rol.ToString())
-      };
-      ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
-      AuthenticationProperties p = new AuthenticationProperties();
-      p.AllowRefresh = true;
-      p.IsPersistent = user.Remember;
-
-      if (user.Remember)
-        p.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1);
-      else
-        p.ExpiresUtc = DateTimeOffset.MaxValue;
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(ci), p);
       return RedirectToAction("Index", "Home");
     }
-    catch (SystemException e)
-    {
-      ViewBag.Error = "Datos incorrectos o Usuario no registrado";
-    }
 
+    ViewBag.Error = "Datos incorrectos";
     return View();
   }
 
@@ -86,26 +61,20 @@ public class UserController : Controller
   {
     if (ModelState.IsValid)
     {
-      EncryptionService ecr = new EncryptionService();
-      var encryptionKey1 = ecr.Encrypt(model.Contrasena);
-      var encryptionKey2 = ecr.Encrypt(encryptionKey1);
-        var userdb =
-          _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_email {0}", model.Correo).ToList();
-        if (userdb.Count != 0)
-        {
-          ViewBag.Error = "Email ya registrado";
-          return View(model);
-        }
-      var user = new Usuario()
+      var us = new UserServices();
+      if (us.checkEmail(_context, model.Correo))
       {
-        FechaInscrito = DateTime.UtcNow,
-        Nombre = model.Nombre,
-        Correo = model.Correo,
-        Contrasena = encryptionKey2,
-        Estado = 1
-      };
-      _context.Add(user);
-      var result = await _context.SaveChangesAsync();
+        ViewBag.Error = "Email ya registrado";
+        return View(model);
+      }
+
+      var result = await us.registerUser(_context, model);
+      if (!result)
+      {
+        ViewBag.Error = "Error intentelo denuevo";
+        return View(model);
+      }
+
       return RedirectToAction(nameof(Login));
     }
 
