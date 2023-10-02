@@ -48,6 +48,7 @@ public class UserController : Controller
         throw new SystemException();
       List<Claim> c = new List<Claim>()
       {
+        new Claim(ClaimTypes.Sid, userdb.IdUsuario.ToString()),
         new Claim(ClaimTypes.Email, user.Correo),
         new Claim(ClaimTypes.Name, userdb.Nombre),
         new Claim(ClaimTypes.Role, userdb.Rol.ToString())
@@ -78,7 +79,7 @@ public class UserController : Controller
     return View();
   }
 
-//TODO make a way to encrypt the password of the user and his personal data directy in the register
+  //TODO send a email for confirm registration
   [ValidateAntiForgeryToken]
   [HttpPost]
   public async Task<IActionResult> Register(RegisterViewModel model)
@@ -88,16 +89,23 @@ public class UserController : Controller
       EncryptionService ecr = new EncryptionService();
       var encryptionKey1 = ecr.Encrypt(model.Contrasena);
       var encryptionKey2 = ecr.Encrypt(encryptionKey1);
+        var userdb =
+          _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_email {0}", model.Correo).ToList();
+        if (userdb.Count != 0)
+        {
+          ViewBag.Error = "Email ya registrado";
+          return View(model);
+        }
       var user = new Usuario()
       {
+        FechaInscrito = DateTime.UtcNow,
         Nombre = model.Nombre,
         Correo = model.Correo,
-        Contrasena = encryptionKey2
+        Contrasena = encryptionKey2,
+        Estado = 1
       };
       _context.Add(user);
       var result = await _context.SaveChangesAsync();
-      {
-      }
       return RedirectToAction(nameof(Login));
     }
 
@@ -109,4 +117,5 @@ public class UserController : Controller
     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     return RedirectToAction("Index", "Home");
   }
+  //TODO Create a method to restore the password
 }
