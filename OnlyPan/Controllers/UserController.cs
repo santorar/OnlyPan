@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
 
@@ -9,13 +7,9 @@ namespace OnlyPan.Controllers;
 public class UserController : Controller
 {
   private readonly OnlyPanContext _context;
-  private readonly SignInManager<Usuario> _signManager; 
-  private readonly UserManager<Usuario> _userManager;
-  public UserController(OnlyPanContext context, UserManager<Usuario> userManager, SignInManager<Usuario> signManager)
+  public UserController(OnlyPanContext context)
   {
     _context = context;
-    _userManager = userManager;
-    _signManager = signManager;
   }
 
   public IActionResult Index()
