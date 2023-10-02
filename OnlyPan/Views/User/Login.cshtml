@@ -7,7 +7,7 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form method="get" class="space-y-6" asp-controller="User" asp-action="Login">
+    <form method="post" class="space-y-6" asp-controller="User" asp-action="Login">
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div>
         <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Correo"></label>
@@ -23,8 +23,13 @@
                asp-for="Contra">
         <span asp-validation-for="Contra" class="text-danger"></span>
       </div>
+      <div class="checkbox mb-3">
+        <input type="checkbox" class="" asp-for="Remember">
+        <label asp-for="Remember" class=" text-sm font-medium leading-6 text-gray-900"></label>
+      </div>
       <div>
         <input type="submit" value="Iniciar sesión" class="btn btn-primary bg-blue-500 self-center">
+        <span class="alert-danger">@ViewBag.Error</span>
       </div>
     </form>
   </div>
