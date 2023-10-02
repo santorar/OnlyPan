@@ -7,15 +7,15 @@ public partial class Valoracion
 {
     public int IdInteraccion { get; set; }
 
-    public int? Usuario { get; set; }
+    public string Usuario { get; set; }
 
-    public int? Receta { get; set; }
+    public int Receta { get; set; }
 
-    public DateTime? FechaInteracion { get; set; }
+    public DateTime FechaInteracion { get; set; }
 
-    public int? Valoracion1 { get; set; }
+    public int Valoracion1 { get; set; }
 
-    public int? Estado { get; set; }
+    public int Estado { get; set; }
 
     public virtual Estado? EstadoNavigation { get; set; }
 

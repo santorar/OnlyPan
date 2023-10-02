@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace OnlyPan.Models;
 
-public partial class OnlyPanContext : DbContext
+public partial class OnlyPanContext : IdentityDbContext<Usuario>
 {
     public OnlyPanContext()
     {
@@ -52,11 +54,22 @@ public partial class OnlyPanContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.HasKey(e => e.LoginProvider);
+        });
+        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+        {
+            entity.HasKey(e => new {e.UserId,e.RoleId});
+        });
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.HasKey(e => e.Value);
+        });
         modelBuilder.Entity<Auditorium>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("AUDITORIA");
+            entity.HasKey(e => e.IdAuditoria);
+            entity.ToTable("AUDITORIA");
 
             entity.Property(e => e.Accion)
                 .HasMaxLength(20)
@@ -115,15 +128,18 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Comentarios)
                 .HasForeignKey(d => d.Estado)
-                .HasConstraintName("FK_comentario_estado");
+                .HasConstraintName("FK_comentario_estado")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RecetaNavigation).WithMany(p => p.Comentarios)
                 .HasForeignKey(d => d.Receta)
-                .HasConstraintName("FK_comentario_receta");
+                .HasConstraintName("FK_comentario_receta")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.UsuarioNavigation).WithMany(p => p.Comentarios)
                 .HasForeignKey(d => d.Usuario)
-                .HasConstraintName("FK_comentario_usuario");
+                .HasConstraintName("FK_comentario_usuario")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Donacion>(entity =>
@@ -145,7 +161,8 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.DonadorNavigation).WithMany(p => p.Donacions)
                 .HasForeignKey(d => d.Donador)
-                .HasConstraintName("FK_donacion_donador");
+                .HasConstraintName("FK_donacion_donador")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Estado>(entity =>
@@ -215,7 +232,8 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.ChefNavigation).WithMany(p => p.RecetaChefs)
                 .HasForeignKey(d => d.Chef)
-                .HasConstraintName("FK_rc_chef");
+                .HasConstraintName("FK_rc_chef")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RecetaNavigation).WithMany(p => p.RecetaChefs)
                 .HasForeignKey(d => d.Receta)
@@ -306,7 +324,8 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.UsuarioNavigation).WithMany(p => p.ReplicaUsuarios)
                 .HasForeignKey(d => d.Usuario)
-                .HasConstraintName("FK_ru_usuario");
+                .HasConstraintName("FK_ru_usuario")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Rol>(entity =>
@@ -343,15 +362,18 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.SeguirUsuarios)
                 .HasForeignKey(d => d.Estado)
-                .HasConstraintName("FK_seguir_estado");
+                .HasConstraintName("FK_seguir_estado")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.SeguidoNavigation).WithMany(p => p.SeguirUsuarioSeguidoNavigations)
                 .HasForeignKey(d => d.Seguido)
-                .HasConstraintName("FK_seguir_seguido");
+                .HasConstraintName("FK_seguir_seguido")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.SeguidorNavigation).WithMany(p => p.SeguirUsuarioSeguidorNavigations)
                 .HasForeignKey(d => d.Seguidor)
-                .HasConstraintName("FK_seguir_seguidor");
+                .HasConstraintName("FK_seguir_seguidor")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<SolicitudRol>(entity =>
@@ -380,28 +402,32 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.EstadoSolicitudNavigation).WithMany(p => p.SolicitudRols)
                 .HasForeignKey(d => d.EstadoSolicitud)
-                .HasConstraintName("FK_solicitud_estado");
+                .HasConstraintName("FK_solicitud_estado")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RolSolicitadoNavigation).WithMany(p => p.SolicitudRols)
                 .HasForeignKey(d => d.RolSolicitado)
-                .HasConstraintName("FK_solicitud_rol");
+                .HasConstraintName("FK_solicitud_rol")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.UsuarioAprovadorNavigation).WithMany(p => p.SolicitudRolUsuarioAprovadorNavigations)
                 .HasForeignKey(d => d.UsuarioAprovador)
-                .HasConstraintName("FK_solicitud_usuario_aprovador");
+                .HasConstraintName("FK_solicitud_usuario_aprovador")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.UsuarioSolicitudNavigation).WithMany(p => p.SolicitudRolUsuarioSolicitudNavigations)
                 .HasForeignKey(d => d.UsuarioSolicitud)
-                .HasConstraintName("FK_solicitud_usuario");
+                .HasConstraintName("FK_solicitud_usuario")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario);
+            entity.HasKey(e => e.Id);
 
             entity.ToTable("USUARIO");
 
-            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+            entity.Property(e => e.Id).HasColumnName("id_usuario");
             entity.Property(e => e.Contraseña)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -428,12 +454,14 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Estado)
-                .HasConstraintName("FK_usuario_estado");
+                .HasConstraintName("FK_usuario_estado")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Rol)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_usuario_rol");
+                .HasConstraintName("FK_usuario_rol")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Valoracion>(entity =>
@@ -455,15 +483,18 @@ public partial class OnlyPanContext : DbContext
 
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Valoracions)
                 .HasForeignKey(d => d.Estado)
-                .HasConstraintName("FK_valoracion_estado");
+                .HasConstraintName("FK_valoracion_estado")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.RecetaNavigation).WithMany(p => p.Valoracions)
                 .HasForeignKey(d => d.Receta)
-                .HasConstraintName("FK_valoracion_receta");
+                .HasConstraintName("FK_valoracion_receta")
+                .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(d => d.UsuarioNavigation).WithMany(p => p.Valoracions)
                 .HasForeignKey(d => d.Usuario)
-                .HasConstraintName("FK_valoracion_usuario");
+                .HasConstraintName("FK_valoracion_usuario")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         OnModelCreatingPartial(modelBuilder);

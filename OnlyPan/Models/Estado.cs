@@ -7,9 +7,9 @@ public partial class Estado
 {
     public int IdEstado { get; set; }
 
-    public string? NombreEstado { get; set; }
+    public string NombreEstado { get; set; }
 
-    public string? DescripcionEstado { get; set; }
+    public string DescripcionEstado { get; set; }
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 

@@ -9,7 +9,7 @@ public partial class Etiquetum
 
     public int? Receta { get; set; }
 
-    public string? Etiqueta { get; set; }
+    public string Etiqueta { get; set; }
 
     public virtual ICollection<Recetum> RecetaNavigation { get; set; } = new List<Recetum>();
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 
@@ -9,6 +10,9 @@ builder.Services.AddDbContext<OnlyPanContext>(options =>
 {
   options.UseSqlServer(builder.Configuration.GetConnectionString("OnlyPanContext"));
 });
+builder.Services.AddIdentity<Usuario, IdentityRole>()
+  .AddEntityFrameworkStores<OnlyPanContext>()
+  .AddDefaultTokenProviders();
 
 var app = builder.Build();
 

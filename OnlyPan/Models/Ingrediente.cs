@@ -9,7 +9,7 @@ public partial class Ingrediente
 
     public int? Receta { get; set; }
 
-    public string? Ingrediente1 { get; set; }
+    public string Ingrediente1 { get; set; }
 
     public virtual ICollection<RecetaIngrediente> RecetaIngredientes { get; set; } = new List<RecetaIngrediente>();
 }

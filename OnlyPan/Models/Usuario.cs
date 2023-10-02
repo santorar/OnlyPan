@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace OnlyPan.Models;
 
-public partial class Usuario
+public class Usuario : IdentityUser
 {
-    public int IdUsuario { get; set; }
+    public override string Id { get; set; }
 
     public int Rol { get; set; }
 
-    public DateTime? FechaInscrito { get; set; }
+    public DateTime FechaInscrito { get; set; }
 
     public string? Foto { get; set; }
 
@@ -18,13 +19,13 @@ public partial class Usuario
 
     public string Contraseña { get; set; } = null!;
 
-    public int? Estado { get; set; }
+    public int Estado { get; set; }
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 
     public virtual ICollection<Donacion> Donacions { get; set; } = new List<Donacion>();
 
-    public virtual Estado? EstadoNavigation { get; set; }
+    public virtual Estado EstadoNavigation { get; set; }
 
     public virtual ICollection<RecetaChef> RecetaChefs { get; set; } = new List<RecetaChef>();
 

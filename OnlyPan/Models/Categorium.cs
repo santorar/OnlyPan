@@ -9,7 +9,7 @@ public partial class Categorium
 
     public int? Receta { get; set; }
 
-    public string? Categoria { get; set; }
+    public string Categoria { get; set; }
 
     public virtual ICollection<Recetum> RecetaNavigation { get; set; } = new List<Recetum>();
 }
