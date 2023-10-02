@@ -9,7 +9,7 @@ public partial class SolicitudRol
 
     public int? UsuarioSolicitud { get; set; }
 
-    public int? RolSolicitado { get; set; }
+    public string RolSolicitado { get; set; }
 
     public int? EstadoSolicitud { get; set; }
 
