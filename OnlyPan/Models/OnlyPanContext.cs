@@ -402,10 +402,10 @@ public partial class OnlyPanContext : DbContext
             entity.ToTable("USUARIO");
 
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-            entity.Property(e => e.Contraseña)
+            entity.Property(e => e.Contrasena)
                 .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasColumnName("contraseña");
+                .HasColumnName("contrasena");
             entity.Property(e => e.Correo)
                 .HasMaxLength(50)
                 .IsUnicode(false)

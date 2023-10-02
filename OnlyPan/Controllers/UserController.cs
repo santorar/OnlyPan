@@ -32,7 +32,7 @@ public class UserController : Controller
       {
         Nombre = model.Nombre,
         Correo = model.Correo,
-        Contraseña = model.Contrasena
+        Contrasena = model.Contrasena
       };
       _context.Add(user);
       var result = await _context.SaveChangesAsync();
