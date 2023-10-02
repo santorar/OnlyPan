@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlyPan.Models;
 
@@ -19,6 +20,8 @@ public partial class Usuario
     public string Contrasena { get; set; } = null!;
 
     public int? Estado { get; set; }
+    [NotMapped]
+    public bool SesionActiva { get; set; }
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 

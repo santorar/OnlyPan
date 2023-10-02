@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 
@@ -8,6 +9,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<OnlyPanContext>(options =>
 {
   options.UseSqlServer(builder.Configuration.GetConnectionString("OnlyPanContext"));
+});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+  options.LoginPath="/User/Login";
 });
 
 var app = builder.Build();
@@ -24,7 +29,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
