@@ -28,6 +28,7 @@ public class RolController : Controller
   {
     var roles = _context.Rols.Where(r => r.IdRol >= 2 && r.IdRol <= 4);
     ViewData["Roles"] = new SelectList(roles, "IdRol", "NombreRol");
+    
     return View();
   }
 
@@ -37,28 +38,25 @@ public class RolController : Controller
   {
     var roles = _context.Rols.Where(r => r.IdRol >= 2 && r.IdRol <= 4);
     ViewData["Roles"] = new SelectList(roles, "IdRol", "NombreRol");
+    
     var idUser = int.Parse(HttpContext.User.Claims.First().Value);
-    var request = _context.SolicitudRols.FromSqlRaw("EXECUTE sp_check_petitions {0}", idUser).ToList();
-    if (request.Count > 0)
+    var rs = new RoleServices();
+    if (rs.CheckPetitions(_context, idUser))
     {
       ViewBag.Error = "Solicitudes en curso";
       return View(model);
     }
-  var peticion = new SolicitudRol()
-    {
-      UsuarioSolicitud = idUser,
-      Comentario = model.Comentario,
-      RolSolicitado = model.Rol,
-      EstadoSolicitud = 4,
-      FechaSolicitud = DateTime.UtcNow,
-    };
-    _context.Add(peticion);
-    var result = await _context.SaveChangesAsync();
+    await rs.makePetition(model, _context, idUser);
     return RedirectToAction(nameof(Index));
   }
 
   [Authorize(Roles = "2,3")]
   public IActionResult Moderate()
+  {
+    return View();
+  }
+
+  public IActionResult ViewRole()
   {
     return View();
   }
