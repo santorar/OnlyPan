@@ -1,18 +1,32 @@
-@model TModel
+@model OnlyPan.Models.ViewModels.RolPetitionViewModel
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      Inicio de sesión
+    </h2>
+  </div>
 
-@{
-  Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-  <title>title</title>
-</head>
-<body>
-<div>
-    
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form method="post" class="space-y-6" asp-controller="Rol" asp-action="Petition">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div>
+        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Rol"></label>
+        <select class="block w-full rounded-md 
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"a asp-for="Rol" asp-items="ViewBag.Roles"></select>
+        <span asp-validation-for="Rol" class="text-danger"></span>
+      </div>
+      <div>
+        <label asp-for="Comentario" class="block text-sm font-medium leading-6 text-gray-900"></label>
+        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
+               placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+               asp-for="Comentario">
+        <span asp-validation-for="Comentario" class="text-danger"></span>
+      </div>
+      <div>
+        <input type="submit" value="Registrar Peticion" class="btn btn-primary bg-blue-500 self-center">
+        <span class="alert-danger">@ViewBag.Error</span>
+      </div>
+    </form>
+  </div>
 </div>
-</body>
-</html>

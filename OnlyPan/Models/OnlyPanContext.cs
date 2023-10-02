@@ -361,7 +361,6 @@ public partial class OnlyPanContext : DbContext
             entity.ToTable("SOLICITUD_ROL");
 
             entity.Property(e => e.IdSolicitud)
-                .ValueGeneratedNever()
                 .HasColumnName("id_solicitud");
             entity.Property(e => e.Comentario)
                 .HasMaxLength(100)

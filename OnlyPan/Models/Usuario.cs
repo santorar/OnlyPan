@@ -39,7 +39,7 @@ public partial class Usuario
 
     public virtual ICollection<SeguirUsuario> SeguirUsuarioSeguidorNavigations { get; set; } = new List<SeguirUsuario>();
 
-    public virtual ICollection<SolicitudRol> SolicitudRolUsuarioAprovadorNavigations { get; set; } = new List<SolicitudRol>();
+    public virtual ICollection<SolicitudRol>? SolicitudRolUsuarioAprovadorNavigations { get; set; } = new List<SolicitudRol>();
 
     public virtual ICollection<SolicitudRol> SolicitudRolUsuarioSolicitudNavigations { get; set; } = new List<SolicitudRol>();
 
