@@ -48,7 +48,7 @@ public class UserController : Controller
         throw new SystemException();
       List<Claim> c = new List<Claim>()
       {
-        new Claim(ClaimTypes.Sid, userdb.IdUsuario.ToString()),
+        new Claim(ClaimTypes.NameIdentifier, userdb.IdUsuario.ToString()),
         new Claim(ClaimTypes.Email, user.Correo),
         new Claim(ClaimTypes.Name, userdb.Nombre),
         new Claim(ClaimTypes.Role, userdb.Rol.ToString())

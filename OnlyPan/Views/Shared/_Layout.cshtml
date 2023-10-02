@@ -30,9 +30,14 @@
           <li class="nav-item font-bold">
             <a class="nav-link text-black hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="Home" asp-action="Bio">¿Quienes Somos?</a>
           </li>
+          @if (Context.User.IsInRole("2") || Context.User.IsInRole("3"))
+          {
+          <li class="nav-item font-bold">
+            <a class="nav-link text-black hover:bg-amber-600 hover:text-white rounded-md px-3 py-2" asp-area="" asp-controller="Rol" asp-action="Moderate">Solicitudes Roles</a>
+          </li>
+          }
         </ul>
       </div>
-
       @* Search Bar *@
       <form class="d-flex m-1.5 space-x-1.5" role="search">
         <input class="form-control rounded-md" type="search" placeholder="¿Qué Cocinaremos Hoy?" aria-label="Search">

@@ -56,4 +56,10 @@ public class RolController : Controller
     var result = await _context.SaveChangesAsync();
     return RedirectToAction(nameof(Index));
   }
+
+  [Authorize(Roles = "2,3")]
+  public IActionResult Moderate()
+  {
+    return View();
+  }
 }
