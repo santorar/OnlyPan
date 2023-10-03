@@ -39,9 +39,4 @@ public class RoleServices
     }
     return false;
   }
-
-  public bool AcceptRole()
-  {
-    return false;
-  }
 }

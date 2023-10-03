@@ -2,6 +2,7 @@
 
 <h1>Solicitudes de cambio de rol</h1>
 
+<span class="alert-danger">@ViewBag.Error</span>
 <table class="table">
   <thead>
   <tr>
@@ -39,8 +40,8 @@
         @Html.DisplayFor(m=> vaPetition.FechaSolicitud)
       </td>
       <td>
-        <a class="link-primary">Aceptar Solicitud</a>
-        <a class="link-primary">Rechazar Solicitud</a>
+        <a  class="link-success space-x-1.5" asp-action="AcceptPetition" asp-controller="Rol" asp-route-petitionId="@vaPetition.IdSolicitud">Aceptar Solicitud</a>
+        <a class="link-danger space-x-1.5" asp-action="RejectPetition" asp-controller="Rol" asp-route-petitionId="@vaPetition.IdSolicitud">Rechazar Solicitud</a>
       </td>
     </tr>
   }
