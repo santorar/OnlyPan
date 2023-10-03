@@ -11,7 +11,7 @@ using OnlyPan.Services;
 namespace OnlyPan.Controllers;
 
 [Authorize]
-public class RolController : Controller
+public class RoleController : Controller
 {
   private readonly OnlyPanContext _context;
 
@@ -20,7 +20,7 @@ public class RolController : Controller
     return View();
   }
 
-  public RolController(OnlyPanContext context)
+  public RoleController(OnlyPanContext context)
   {
     _context = context;
   }
