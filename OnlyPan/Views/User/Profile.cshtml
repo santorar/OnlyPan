@@ -1,0 +1,18 @@
+@model List<Usuario>
+
+<div class="container-fluid">
+<h1>Perfil de usuario</h1>
+  <!--TODO Display the profile into a floating card-->
+  <div class="">
+    <img class="img-fluid" src="@Model.First().Foto" alt="User img"/>
+    <div>
+      <p class="">Nombre de usuario:<span>@Model.First().Nombre</span></p>
+      <p class="">Correo Electronico:<span>@Model.First().Correo</span></p>
+      <p class="">Rol:<span>@Model.First().RolNavigation.NombreRol</span></p>
+      <div>
+        <a asp-action="EditProfile" asp-controller="User" class="btn btn-primary">Editar Perfil de usuario</a>
+        <a asp-action="Petition" asp-controller="Role" class="btn btn-primary">Solicitar Rol</a>
+      </div>
+    </div>
+  </div>
+</div>

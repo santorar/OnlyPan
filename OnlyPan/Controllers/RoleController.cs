@@ -47,7 +47,7 @@ public class RoleController : Controller
       return View(model);
     }
 
-    await rs.makePetition(model, _context, idUser);
+    await rs.MakePetition(model, _context, idUser);
     return RedirectToAction(nameof(Index));
   }
 

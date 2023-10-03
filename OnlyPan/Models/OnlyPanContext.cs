@@ -257,8 +257,6 @@ public partial class OnlyPanContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("fecha_creacion");
             entity.Property(e => e.Foto)
-                .HasMaxLength(30)
-                .IsUnicode(false)
                 .HasColumnName("foto");
             entity.Property(e => e.Instrucciones)
                 .HasColumnType("text")

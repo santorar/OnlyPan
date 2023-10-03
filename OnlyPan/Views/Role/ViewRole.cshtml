@@ -13,9 +13,6 @@
       Rol
     </th>
     <th>
-      Comentario
-    </th>
-    <th>
       Fecha
     </th>
     <th>
@@ -34,14 +31,13 @@
         @Html.DisplayFor(m=> vaPetition.RolSolicitadoNavigation!.NombreRol)
       </td>
       <td>
-        @Html.DisplayFor(m=> vaPetition.Comentario)
-      </td>
-      <td>
         @Html.DisplayFor(m=> vaPetition.FechaSolicitud)
       </td>
       <td>
-        <a  class="link-success space-x-1.5" asp-action="AcceptPetition" asp-controller="Role" asp-route-petitionId="@vaPetition.IdSolicitud">Aceptar Solicitud</a>
-        <a class="link-danger space-x-1.5" asp-action="RejectPetition" asp-controller="Role" asp-route-petitionId="@vaPetition.IdSolicitud">Rechazar Solicitud</a>
+        <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
+           asp-route-idPetition="@vaPetition.IdSolicitud">
+          Ver Perfil
+        </a>
       </td>
     </tr>
   }

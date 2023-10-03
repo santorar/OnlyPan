@@ -1,0 +1,30 @@
+@model OnlyPan.Models.ViewModels.ProfileViewModel
+@{
+  int user = int.Parse(Context.User.Claims.First().Value);
+}
+<div class="container-fluid">
+  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Editar Perfil de usuario</h2>
+  <!--TODO Display the profile into a floating card-->
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form method="post" asp-action="EditProfile" asp-controller="User" class="space-y-6">
+      <div class="group">
+        <label asp-for="Name" class="block text-sm font-medium leading-6 text-gray-900"></label>
+        <input asp-for="Name" value="@ViewBag.Name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
+      <div class="group">
+        <label asp-for="Correo" class="block text-sm font-medium leading-6 text-gray-900"></label>
+        <input asp-for="Correo" value="@ViewBag.Email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
+      <div class="group">
+        <label class="block text-sm font-medium leading-6 text-gray-900">Rol</label>
+        <input disabled="disabled" value="@ViewBag.Rol" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
+      <div class="group">
+        <label asp-for="Foto" class="block text-sm font-medium leading-6 text-gray-900"></label>
+        <input asp-for="Foto" type="file" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+      </div>
+      <input type="submit" value="Confirmar Edicion" class="btn btn-primary"/>
+      <span class="text-danger">@ViewBag.Error</span>
+    </form>
+  </div>
+</div>

@@ -6,14 +6,13 @@ namespace OnlyPan.Services;
 
 public class RoleServices
 {
-  public async Task<bool> makePetition(RolPetitionViewModel model, OnlyPanContext context, int idUser)
+  public async Task<bool> MakePetition(RolPetitionViewModel model, OnlyPanContext context, int idUser)
   {
     try
     {
       var peticion = new SolicitudRol()
       {
         UsuarioSolicitud = idUser,
-        Comentario = model.Comentario,
         RolSolicitado = model.Rol,
         EstadoSolicitud = 4,
         //TODO fix the error that is showing always the time in 12 AM
