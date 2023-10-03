@@ -49,15 +49,18 @@ public class RolController : Controller
     await rs.makePetition(model, _context, idUser);
     return RedirectToAction(nameof(Index));
   }
-
+  //Moderate View for Rol petition
   [Authorize(Roles = "2,3")]
   public IActionResult Moderate()
   {
     return View();
   }
-
-  public IActionResult ViewRole()
+  //View a list of rol petitions 
+  public async Task<IActionResult> ViewRole()
   {
-    return View();
+    var petitions = _context.SolicitudRols
+      .Include(u => u.UsuarioSolicitudNavigation)
+      .Include(r => r.RolSolicitadoNavigation);
+    return View(await petitions.ToListAsync());
   }
 }

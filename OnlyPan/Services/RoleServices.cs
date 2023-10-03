@@ -16,7 +16,8 @@ public class RoleServices
         Comentario = model.Comentario,
         RolSolicitado = model.Rol,
         EstadoSolicitud = 4,
-        FechaSolicitud = DateTime.UtcNow,
+        //TODO fix the error that is showing always the time in 12 AM
+        FechaSolicitud = DateTime.UtcNow
       };
 
       context.Add(peticion);

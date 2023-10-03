@@ -1,0 +1,48 @@
+@model List<SolicitudRol>
+
+<h1>Solicitudes de cambio de rol</h1>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>
+      Nombre
+    </th>
+    <th>
+      Rol
+    </th>
+    <th>
+      Comentario
+    </th>
+    <th>
+      Fecha
+    </th>
+    <th>
+      Acciones
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  @foreach (var vaPetition in Model)
+  {
+    <tr>
+      <td>
+        @Html.DisplayFor(m=> vaPetition.UsuarioSolicitudNavigation!.Nombre)
+      </td>
+      <td>
+        @Html.DisplayFor(m=> vaPetition.RolSolicitadoNavigation!.NombreRol)
+      </td>
+      <td>
+        @Html.DisplayFor(m=> vaPetition.Comentario)
+      </td>
+      <td>
+        @Html.DisplayFor(m=> vaPetition.FechaSolicitud)
+      </td>
+      <td>
+        <a class="link-primary">Aceptar Solicitud</a>
+        <a class="link-primary">Rechazar Solicitud</a>
+      </td>
+    </tr>
+  }
+  </tbody>
+</table>
