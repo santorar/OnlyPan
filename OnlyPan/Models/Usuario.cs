@@ -11,7 +11,7 @@ public partial class Usuario
 
     public DateTime? FechaInscrito { get; set; }
 
-    public byte[] Foto { get; set; }
+    public byte[]? Foto { get; set; }
 
     public string Nombre { get; set; } = null!;
 
