@@ -35,7 +35,7 @@ public class UserServices
   }
 
   public async Task<bool> registerUser(OnlyPanContext context, RegisterViewModel model)
-  {
+   {
     try
     {
       EncryptionService ecr = new EncryptionService();
@@ -47,6 +47,7 @@ public class UserServices
         Nombre = model.Nombre,
         Correo = model.Correo,
         Contrasena = encryptionKey2,
+        Foto = GetPhoto(Directory.GetCurrentDirectory()+"/Utilities/Images/default.jpeg"),
         Estado = 1
       };
       context.Add(user);
@@ -91,4 +92,18 @@ public class UserServices
       return false;
     }
   }
+  //TODO move this function to Utilities
+public static byte[] GetPhoto(string filePath)  
+{  
+  FileStream stream = new FileStream(  
+      filePath, FileMode.Open, FileAccess.Read);  
+  BinaryReader reader = new BinaryReader(stream);  
+  
+  byte[] photo = reader.ReadBytes((int)stream.Length);  
+  
+  reader.Close();  
+  stream.Close();  
+  
+  return photo;  
+}  
 }
