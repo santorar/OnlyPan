@@ -87,4 +87,30 @@ public class UserController : Controller
     return RedirectToAction("Index", "Home");
   }
   //TODO Create a method to restore the password
+  
+  //TODO Create a controller that returns the user profile
+  public async Task<IActionResult> Profile()
+  {
+    var user = await _context.Usuarios
+      .Include(u => u.RolNavigation)
+      .Where(u => u.IdUsuario == int.Parse(HttpContext.User.Claims.First().Value)).ToListAsync();
+    return View(user);
+  }
+  public async Task<IActionResult> EditProfile()
+  {
+    var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));
+    var rol = await _context.Rols.FindAsync(user?.Rol);
+    ViewData["Name"] = user?.Nombre;
+    ViewData["Email"] = user?.Correo;
+    ViewData["Rol"] = rol?.NombreRol;
+    return View();
+  }
+  public async Task<IActionResult> ViewProfileRol(int idPetition)
+  {
+    var solicitud = await _context.SolicitudRols
+      .Include(s => s.UsuarioSolicitudNavigation)
+      .Include(s => s.RolSolicitadoNavigation)
+      .Where(s => s.IdSolicitud == idPetition).ToListAsync();
+    return View(solicitud);
+  }
 }

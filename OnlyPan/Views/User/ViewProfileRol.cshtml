@@ -1,0 +1,25 @@
+@model List<SolicitudRol>
+
+@{
+  Usuario? usuario = Model.First().UsuarioSolicitudNavigation;
+  Rol? rolSolicitado = Model.First().RolSolicitadoNavigation;
+}
+<div class="container-fluid">
+  <h1>Asignacion de rol</h1>
+  <!--TODO Display the profile into a floating card-->
+  <div class="">
+
+    <img class="img-fluid" src="@usuario?.Foto" alt="User img"/>
+    <div>
+      <p class="">Nombre de usuario:<span>@usuario?.Nombre</span></p>
+      <p class="">Correo Electronico:<span>@usuario?.Correo</span></p>
+      <p class="">Rol Solicitado:<span>@rolSolicitado?.NombreRol</span></p>
+      <div>
+        <a asp-action="AcceptPetition" asp-controller="Role" asp-route-petitionId="@Model.First().IdSolicitud" 
+           class="btn btn-success">Aceptar Solicitud</a>
+        <a asp-action="RejectPetition" asp-controller="Role" asp-route-petitionId="@Model.First().IdSolicitud" 
+           class="btn btn-danger">Rechazar Solicitud</a>
+      </div>
+    </div>
+  </div>
+</div>
