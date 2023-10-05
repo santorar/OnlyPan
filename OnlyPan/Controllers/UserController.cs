@@ -110,7 +110,6 @@ public class UserController : Controller
   }
   [Authorize]
   [HttpPost]
-  //TODO fix the image is not uploading correctly
   public async Task<IActionResult> EditProfile(ProfileViewModel model)
   {
     var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));

@@ -113,8 +113,15 @@ public class UserServices
       if (model.Email != user?.Correo && model.Email != null)
         user!.Correo = model.Email;
         //TODO send a email for confirm email change
-      if (model.Photo != null)
-          user!.Foto = GetPhoto(Path.GetFullPath(model.Photo.FileName));
+        //TODO Move this method to the Utilities Folder for better abstraction
+        if (model.Photo != null && model.Photo.Length > 0)
+        {
+          using(var memoryStream = new MemoryStream())
+          {
+            await model.Photo.CopyToAsync(memoryStream);
+            user!.Foto = memoryStream.ToArray();
+          }
+        }
       if(model.Name != user!.Nombre && model.Name != null)
         user.Nombre = model.Name;
       await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
