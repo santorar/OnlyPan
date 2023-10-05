@@ -422,7 +422,12 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.Rol)
                 .HasDefaultValueSql("((1))")
                 .HasColumnName("rol");
-
+            entity.Property(e => e.CodigoActivacion)
+                .IsUnicode(false)
+                .HasColumnName("codigo_activacion");
+            entity.Property(e => e.Activo)
+                .HasColumnName("activo");
+                
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Estado)
                 .HasConstraintName("FK_usuario_estado");

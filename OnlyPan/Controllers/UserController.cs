@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
 using OnlyPan.Services;
@@ -64,13 +63,13 @@ public class UserController : Controller
     if (ModelState.IsValid)
     {
       var us = new UserServices();
-      if (us.checkEmail(_context, model.Correo))
+      if (await us.CheckEmail(_context, model.Correo))
       {
         ViewBag.Error = "Email ya registrado";
         return View(model);
       }
 
-      var result = await us.registerUser(_context, model);
+      var result = await us.RegisterUser(_context, model);
       if (!result)
       {
         ViewBag.Error = "Error intentelo denuevo";
@@ -81,6 +80,21 @@ public class UserController : Controller
     }
 
     return View(model);
+  }
+  [Authorize]
+  public async Task<IActionResult> Activate()
+  {
+    var activationCode = Request.Query["code"];
+    var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.CodigoActivacion == activationCode);
+    if (user == null)
+    {
+      ViewBag.Error = "Codigo de activacion invalido";
+      return View();
+    }
+    user.Activo = true;
+    await _context.SaveChangesAsync();
+    ViewBag.Success = "Cuenta activada";
+    return View();
   }
 
   public async Task<IActionResult> Logout()
@@ -119,7 +133,7 @@ public class UserController : Controller
     ViewData["Rol"] = rol?.NombreRol;
     var us = new UserServices();
     
-    var result = await us.editProfile(_context, model, HttpContext);
+    var result = await us.EditProfile(_context, model, HttpContext);
     if (!result)
     {
       ViewBag.Error = "Error intentelo denuevo";

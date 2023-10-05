@@ -1,19 +1,19 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
+using OnlyPan.Utilities.Classes;
 
 namespace OnlyPan.Services;
 
 public class UserServices
 {
-  public bool checkEmail(OnlyPanContext context, string email)
+  public async Task<bool> CheckEmail(OnlyPanContext context, string email)
   {
-    var userdb =
-      context.Usuarios.FromSqlRaw("EXECUTE sp_validate_email {0}", email).ToList();
+    //find by the column Correo
+    var userdb = await context.Usuarios.Where(u => u.Correo == email).ToListAsync();
     if (userdb.Count != 0)
     {
       return true;
@@ -22,39 +22,42 @@ public class UserServices
     return false;
   }
 
-  public static List<Usuario> validateUser(OnlyPanContext context, string email, string password)
+  public static List<Usuario> ValidateUser(OnlyPanContext context, string email, string password)
   {
     var userdb =
       context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password).ToList();
     if (userdb.Count == 0)
     {
-      return null;
+      return null!;
     }
 
     return userdb;
   }
 
-  public async Task<bool> registerUser(OnlyPanContext context, RegisterViewModel model)
-   {
+  public async Task<bool> RegisterUser(OnlyPanContext context, RegisterViewModel model)
+  {
     try
     {
       EncryptionService ecr = new EncryptionService();
       var encryptionKey1 = ecr.Encrypt(model.Contrasena);
       var encryptionKey2 = ecr.Encrypt(encryptionKey1);
+      var pu = new PhotoUtilities();
       var user = new Usuario()
       {
         FechaInscrito = DateTime.UtcNow,
         Nombre = model.Nombre,
         Correo = model.Correo,
         Contrasena = encryptionKey2,
-        Foto = GetPhoto(Directory.GetCurrentDirectory()+"/Utilities/Images/default.jpeg"),
+        Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
         Estado = 1
       };
       context.Add(user);
       await context.SaveChangesAsync();
+      EmailService em = new EmailService();
+      await em.SendVerificationEmail(user.IdUsuario, context);
       return true;
     }
-    catch (SystemException e)
+    catch (SystemException)
     {
       return false;
     }
@@ -66,10 +69,10 @@ public class UserServices
     {
       List<Claim> c = new List<Claim>()
       {
-        new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
-        new Claim(ClaimTypes.Email, user.Correo),
-        new Claim(ClaimTypes.Name, user.Nombre),
-        new Claim(ClaimTypes.Role, user.Rol.ToString())
+        new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
+        new(ClaimTypes.Email, user.Correo),
+        new(ClaimTypes.Name, user.Nombre),
+        new(ClaimTypes.Role, user.Rol.ToString())
       };
       ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
       AuthenticationProperties p = new AuthenticationProperties();
@@ -82,11 +85,12 @@ public class UserServices
       await hc.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(ci), p);
       return true;
     }
-    catch (Exception e)
+    catch (SystemException)
     {
       return false;
     }
   }
+
   public async Task<bool> LoginUsuario(OnlyPanContext context, LoginViewModel model, HttpContext hc)
   {
     try
@@ -94,35 +98,33 @@ public class UserServices
       EncryptionService enc = new EncryptionService();
       var encryptionHash1 = enc.Encrypt(model.Contra);
       var encryptionHash2 = enc.Encrypt(encryptionHash1);
-      var usr = validateUser(context, model.Correo, encryptionHash2)[0];
+      var usr = ValidateUser(context, model.Correo, encryptionHash2)[0];
       var result = await CreateCredentials(usr, model.Remember, hc);
-      if(result)
+      if (result)
         return true;
       return false;
     }
-    catch (SystemException e)
+    catch (SystemException)
     {
       return false;
     }
   }
-  public async Task<bool> editProfile(OnlyPanContext context, ProfileViewModel model, HttpContext hc)
-   {
+
+  public async Task<bool> EditProfile(OnlyPanContext context, ProfileViewModel model, HttpContext hc)
+  {
     try
     {
       var user = context.Usuarios.Find(int.Parse(hc.User.Claims.First().Value));
       if (model.Email != user?.Correo && model.Email != null)
         user!.Correo = model.Email;
-        //TODO send a email for confirm email change
-        //TODO Move this method to the Utilities Folder for better abstraction
-        if (model.Photo != null && model.Photo.Length > 0)
-        {
-          using(var memoryStream = new MemoryStream())
-          {
-            await model.Photo.CopyToAsync(memoryStream);
-            user!.Foto = memoryStream.ToArray();
-          }
-        }
-      if(model.Name != user!.Nombre && model.Name != null)
+      //TODO send a email for confirm email change
+      var pu = new PhotoUtilities();
+      if (model.Photo != null && model.Photo.Length > 0)
+      {
+        user!.Foto = await pu.convertToBytes(model.Photo);
+      }
+
+      if (model.Name != user!.Nombre && model.Name != null)
         user.Nombre = model.Name;
       await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
       context.Update(user);
@@ -132,23 +134,9 @@ public class UserServices
         return true;
       return false;
     }
-    catch (SystemException e)
+    catch (SystemException)
     {
       return false;
     }
   }
-  //TODO move this function to Utilities
-public static byte[] GetPhoto(string filePath)  
-{  
-  FileStream stream = new FileStream(  
-      filePath, FileMode.Open, FileAccess.Read);  
-  BinaryReader reader = new BinaryReader(stream);  
-  
-  byte[] photo = reader.ReadBytes((int)stream.Length);  
-  
-  reader.Close();  
-  stream.Close();  
-  
-  return photo;  
-}  
 }

@@ -18,6 +18,8 @@ public partial class Usuario
     public string Correo { get; set; } = null!;
 
     public string Contrasena { get; set; } = null!;
+    public string? CodigoActivacion { get; set; }
+    public bool? Activo { get; set; }
 
     public int? Estado { get; set; }
     [NotMapped]
