@@ -60,6 +60,33 @@ public class UserServices
     }
   }
 
+  public static async Task<bool> CreateCredentials(Usuario user, bool remember, HttpContext hc)
+  {
+    try
+    {
+      List<Claim> c = new List<Claim>()
+      {
+        new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
+        new Claim(ClaimTypes.Email, user.Correo),
+        new Claim(ClaimTypes.Name, user.Nombre),
+        new Claim(ClaimTypes.Role, user.Rol.ToString())
+      };
+      ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
+      AuthenticationProperties p = new AuthenticationProperties();
+      p.AllowRefresh = true;
+      p.IsPersistent = remember;
+      if (remember)
+        p.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1);
+      else
+        p.ExpiresUtc = DateTimeOffset.MaxValue;
+      await hc.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(ci), p);
+      return true;
+    }
+    catch (Exception e)
+    {
+      return false;
+    }
+  }
   public async Task<bool> LoginUsuario(OnlyPanContext context, LoginViewModel model, HttpContext hc)
   {
     try
@@ -68,24 +95,35 @@ public class UserServices
       var encryptionHash1 = enc.Encrypt(model.Contra);
       var encryptionHash2 = enc.Encrypt(encryptionHash1);
       var usr = validateUser(context, model.Correo, encryptionHash2)[0];
-      List<Claim> c = new List<Claim>()
-      {
-        new Claim(ClaimTypes.NameIdentifier, usr.IdUsuario.ToString()),
-        new Claim(ClaimTypes.Email, usr.Correo),
-        new Claim(ClaimTypes.Name, usr.Nombre),
-        new Claim(ClaimTypes.Role, usr.Rol.ToString())
-      };
-      ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
-      AuthenticationProperties p = new AuthenticationProperties();
-      p.AllowRefresh = true;
-      p.IsPersistent = model.Remember;
-
-      if (model.Remember)
-        p.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1);
-      else
-        p.ExpiresUtc = DateTimeOffset.MaxValue;
-      await hc.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(ci), p);
-      return true;
+      var result = await CreateCredentials(usr, model.Remember, hc);
+      if(result)
+        return true;
+      return false;
+    }
+    catch (SystemException e)
+    {
+      return false;
+    }
+  }
+  public async Task<bool> editProfile(OnlyPanContext context, ProfileViewModel model, HttpContext hc)
+   {
+    try
+    {
+      var user = context.Usuarios.Find(int.Parse(hc.User.Claims.First().Value));
+      if (model.Email != user?.Correo && model.Email != null)
+        user!.Correo = model.Email;
+        //TODO send a email for confirm email change
+      if (model.Photo != null)
+          user!.Foto = GetPhoto(Path.GetFullPath(model.Photo.FileName));
+      if(model.Name != user!.Nombre && model.Name != null)
+        user.Nombre = model.Name;
+      await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+      context.Update(user);
+      await context.SaveChangesAsync();
+      var result = await CreateCredentials(user, true, hc);
+      if (result)
+        return true;
+      return false;
     }
     catch (SystemException e)
     {

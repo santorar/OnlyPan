@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
 using OnlyPan.Services;
@@ -88,7 +90,7 @@ public class UserController : Controller
   }
   //TODO Create a method to restore the password
   
-  //TODO Create a controller that returns the user profile
+  [Authorize]
   public async Task<IActionResult> Profile()
   {
     var user = await _context.Usuarios
@@ -96,6 +98,7 @@ public class UserController : Controller
       .Where(u => u.IdUsuario == int.Parse(HttpContext.User.Claims.First().Value)).ToListAsync();
     return View(user);
   }
+  [Authorize]
   public async Task<IActionResult> EditProfile()
   {
     var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));
@@ -105,6 +108,28 @@ public class UserController : Controller
     ViewData["Rol"] = rol?.NombreRol;
     return View();
   }
+  [Authorize]
+  [HttpPost]
+  //TODO fix the image is not uploading correctly
+  public async Task<IActionResult> EditProfile(ProfileViewModel model)
+  {
+    var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));
+    var rol = await _context.Rols.FindAsync(user?.Rol);
+    ViewData["Name"] = user?.Nombre;
+    ViewData["Email"] = user?.Correo;
+    ViewData["Rol"] = rol?.NombreRol;
+    var us = new UserServices();
+    
+    var result = await us.editProfile(_context, model, HttpContext);
+    if (!result)
+    {
+      ViewBag.Error = "Error intentelo denuevo";
+      return View(model);
+    }
+    ViewBag.Success = "Datos actualizados";
+    return RedirectToAction(nameof(Profile));
+  }
+  [Authorize(Roles = "2,3")]
   public async Task<IActionResult> ViewProfileRol(int idPetition)
   {
     var solicitud = await _context.SolicitudRols
