@@ -39,7 +39,7 @@ public class UserController : Controller
   public async Task<IActionResult> Login(LoginViewModel user)
   {
     var us = new UserServices();
-    var result = await us.LoginUsuario(_context,user,HttpContext);
+    var result = await us.LoginUsuario(_context, user, HttpContext);
     if (result)
     {
       return RedirectToAction("Index", "Home");
@@ -75,26 +75,29 @@ public class UserController : Controller
         ViewBag.Error = "Error intentelo denuevo";
         return View(model);
       }
-
-      return RedirectToAction(nameof(Login));
+      //TODO show in a ViewBag the success message
+      ViewData["Success"] = "Cuenta creada, ingrese a su correo para activarla";
+      return View(nameof(Login));
     }
 
     return View(model);
   }
-  [Authorize]
+
   public async Task<IActionResult> Activate()
   {
-    var activationCode = Request.Query["code"];
-    var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.CodigoActivacion == activationCode);
+    var activationCode = Request.Query["code"].ToString();
+    var users = await _context.Usuarios.Where(u => u.CodigoActivacion == activationCode).ToListAsync();
+    Usuario? user = users.First();
     if (user == null)
     {
       ViewBag.Error = "Codigo de activacion invalido";
-      return View();
+      return RedirectToAction(nameof(Login));
     }
+
     user.Activo = true;
     await _context.SaveChangesAsync();
-    ViewBag.Success = "Cuenta activada";
-    return View();
+    ViewData["Success"] = "Cuenta activada";
+    return View(nameof(Login));
   }
 
   public async Task<IActionResult> Logout()
@@ -103,7 +106,7 @@ public class UserController : Controller
     return RedirectToAction("Index", "Home");
   }
   //TODO Create a method to restore the password
-  
+
   [Authorize]
   public async Task<IActionResult> Profile()
   {
@@ -112,6 +115,7 @@ public class UserController : Controller
       .Where(u => u.IdUsuario == int.Parse(HttpContext.User.Claims.First().Value)).ToListAsync();
     return View(user);
   }
+
   [Authorize]
   public async Task<IActionResult> EditProfile()
   {
@@ -122,6 +126,7 @@ public class UserController : Controller
     ViewData["Rol"] = rol?.NombreRol;
     return View();
   }
+
   [Authorize]
   [HttpPost]
   public async Task<IActionResult> EditProfile(ProfileViewModel model)
@@ -132,16 +137,18 @@ public class UserController : Controller
     ViewData["Email"] = user?.Correo;
     ViewData["Rol"] = rol?.NombreRol;
     var us = new UserServices();
-    
+
     var result = await us.EditProfile(_context, model, HttpContext);
     if (!result)
     {
       ViewBag.Error = "Error intentelo denuevo";
       return View(model);
     }
+
     ViewBag.Success = "Datos actualizados";
-    return RedirectToAction(nameof(Profile));
+    return View(nameof(Profile));
   }
+
   [Authorize(Roles = "2,3")]
   public async Task<IActionResult> ViewProfileRol(int idPetition)
   {

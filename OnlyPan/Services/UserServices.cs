@@ -49,7 +49,8 @@ public class UserServices
         Correo = model.Correo,
         Contrasena = encryptionKey2,
         Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
-        Estado = 1
+        Estado = 1,
+        Activo = false
       };
       context.Add(user);
       await context.SaveChangesAsync();

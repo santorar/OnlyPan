@@ -1,28 +1,25 @@
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using MimeKit.Text;
 using OnlyPan.Models;
 
 namespace OnlyPan.Services;
 
 public class EmailService
 {
-  public static void SendEmail(string email, string subject, string body)
+  public static async Task SendEmail(string email, string subject, string body)
   {
-    using (MailMessage mm = new MailMessage("onlipan.notificaciones@gmail.com", email))
-    {
-      mm.Subject = subject;
-      mm.Body = body;
-      mm.IsBodyHtml = true;
-      SmtpClient smtp = new SmtpClient();
-      smtp.Host = "smtp.gmail.com";
-      smtp.EnableSsl = true;
-      NetworkCredential nc = new NetworkCredential("onlipan.notificaciones@gmail.com", "OnlyPan2023");
-      smtp.UseDefaultCredentials = true;
-      smtp.Credentials = nc;
-      smtp.Port = 587;
-      smtp.Send(mm);
-
-    }
+    var e = new MimeMessage();
+    e.From.Add(MailboxAddress.Parse("OnlyPan.Notify@gmail.com"));
+    e.To.Add(MailboxAddress.Parse(email));
+    e.Subject = subject;
+    e.Body = new TextPart(TextFormat.Html) { Text = body };
+    using var smtp = new SmtpClient();
+    await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+    await smtp.AuthenticateAsync("OnlyPan.Notify@gmail.com", "vogmdjftudbqcrov");
+    await smtp.SendAsync(e);
+    await smtp.DisconnectAsync(true);
   }
 
   public async Task SendVerificationEmail(int idUser, OnlyPanContext context)
@@ -31,9 +28,9 @@ public class EmailService
     Usuario? user = await context.Usuarios.FindAsync(idUser);
     user!.CodigoActivacion = activationCode;
     await context.SaveChangesAsync();
-    string body = "Hola " + user.Nombre + "<br>";
+    string body = "Hola " + user.Nombre + "<br> <br>";
     body += "Por favor ingresa al siguiente link para activar tu cuenta<br>";
-    body += "<a href='localhost:7077/User/Activate?code=" + activationCode + "'>Activa tu cuenta aqui</a>";
-    SendEmail(user.Nombre, "Activa tu cuenta en OnlyPan", body);
+    body += "<a href=\"https://localhost:7077/User/Activate?code=" + activationCode + "\">Activa tu cuenta aqui</a>";
+    await SendEmail(user.Correo, "Activa tu cuenta en OnlyPan", body);
   }
 }
