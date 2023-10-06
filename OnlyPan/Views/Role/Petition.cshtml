@@ -2,7 +2,7 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-      Inicio de sesión
+      Pide un rol
     </h2>
   </div>
 
@@ -10,11 +10,11 @@
     <form method="post" class="space-y-6" asp-controller="Role" asp-action="Petition">
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div>
-        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Rol"></label>
+        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Role"></label>
         <select class="block w-full rounded-md 
           border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
-          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"a asp-for="Rol" asp-items="ViewBag.Roles"></select>
-        <span asp-validation-for="Rol" class="text-danger"></span>
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"a asp-for="Role" asp-items="ViewBag.Roles"></select>
+        <span asp-validation-for="Role" class="text-danger"></span>
       </div>
       <div>
         <input type="submit" value="Registrar Peticion" class="btn btn-primary bg-blue-500 self-center">

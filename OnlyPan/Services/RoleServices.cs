@@ -13,7 +13,7 @@ public class RoleServices
       var peticion = new SolicitudRol()
       {
         UsuarioSolicitud = idUser,
-        RolSolicitado = model.Rol,
+        RolSolicitado = model.Role,
         EstadoSolicitud = 4,
         //TODO fix the error that is showing always the time in 12 AM
         FechaSolicitud = DateTime.UtcNow

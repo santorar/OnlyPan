@@ -19,43 +19,13 @@ public class UserController : Controller
     _context = context;
   }
 
-  //Login Views and controller
-  // TODO move the operation to the utilities folder
-  public IActionResult Login()
-  {
-    ClaimsPrincipal c = HttpContext.User;
-    if (c.Identity != null)
-    {
-      if (c.Identity.IsAuthenticated)
-      {
-        return RedirectToAction("Index", "Home");
-      }
-    }
 
-    return View();
-  }
-
-  [HttpPost]
-  public async Task<IActionResult> Login(LoginViewModel user)
-  {
-    var us = new UserServices();
-    var result = await us.LoginUsuario(_context, user, HttpContext);
-    if (result)
-    {
-      return RedirectToAction("Index", "Home");
-    }
-
-    ViewBag.Error = "Datos incorrectos";
-    return View();
-  }
-
-//Register Views
+//Register Views and controller
   public IActionResult Register()
   {
     return View();
   }
 
-  //TODO send a email for confirm registration
   [ValidateAntiForgeryToken]
   [HttpPost]
   public async Task<IActionResult> Register(RegisterViewModel model)
@@ -63,7 +33,7 @@ public class UserController : Controller
     if (ModelState.IsValid)
     {
       var us = new UserServices();
-      if (await us.CheckEmail(_context, model.Correo))
+      if (await us.CheckEmail(_context, model.Email))
       {
         ViewBag.Error = "Email ya registrado";
         return View(model);
@@ -75,7 +45,7 @@ public class UserController : Controller
         ViewBag.Error = "Error intentelo denuevo";
         return View(model);
       }
-      //TODO show in a ViewBag the success message
+
       ViewData["Success"] = "Cuenta creada, ingrese a su correo para activarla";
       return View(nameof(Login));
     }
@@ -86,9 +56,9 @@ public class UserController : Controller
   public async Task<IActionResult> Activate()
   {
     var activationCode = Request.Query["code"].ToString();
-    var users = await _context.Usuarios.Where(u => u.CodigoActivacion == activationCode).ToListAsync();
-    Usuario? user = users.First();
-    if (user == null)
+    var us = new UserServices();
+    var result = await us.ActivateAccount(_context, activationCode);
+    if (!result)
     {
       ViewBag.Error = "Codigo de activacion invalido";
       return RedirectToAction(nameof(Login));
@@ -110,9 +80,10 @@ public class UserController : Controller
   [Authorize]
   public async Task<IActionResult> Profile()
   {
-    var user = await _context.Usuarios
+    var users = await _context.Usuarios
       .Include(u => u.RolNavigation)
       .Where(u => u.IdUsuario == int.Parse(HttpContext.User.Claims.First().Value)).ToListAsync();
+    Usuario user = users.First();
     return View(user);
   }
 
@@ -146,7 +117,7 @@ public class UserController : Controller
     }
 
     ViewBag.Success = "Datos actualizados";
-    return View(nameof(Profile));
+    return View(nameof(Profile), user);
   }
 
   [Authorize(Roles = "2,3")]
