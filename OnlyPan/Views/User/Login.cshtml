@@ -10,18 +10,18 @@
     <form method="post" class="space-y-6" asp-controller="User" asp-action="Login">
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div>
-        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Correo"></label>
+        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Email"></label>
         <input class="block w-full rounded-md 
           border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
-          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Correo">
-        <span asp-validation-for="Correo" class="text-danger"></span>
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Email">
+        <span asp-validation-for="Email" class="text-danger"></span>
       </div>
       <div>
-        <label asp-for="Contra" class="block text-sm font-medium leading-6 text-gray-900"></label>
+        <label asp-for="Password" class="block text-sm font-medium leading-6 text-gray-900"></label>
         <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
-               placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
-               asp-for="Contra">
-        <span asp-validation-for="Contra" class="text-danger"></span>
+               placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+               asp-for="Password">
+        <span asp-validation-for="Password" class="text-danger"></span>
       </div>
       <div class="checkbox mb-3">
         <input type="checkbox" class="" asp-for="Remember">
@@ -33,6 +33,12 @@
         <span class="alert-success">@ViewBag.Success</span>
       </div>
     </form>
+    <p>
+      ¿Olvidaste tu contraseña?
+      <a asp-action="ForgotPassword" class="link-primary">
+        Haz click aqui
+      </a>
+    </p>
   </div>
 </div>
 

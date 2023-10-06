@@ -10,52 +10,30 @@ namespace OnlyPan.Services;
 
 public class UserServices
 {
-  public async Task<bool> CheckEmail(OnlyPanContext context, string email)
-  {
-    //find by the column Correo
-    var userdb = await context.Usuarios.Where(u => u.Correo == email).ToListAsync();
-    if (userdb.Count != 0)
-    {
-      return true;
-    }
-
-    return false;
-  }
-
-  public static List<Usuario> ValidateUser(OnlyPanContext context, string email, string password)
-  {
-    var userdb =
-      context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password).ToList();
-    if (userdb.Count == 0)
-    {
-      return null!;
-    }
-
-    return userdb;
-  }
-
   public async Task<bool> RegisterUser(OnlyPanContext context, RegisterViewModel model)
   {
     try
     {
       EncryptionService ecr = new EncryptionService();
-      var encryptionKey1 = ecr.Encrypt(model.Contrasena);
+      var encryptionKey1 = ecr.Encrypt(model.Password);
       var encryptionKey2 = ecr.Encrypt(encryptionKey1);
+      var activationToken = Guid.NewGuid().ToString();
       var pu = new PhotoUtilities();
       var user = new Usuario()
       {
         FechaInscrito = DateTime.UtcNow,
-        Nombre = model.Nombre,
-        Correo = model.Correo,
+        Nombre = model.Name,
+        Correo = model.Email,
         Contrasena = encryptionKey2,
         Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
         Estado = 1,
+        CodigoActivacion = activationToken,
         Activo = false
       };
       context.Add(user);
       await context.SaveChangesAsync();
       EmailService em = new EmailService();
-      await em.SendVerificationEmail(user.IdUsuario, context);
+      await em.SendVerificationEmail(user.Correo,user.Nombre, activationToken);
       return true;
     }
     catch (SystemException)
@@ -97,13 +75,113 @@ public class UserServices
     try
     {
       EncryptionService enc = new EncryptionService();
-      var encryptionHash1 = enc.Encrypt(model.Contra);
+      var encryptionHash1 = enc.Encrypt(model.Password);
       var encryptionHash2 = enc.Encrypt(encryptionHash1);
-      var usr = ValidateUser(context, model.Correo, encryptionHash2)[0];
+      var usr = ValidateUser(context, model.Email, encryptionHash2)[0];
       var result = await CreateCredentials(usr, model.Remember, hc);
       if (result)
         return true;
       return false;
+    }
+    catch (SystemException)
+    {
+      return false;
+    }
+  }
+  public async Task<bool> CheckEmail(OnlyPanContext context, string email)
+  {
+    //find by the column Correo
+    var userdb = await context.Usuarios.Where(u => u.Correo == email).ToListAsync();
+    if (userdb.Count != 0)
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  private static List<Usuario> ValidateUser(OnlyPanContext context, string email, string password)
+  {
+    var userdb =
+      context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password).ToList();
+    if (userdb.Count == 0)
+    {
+      return null!;
+    }
+
+    return userdb;
+  }
+
+  public async Task<bool> ActivateAccount(OnlyPanContext context, string token)
+  {
+    try
+    {
+      var users = await context.Usuarios
+        .Where(u => u.CodigoActivacion == token)
+        .ToListAsync();
+      Usuario user = users[0];
+      user.Activo = true;
+      await context.SaveChangesAsync();
+      return true;
+    }
+    catch (SystemException)
+    {
+      return false;
+    }
+  }
+
+  public async Task<bool> ForgotPassword(OnlyPanContext context, string email)
+  {
+    try
+    {
+      var users = await context.Usuarios
+        .Where(u => u.Correo == email)
+        .ToListAsync();
+      Usuario user = users.First();
+      string recoveryToken = Guid.NewGuid().ToString();
+      user.ContrasenaToken = recoveryToken;
+      await context.SaveChangesAsync();
+      EmailService em = new EmailService();
+      await em.SendForgotPasswordEmail(user.Correo, user.Nombre, recoveryToken);
+      return true;
+    }
+    catch (SystemException)
+    {
+      return false;
+    }
+  }
+  public async Task<bool> RecoveryValidation(OnlyPanContext context, string recoveryToken)
+  {
+    try
+    {
+      var users = await context.Usuarios
+        .Where(u => u.ContrasenaToken == recoveryToken)
+        .ToListAsync();
+      Usuario user = users.First();
+      return true;
+    }
+    catch (SystemException)
+    {
+      return false;
+    }
+  }
+  public async Task<bool> ResetPassword(OnlyPanContext context, ResetPasswordViewModel model)
+  {
+    try
+    {
+      var users = await context.Usuarios
+        .Where(u => u.ContrasenaToken == model.Token)
+        .ToListAsync();
+      Usuario user = users.First();
+      EncryptionService enc = new EncryptionService();
+      var encryptionHash1 = enc.Encrypt(model.Password!);
+      var encryptionHash2 = enc.Encrypt(encryptionHash1);
+      user.Contrasena = encryptionHash2;
+      await context.SaveChangesAsync();
+      //Delete the token for security
+      user.ContrasenaToken = "";
+      await context.SaveChangesAsync();
+      return true;
     }
     catch (SystemException)
     {

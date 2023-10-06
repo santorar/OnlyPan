@@ -64,9 +64,82 @@ public class UserController : Controller
       return RedirectToAction(nameof(Login));
     }
 
-    user.Activo = true;
-    await _context.SaveChangesAsync();
     ViewData["Success"] = "Cuenta activada";
+    return View(nameof(Login));
+  }
+
+  //Login Views and controller
+  public IActionResult Login()
+  {
+    ClaimsPrincipal c = HttpContext.User;
+    if (c.Identity != null)
+    {
+      if (c.Identity.IsAuthenticated)
+      {
+        return RedirectToAction("Index", "Home");
+      }
+    }
+
+    return View();
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> Login(LoginViewModel user)
+  {
+    var us = new UserServices();
+    var result = await us.LoginUsuario(_context, user, HttpContext);
+    if (result)
+    {
+      return RedirectToAction("Index", "Home");
+    }
+
+    ViewBag.Error = "Datos incorrectos";
+    return View();
+  }
+
+  public IActionResult ForgotPassword()
+  {
+    return View();
+  }
+  [HttpPost]
+  public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+  {
+    UserServices sc = new UserServices();
+    var result = await sc.ForgotPassword(_context, model.Email);
+    if (!result)
+    {
+      ViewBag.Error = "Error intentelo denuevo";
+      return View(model);
+    }
+    ViewData["Success"] = "Verifique su correo electronico, para seguir con el proceso de recuperacion";
+    return View(nameof(Login));
+  }
+  public async Task<IActionResult> ResetPassword()
+  {
+    string recoveryToken = Request.Query["token"].ToString();
+    UserServices us = new UserServices();
+    var result = await us.RecoveryValidation(_context, recoveryToken);
+    if (!result)
+    {
+      ViewBag.Error = "Token invalido";
+      return View(nameof(Login));
+    }
+
+    ViewData["Token"] = recoveryToken;
+    return View();
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+  {
+    UserServices sc = new UserServices();
+    var result = await sc.ResetPassword(_context, model);
+    if (!result)
+    {
+      ViewBag.Error = "Error intentelo denuevo";
+      return View(model);
+    }
+    ViewData["Success"] = "Contraseña actualizada";
     return View(nameof(Login));
   }
 

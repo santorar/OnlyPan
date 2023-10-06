@@ -4,5 +4,9 @@ namespace OnlyPan.Models.ViewModels;
 
 public class ResetPasswordViewModel
 {
-  [Required,Display(Name = "Correo Electronico")]public string? Email { get; set; }
+  [Required, Display(Name="Contraseña nueva"), DataType(DataType.Password)]
+  public string? Password { get; set; }
+  [Required, Display(Name="Confirmar contraseña"), DataType(DataType.Password),Compare(nameof(Password))]
+  public string? ConfirmPassword { get; set; }
+  public string? Token { get; set; }
 }
