@@ -2,7 +2,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using OnlyPan.Models;
 
 namespace OnlyPan.Services;
 
@@ -22,15 +21,19 @@ public class EmailService
     await smtp.DisconnectAsync(true);
   }
 
-  public async Task SendVerificationEmail(int idUser, OnlyPanContext context)
+  public async Task SendVerificationEmail(string email, string name, string activationToken)
   {
-    string activationCode = Guid.NewGuid().ToString();
-    Usuario? user = await context.Usuarios.FindAsync(idUser);
-    user!.CodigoActivacion = activationCode;
-    await context.SaveChangesAsync();
-    string body = "Hola " + user.Nombre + "<br> <br>";
+    string body = "Hola " + name + "<br> <br>";
     body += "Por favor ingresa al siguiente link para activar tu cuenta<br>";
-    body += "<a href=\"https://localhost:7077/User/Activate?code=" + activationCode + "\">Activa tu cuenta aqui</a>";
-    await SendEmail(user.Correo, "Activa tu cuenta en OnlyPan", body);
+    body += "<a href=\"https://localhost:7077/User/Activate?code=" + activationToken + "\">Activa tu cuenta aqui</a>";
+    await SendEmail(email, "Activa tu cuenta en OnlyPan", body);
+  }
+
+  public async Task SendForgotPasswordEmail(string email, string name, string recoveryToken)
+  {
+    string body = "Hola " + name + "<br> <br>";
+    body += "Para recuperar tu contraseña ingresa al siguiente link<br>";
+    body += "<a href=\"https://localhost:7077/User/ResetPassword?token=" + recoveryToken + "\">Recupera tu contraseña aqui</a>";
+    await SendEmail(email, "Recupera tu contraseña en OnlyPan", body);
   }
 }
