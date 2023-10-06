@@ -22,6 +22,7 @@ public partial class Usuario
     public bool? Activo { get; set; }
 
     public int? Estado { get; set; }
+    public string? ContrasenaToken { get; set; }
     [NotMapped]
     public bool SesionActiva { get; set; }
 

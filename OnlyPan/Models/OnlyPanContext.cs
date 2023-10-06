@@ -425,6 +425,9 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.CodigoActivacion)
                 .IsUnicode(false)
                 .HasColumnName("codigo_activacion");
+            entity.Property(e => e.ContrasenaToken)
+                .IsUnicode(false)
+                .HasColumnName("contrasena_token");
             entity.Property(e => e.Activo)
                 .HasColumnName("activo");
                 
