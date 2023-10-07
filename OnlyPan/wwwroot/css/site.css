@@ -1,14 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
     --first-color: #BC0119;
     --second-color: #C7814A;
     --third-color: #BCA693;
     --fourth-color: #1D4E17;
     --black: #0B100C;
+    --white: #ffffff;
 }
 
-.navbar {
-    background-color: rgb(254, 215, 170);
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /*background-color: #BCA693;*/
+}
+
+a {
+text-decoration:none;
+color: inherit;
+}
+
+.input-navbar {
+    background-color: var(--second-color);
+    border: 1ex solid none;
+    border-top-width: 1.7em;
+    margin: 0;
+    padding: 0;
+    color: #0B100C;
+    word-wrap: break-word;
+    outline: 7px solid #383838;
+    height: 50px;
+    width: 20rem;
+    font-size: 17px;
+    text-align: center;
+    transition: all .5s;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+    .input-navbar::placeholder {
+        color: black;
+    }
+
+    .input-navbar:hover {
+        border-top-width: 0.2em;
+        background-color: #f1e8e8;
+    }
+
+    .input-navbar:focus {
+        border-top-width: 0.2em;
+        background-color: #f1e8e8;
+    }
+
+.container login {
+    max-width: 650px;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: min(600px,100%);
+    padding: 40px;
+    border-radius: 20px;
+    background-color: green;
+}
+
+.checkbox-wrapper *,
+.checkbox-wrapper *::before,
+.checkbox-wrapper *::after {
+    box-sizing: border-box;
+}
+
+.checkbox-wrapper label {
+    display: block;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.checkbox-wrapper input {
+    visibility: hidden;
+    display: none;
+}
+
+    .checkbox-wrapper input:checked ~ .checkbox {
+        transform: rotate(45deg);
+        width: 14px;
+        margin-left: 12px;
+        border-color: #000000;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-radius: 0;
+    }
+
+.checkbox-wrapper .checkbox {
+    display: block;
+    width: inherit;
+    height: inherit;
+    border: 3px solid #434343;
+    border-radius: 6px;
+    transition: all 0.375s;
+}
+
+.input-form {
+    box-shadow: 4px 4px var(--black);
+}
+/* Profile Section */
+
+.img-prof {
+    width:300px;
+    height:300px;
+    object-fit:fill;
+    
+}
+.user-image {
+    border-radius: 12px;
 }
