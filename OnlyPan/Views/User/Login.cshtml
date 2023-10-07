@@ -11,33 +11,32 @@
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div>
         <label class="block text-sm font-medium leading-6 text-gray-900 uppercase pb-2" asp-for="Email"></label>
-                <input class="block w-full rounded-md  input-form
+        <input class="block w-full rounded-md  input-form
           border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-3
           focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Email">
         <span asp-validation-for="Email" class="text-danger"></span>
       </div>
       <div>
         <label asp-for="Password" class="block text-sm font-medium leading-6 text-gray-900 uppercase pb-2"></label>
-                <input class="block w-full input-form rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-3 shadow
+        <input class="block w-full input-form rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-3 shadow
                placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                asp-for="Password">
         <span asp-validation-for="Password" class="text-danger"></span>
       </div>
       <div class="checkbox mb-3">
-                <input type="checkbox" class="" asp-for="Remember">
+        <input type="checkbox" class="" asp-for="Remember">
         <label asp-for="Remember" class=" text-sm font-medium leading-6 text-gray-900"></label>
       </div>
       <div>
-                <input type="submit" value="Iniciar sesión" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded mb-2 input-form">
+        <input type="submit" value="Iniciar sesión" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded mb-2 input-form">
         <span class="alert-danger">@ViewBag.Error</span>
         <span class="alert-success">@ViewBag.Success</span>
       </div>
     </form>
-  
-      <a asp-action="ForgotPassword" class="link-primary mt-2">
-        ¿Olvidaste Tu Contraseña?
-      </a>
-    </p>
+
+    <a asp-action="ForgotPassword" class="link-primary mt-2">
+      ¿Olvidaste Tu Contraseña?
+    </a>
   </div>
 </div>
 
