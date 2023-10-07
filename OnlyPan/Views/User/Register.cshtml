@@ -1,7 +1,7 @@
 @model OnlyPan.Models.ViewModels.RegisterViewModel
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 uppercase">
       Registrate en nuestra plataforma
     </h2>
   </div>
@@ -10,34 +10,34 @@
     <form method="post" class="space-y-6" asp-controller="User" asp-action="Register">
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div>
-        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Name"></label>
-        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Name">
+        <label class="block text-sm font-medium leading-6 text-gray-900 uppercase" asp-for="Name"></label>
+        <input class="block pl-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Name">
         <span asp-validation-for="Name" class="text-danger"></span>
       </div>
       <div>
-        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="Email"></label>
+        <label class="block text-sm font-medium leading-6 text-gray-900 uppercase" asp-for="Email"></label>
         <input class="block w-full rounded-md 
-          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 pl-3
           focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Email">
         <span asp-validation-for="Email" class="text-danger"></span>
       </div>
       <div>
-        <label asp-for="Password" class="block text-sm font-medium leading-6 text-gray-900"></label>
-        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
+        <label asp-for="Password" class="block text-sm font-medium leading-6 text-gray-900 uppercase"></label>
+                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 pl-3
                placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
                asp-for="Password">
         <span asp-validation-for="Password" class="text-danger"></span>
       </div>
       <div>
-        <label class="block text-sm font-medium leading-6 text-gray-900" asp-for="ConfirmPassword"></label>
-        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset 
+        <label class="block text-sm font-medium leading-6 text-gray-900 uppercase" asp-for="ConfirmPassword"></label>
+        <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset pl-3
                   ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 
                   sm:text-sm sm:leading-6" asp-for="ConfirmPassword">
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
       </div>
 
       <div>
-        <input type="submit" value="Registrarme" class="btn btn-primary bg-blue-500 self-center">
+                <input type="submit" value="Registrarme" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded">
         <span class="alert-danger">@ViewBag.Error</span>
       </div>
     </form>

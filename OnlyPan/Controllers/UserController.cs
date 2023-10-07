@@ -35,18 +35,18 @@ public class UserController : Controller
       var us = new UserServices();
       if (await us.CheckEmail(_context, model.Email))
       {
-        ViewBag.Error = "Email ya registrado";
+        ViewBag.Error = "Este Email Ya se Encuentra Registrado. Inicia Sesión.";
         return View(model);
       }
 
       var result = await us.RegisterUser(_context, model);
       if (!result)
       {
-        ViewBag.Error = "Error intentelo denuevo";
+        ViewBag.Error = "Error intantelo de nuevo";
         return View(model);
       }
 
-      ViewData["Success"] = "Cuenta creada, ingrese a su correo para activarla";
+      ViewData["Success"] = "Cuenta Creada, Ingresa a Tu Correo Para Verificarla y Activarla En El Sistema";
       return View(nameof(Login));
     }
 
@@ -64,7 +64,7 @@ public class UserController : Controller
       return RedirectToAction(nameof(Login));
     }
 
-    ViewData["Success"] = "Cuenta activada";
+    ViewData["Success"] = "Cuenta Activada Exitosamente";
     return View(nameof(Login));
   }
 
@@ -93,7 +93,7 @@ public class UserController : Controller
       return RedirectToAction("Index", "Home");
     }
 
-    ViewBag.Error = "Datos incorrectos";
+    ViewBag.Error = "Los Datos Son Incorrectos";
     return View();
   }
 
@@ -108,7 +108,7 @@ public class UserController : Controller
     var result = await sc.ForgotPassword(_context, model.Email);
     if (!result)
     {
-      ViewBag.Error = "Error intentelo denuevo";
+      ViewBag.Error = "Error, Intentalo De Nuevo";
       return View(model);
     }
     ViewData["Success"] = "Verifique su correo electronico, para seguir con el proceso de recuperacion";
@@ -136,7 +136,7 @@ public class UserController : Controller
     var result = await sc.ResetPassword(_context, model);
     if (!result)
     {
-      ViewBag.Error = "Error intentelo denuevo";
+      ViewBag.Error = "Error intentalo de Nuevo";
       return View(model);
     }
     ViewData["Success"] = "Contraseña actualizada";
@@ -185,11 +185,11 @@ public class UserController : Controller
     var result = await us.EditProfile(_context, model, HttpContext);
     if (!result)
     {
-      ViewBag.Error = "Error intentelo denuevo";
+      ViewBag.Error = "Error, intentalo De Nuevo";
       return View(model);
     }
 
-    ViewBag.Success = "Datos actualizados";
+        ViewData["Success"] = "Datos actualizados";
     return View(nameof(Profile), user);
   }
 
