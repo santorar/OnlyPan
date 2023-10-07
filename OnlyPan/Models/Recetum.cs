@@ -17,7 +17,7 @@ public partial class Recetum
 
     public string? Instrucciones { get; set; }
 
-    public string? Foto { get; set; }
+    public byte[]? Foto { get; set; }
 
     public DateTime? FechaCreacion { get; set; }
 
