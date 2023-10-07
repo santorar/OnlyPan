@@ -1,26 +1,23 @@
 @model OnlyPan.Models.ViewModels.ProfileViewModel
 <div class="container-fluid">
-  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Editar Perfil de usuario</h2>
+  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 text-uppercase">Editar Perfil de usuario</h2>
   <!--TODO Display the profile into a floating card-->
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form method="post" asp-action="EditProfile" asp-controller="User" class="space-y-6" enctype="multipart/form-data">
       <div class="group">
-        <label asp-for="Name" class="block text-sm font-medium leading-6 text-gray-900"></label>
-        <input asp-for="Name" value="@ViewBag.Name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+        <label asp-for="Name" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+        <input asp-for="Name" value="@ViewBag.Name" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
       </div>
       <div class="group">
-        <label asp-for="Email" class="block text-sm font-medium leading-6 text-gray-900"></label>
-        <input asp-for="Email" value="@ViewBag.Email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                <label asp-for="Email" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+        <input asp-for="Email" value="@ViewBag.Email" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
       </div>
       <div class="group">
-        <label asp-for="Photo" class="block text-sm font-medium leading-6 text-gray-900"></label>
+                <label asp-for="Photo" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
         <input asp-for="Photo" type="file" class="block w-full rounded-md">
       </div>
-      <div class="group">
-        <label class="block text-sm font-medium leading-6 text-gray-900">Rol</label>
-        <input disabled="disabled" value="@ViewBag.Rol" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-      </div>
-      <input type="submit" value="Confirmar Edicion" class="btn btn-primary"/>
+  
+            <input type="submit" value="Confirmar Edicion" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded" />
       <span class="text-danger">@ViewBag.Error</span>
     </form>
   </div>

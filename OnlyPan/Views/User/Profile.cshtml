@@ -1,20 +1,25 @@
 @model Usuario
 
-<div class="container-fluid">
-  <h1>Perfil de usuario</h1>
+<div class="container-fluid m-3 flex align-items-center flex-column">
+  <h1 class="text-uppercase font-bold my-3 text-xl">Perfil de usuario</h1>
   <!--TODO Display the profile into a more atractive way-->
-  <div class="">
-    <img class="img-fluid" src="data:image;base64,@Convert.ToBase64String(Model.Foto!)"
+    <div class="grid gap-1 grid-cols-2 w-1/2 justify-items-center my-3">
+        <div class="img-prof flex align-items-center justify-items-center">
+    <img class="img-fluid user-image" src="data:image;base64,@Convert.ToBase64String(Model.Foto!)"
          alt="User img"/>
-    <div>
-      <p class="">Nombre de usuario:<span>@Model.Nombre</span></p>
-      <p class="">Correo Electronico:<span>@Model.Correo</span></p>
-      <p class="">Rol:<span>@Model.RolNavigation.NombreRol</span></p>
-      <div>
-        <a asp-action="EditProfile" asp-controller="User" class="btn btn-primary">Editar Perfil de usuario</a>
-        <a asp-action="Petition" asp-controller="Role" class="btn btn-primary">Solicitar Rol</a>
+        </div>
+    <div class = "">
+            <span class=" text-lg italic"> @Model.RolNavigation.NombreRol</span>
+            <h1 class="font-bold text-4xl mb-3 italic"> @Model.Nombre</h1>
+            <p class="font-bold text-uppercase my-3">Correo Electronico:<span class="font-normal normal-case"> @Model.Correo</span></p>
+            
+      
+            <div>
+                <a asp-action="EditProfile" asp-controller="User" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded">Editar</a>
+                <a asp-action="Petition" asp-controller="Role" class="bg-[#D81E5B] hover:bg-[#69140E] text-white font-bold py-2 px-4 rounded">Solicita Tu Rol</a>
         <span class="text-success">@ViewBag.Sucess</span>
       </div>
+
     </div>
   </div>
 </div>
