@@ -5,21 +5,13 @@ namespace OnlyPan.Models;
 
 public partial class SeguirUsuario
 {
-    public int IdSeguir { get; set; }
+    public int IdSeguidor { get; set; }
 
-    public int? Seguido { get; set; }
-
-    public int? Seguidor { get; set; }
+    public int IdSeguido { get; set; }
 
     public DateTime? FechaSeguimiento { get; set; }
 
-    public int? SeguidoresChef { get; set; }
+    public virtual Usuario IdSeguidoNavigation { get; set; } = null!;
 
-    public int? Estado { get; set; }
-
-    public virtual Estado? EstadoNavigation { get; set; }
-
-    public virtual Usuario? SeguidoNavigation { get; set; }
-
-    public virtual Usuario? SeguidorNavigation { get; set; }
+    public virtual Usuario IdSeguidorNavigation { get; set; } = null!;
 }

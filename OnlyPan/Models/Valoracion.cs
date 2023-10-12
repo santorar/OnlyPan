@@ -5,21 +5,19 @@ namespace OnlyPan.Models;
 
 public partial class Valoracion
 {
-    public int IdInteraccion { get; set; }
+    public int IdUsuario { get; set; }
 
-    public int? Usuario { get; set; }
-
-    public int? Receta { get; set; }
+    public int IdReceta { get; set; }
 
     public DateTime? FechaInteracion { get; set; }
 
-    public int? Valoracion1 { get; set; }
+    public int? Valoration { get; set; }
 
-    public int? Estado { get; set; }
+    public int? IdEstado { get; set; }
 
-    public virtual Estado? EstadoNavigation { get; set; }
+    public virtual Estado? IdEstadoNavigation { get; set; }
 
-    public virtual Recetum? RecetaNavigation { get; set; }
+    public virtual Recetum IdRecetaNavigation { get; set; } = null!;
 
-    public virtual Usuario? UsuarioNavigation { get; set; }
+    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

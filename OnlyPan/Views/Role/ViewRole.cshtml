@@ -25,17 +25,17 @@
   {
     <tr>
       <td>
-        @Html.DisplayFor(m=> vaPetition.UsuarioSolicitudNavigation!.Nombre)
+        @Html.DisplayFor(m=> vaPetition.IdUsuarioSolicitudNavigation!.Nombre)
       </td>
       <td>
-        @Html.DisplayFor(m=> vaPetition.RolSolicitadoNavigation!.NombreRol)
+        @Html.DisplayFor(m=> vaPetition.IdRolSolicitudNavigation!.NombreRol)
       </td>
       <td>
         @Html.DisplayFor(m=> vaPetition.FechaSolicitud)
       </td>
       <td>
         <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
-           asp-route-idPetition="@vaPetition.IdSolicitud">
+           asp-route-idUser="@vaPetition.IdUsuarioSolicitud" asp-route-idRol="@vaPetition.IdRolSolicitud">
           Ver Perfil
         </a>
       </td>

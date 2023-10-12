@@ -5,13 +5,13 @@ namespace OnlyPan.Models;
 
 public partial class RecetaIngrediente
 {
-    public int IdLista { get; set; }
+    public int IdReceta { get; set; }
 
-    public int? Ingrediente { get; set; }
+    public int IdIngrediente { get; set; }
 
-    public decimal? Cantidad { get; set; }
+    public int? Cantidad { get; set; }
 
-    public virtual Ingrediente? IngredienteNavigation { get; set; }
+    public virtual Ingrediente IdIngredienteNavigation { get; set; } = null!;
 
-    public virtual ICollection<Recetum> Receta { get; set; } = new List<Recetum>();
+    public virtual Recetum IdRecetaNavigation { get; set; } = null!;
 }

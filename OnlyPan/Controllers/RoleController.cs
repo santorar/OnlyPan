@@ -62,26 +62,26 @@ public class RoleController : Controller
   public async Task<IActionResult> ViewRole()
   {
     var petitions = _context.SolicitudRols
-      .Include(u => u.UsuarioSolicitudNavigation)
-      .Include(r => r.RolSolicitadoNavigation)
-      .Where(r => r.EstadoSolicitud == 4);
+      .Include(u => u.IdUsuarioSolicitudNavigation)
+      .Include(r => r.IdRolSolicitudNavigation)
+      .Where(r => r.IdEstado == 4);
     return View(await petitions.ToListAsync());
   }
 
-  public async  Task<IActionResult> AcceptPetition(int petitionId)
+  public async  Task<IActionResult> AcceptPetition(int idUser, int idRol)
   {
     // take the petition from the database
-    SolicitudRol? petition = await _context.SolicitudRols.FindAsync(petitionId);
+    SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
     if (petition != null)
     {
-      petition.UsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
+      petition.IdUsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
       petition.FechaAprovacion = DateTime.UtcNow;
-      petition.EstadoSolicitud = 6;
+      petition.IdEstado = 5;
       // Add the rol to the user
-      Usuario? user = await _context.Usuarios.FindAsync(petition.UsuarioSolicitud);
+      Usuario? user = await _context.Usuarios.FindAsync(idUser);
       if (user != null)
       {
-        user.Rol = petition.RolSolicitado;
+        user.Rol = petition.IdRolSolicitud;
         // Save the changes into the database
         await _context.SaveChangesAsync();
         return RedirectToAction("ViewRole");
@@ -91,14 +91,14 @@ public class RoleController : Controller
     return RedirectToAction("ViewRole");
   }
 
-  public async Task<IActionResult> RejectPetition(int petitionId)
+  public async Task<IActionResult> RejectPetition(int idUser, int idRol)
   {
-    SolicitudRol? petition = await _context.SolicitudRols.FindAsync(petitionId);
+    SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
     if (petition != null)
     {
-      petition.UsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
+      petition.IdUsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
       petition.FechaAprovacion = DateTime.UtcNow;
-      petition.EstadoSolicitud = 7;
+      petition.IdEstado = 6;
       // Add the rol to the user
         // Save the changes into the database
         await _context.SaveChangesAsync();

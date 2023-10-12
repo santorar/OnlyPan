@@ -7,15 +7,15 @@ public partial class ReplicaUsuario
 {
     public int IdReplica { get; set; }
 
-    public int? Usuario { get; set; }
+    public int? IdUsuario { get; set; }
 
-    public int? Receta { get; set; }
+    public int? IdReceta { get; set; }
+
+    public DateTime? FechaReplica { get; set; }
 
     public string? Comentario { get; set; }
 
-    public DateTime? FechaConsulta { get; set; }
+    public virtual Recetum IdReplicaNavigation { get; set; } = null!;
 
-    public virtual Recetum? RecetaNavigation { get; set; }
-
-    public virtual Usuario? UsuarioNavigation { get; set; }
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 }
