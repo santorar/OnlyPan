@@ -27,6 +27,7 @@ public class UserServices
         Contrasena = encryptionKey2,
         Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
         Estado = 1,
+        Rol = 1,
         CodigoActivacion = activationToken,
         Activo = false
       };

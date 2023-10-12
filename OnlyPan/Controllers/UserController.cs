@@ -101,6 +101,7 @@ public class UserController : Controller
   {
     return View();
   }
+
   [HttpPost]
   public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
   {
@@ -111,9 +112,11 @@ public class UserController : Controller
       ViewBag.Error = "Error, Intentalo De Nuevo";
       return View(model);
     }
+
     ViewData["Success"] = "Verifique su correo electronico, para seguir con el proceso de recuperacion";
     return View(nameof(Login));
   }
+
   public async Task<IActionResult> ResetPassword()
   {
     string recoveryToken = Request.Query["token"].ToString();
@@ -139,6 +142,7 @@ public class UserController : Controller
       ViewBag.Error = "Error intentalo de Nuevo";
       return View(model);
     }
+
     ViewData["Success"] = "Contraseña actualizada";
     return View(nameof(Login));
   }
@@ -189,17 +193,19 @@ public class UserController : Controller
       return View(model);
     }
 
-        ViewData["Success"] = "Datos actualizados";
+    ViewData["Success"] = "Datos actualizados";
     return View(nameof(Profile), user);
   }
 
+  //TODO Fix this method to show the petition of the user
   [Authorize(Roles = "2,3")]
-  public async Task<IActionResult> ViewProfileRol(int idPetition)
+  public async Task<IActionResult> ViewProfileRol(int idUser, int idRol)
   {
     var solicitud = await _context.SolicitudRols
-      .Include(s => s.UsuarioSolicitudNavigation)
-      .Include(s => s.RolSolicitadoNavigation)
-      .Where(s => s.IdSolicitud == idPetition).ToListAsync();
+      .Include(s => s.IdUsuarioSolicitudNavigation)
+      .Include(s => s.IdRolSolicitudNavigation)
+      .Where(s => s.IdUsuarioSolicitud == idUser && s.IdRolSolicitud == idRol && s.IdEstado == 4)
+      .FirstOrDefaultAsync();
     return View(solicitud);
   }
 }

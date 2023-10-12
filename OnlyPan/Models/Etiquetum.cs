@@ -7,9 +7,7 @@ public partial class Etiquetum
 {
     public int IdEtiqueta { get; set; }
 
-    public int? Receta { get; set; }
+    public string? NombreEtiqueta { get; set; }
 
-    public string? Etiqueta { get; set; }
-
-    public virtual ICollection<Recetum> RecetaNavigation { get; set; } = new List<Recetum>();
+    public virtual ICollection<Recetum> Receta { get; set; } = new List<Recetum>();
 }

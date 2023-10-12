@@ -5,13 +5,10 @@ namespace OnlyPan.Models;
 
 public partial class SolicitudRol
 {
-    public int IdSolicitud { get; set; }
+    public int IdUsuarioSolicitud { get; set; }
 
-    public int? UsuarioSolicitud { get; set; }
-
-    public int RolSolicitado { get; set; }
-
-    public int? EstadoSolicitud { get; set; }
+    public int IdRolSolicitud { get; set; }
+    public int IdEstado { get; set; }
 
     public DateTime? FechaSolicitud { get; set; }
 
@@ -19,13 +16,12 @@ public partial class SolicitudRol
 
     public DateTime? FechaAprovacion { get; set; }
 
-    public int? UsuarioAprovador { get; set; }
+    public int? IdUsuarioAprovador { get; set; }
 
-    public virtual Estado? EstadoSolicitudNavigation { get; set; }
+    public virtual Rol IdRolSolicitudNavigation { get; set; } = null!;
 
-    public virtual Rol? RolSolicitadoNavigation { get; set; }
+    public virtual Usuario? IdUsuarioAprovadorNavigation { get; set; }
 
-    public virtual Usuario? UsuarioAprovadorNavigation { get; set; }
-
-    public virtual Usuario? UsuarioSolicitudNavigation { get; set; }
+    public virtual Usuario IdUsuarioSolicitudNavigation { get; set; } = null!;
+    public virtual Estado IdEstadoNavigation { get; set; } = null!;
 }
