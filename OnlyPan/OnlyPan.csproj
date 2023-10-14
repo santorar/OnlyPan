@@ -5,7 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Repositories\"/>
     <Folder Include="Scripts\"/>
   </ItemGroup>
   <ItemGroup>
