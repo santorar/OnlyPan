@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
-using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.Dtos.UserDtos;
+using OnlyPan.Models.ViewModels.UserViewModels;
 using OnlyPan.Utilities.Classes;
 
 namespace OnlyPan.Repositories;
@@ -81,7 +82,7 @@ public class UserRepository
         }
     }
 
-    public async Task<UserDto> LoginUser(string email, string password)
+    public async Task<CredentialDto> LoginUser(string email, string password)
     {
         try
         {
@@ -92,7 +93,7 @@ public class UserRepository
                 return null!;
             }
 
-            return new UserDto()
+            return new CredentialDto()
             {
                 IdUsuario = user.IdUsuario,
                 Nombre = user.Nombre,
@@ -118,7 +119,7 @@ public class UserRepository
             await _context.SaveChangesAsync();
             return new RecoveryDto()
             {
-                Email = user!.Correo,
+                Email = user.Correo,
                 Name = user.Nombre,
                 Token = recoveryToken
             };
@@ -145,7 +146,36 @@ public class UserRepository
         }
     }
 
-    public async Task<UserDto> EditUser(ProfileViewModel model, int idUser)
+    public async Task<ProfileDto> RequestProfile(int idUser)
+    {
+        try
+        {
+            var user = await _context.Usuarios
+                .Where(u => u.IdUsuario == idUser)
+                .FirstOrDefaultAsync();
+            var rol = await _context.Rols
+                .Where(r => r.IdRol == user!.Rol)
+                .FirstOrDefaultAsync();
+            int followers = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
+            int followed = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
+            return new ProfileDto()
+            {
+                Rol = rol!.NombreRol,
+                Photo = user!.Foto,
+                Biography = user.Biografia,
+                Name = user.Nombre,
+                Email = user.Correo,
+                Followers = followers,
+                Followed = followed
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+        
+    }
+    public async Task<CredentialDto> EditUser(ProfileEditViewModel model, int idUser)
     {
         try
         {
@@ -161,7 +191,7 @@ public class UserRepository
                 user!.Foto = await pu.convertToBytes(model.Photo);
             _context.Usuarios.Update(user!);
             await _context.SaveChangesAsync();
-            return new UserDto()
+            return new CredentialDto()
             {
                 IdUsuario = user!.IdUsuario,
                 Nombre = user.Nombre,
@@ -190,6 +220,35 @@ public class UserRepository
         catch (SystemException)
         {
             return false;
+        }
+    }
+
+    public async Task<ProfileRolDto> RequestProfileRolData(int idUser, int idRolNew)
+    {
+        try
+        {
+            var user = await _context.Usuarios.FindAsync(idUser);
+            var currentRol = await _context.Rols.FindAsync(user!.Rol);
+            var newRol = await _context.Rols.FindAsync(idRolNew);
+            int followers = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
+            int followed = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
+            return new ProfileRolDto()
+            {
+                IdUser = user.IdUsuario,
+                IdNewRol = idRolNew,
+                Photo = user.Foto,
+                Name = user.Nombre,
+                Email = user.Correo,
+                Biography = user.Biografia,
+                CurrentRol = currentRol!.NombreRol,
+                NewRol = newRol!.NombreRol,
+                Followers = followers,
+                Followed = followed
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
         }
     }
 }

@@ -1,10 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
+using OnlyPan.Models.Dtos.UserDtos;
 using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.ViewModels.UserViewModels;
 using OnlyPan.Repositories;
 using OnlyPan.Utilities.Classes;
 using SystemException = System.SystemException;
@@ -13,12 +14,10 @@ namespace OnlyPan.Services;
 
 public class UserServices
 {
-    private readonly OnlyPanContext _context;
     private readonly UserRepository _userRepository;
 
     public UserServices(OnlyPanContext context)
     {
-        _context = context;
         _userRepository = new UserRepository(context);
     }
 
@@ -65,16 +64,16 @@ public class UserServices
         }
     }
 
-    public static async Task<bool> CreateCredentials(UserDto user, bool remember, HttpContext hc)
+    public static async Task<bool> CreateCredentials(CredentialDto credential, bool remember, HttpContext hc)
     {
         try
         {
             List<Claim> c = new List<Claim>()
             {
-                new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
-                new(ClaimTypes.Email, user.Correo!),
-                new(ClaimTypes.Name, user.Nombre!),
-                new(ClaimTypes.Role, user.Rol.ToString())
+                new(ClaimTypes.NameIdentifier, credential.IdUsuario.ToString()),
+                new(ClaimTypes.Email, credential.Correo!),
+                new(ClaimTypes.Name, credential.Nombre!),
+                new(ClaimTypes.Role, credential.Rol.ToString())
             };
             ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
             AuthenticationProperties p = new AuthenticationProperties();
@@ -102,9 +101,7 @@ public class UserServices
             var encryptionHash2 = enc.Encrypt(encryptionHash1);
             var usr = await _userRepository.LoginUser(model.Email!, encryptionHash2);
             var result = await CreateCredentials(usr, model.Remember, hc);
-            if (result)
-                return true;
-            return false;
+            return result;
         }
         catch (SystemException)
         {
@@ -115,8 +112,7 @@ public class UserServices
     public async Task<bool> ActivateAccount(string token)
     {
         var result = await _userRepository.ActivateUser(token);
-        if (!result) return false;
-        return true;
+        return result;
     }
 
     public async Task<bool> ForgotPassword(string email)
@@ -138,9 +134,7 @@ public class UserServices
     {
         try
         {
-            if (await _userRepository.RecoveryValidation(recoveryToken))
-                return true;
-            return false;
+            return await _userRepository.RecoveryValidation(recoveryToken);
         }catch (SystemException)
         {
             return false;
@@ -156,7 +150,7 @@ public class UserServices
             var encryptionHash2 = enc.Encrypt(encryptionHash1);
             var result = await _userRepository
                 .ResetPasswordDb(model.Token!, encryptionHash2);
-            return true;
+            return result;
         }
         catch (SystemException)
         {
@@ -164,7 +158,40 @@ public class UserServices
         }
     }
 
-    public async Task<bool> EditProfile(ProfileViewModel model, HttpContext hc)
+    public async Task<ProfileViewModel> Profile(int idUser)
+    {
+        try
+        {
+            var user = await _userRepository.RequestProfile(idUser);
+            return new ProfileViewModel()
+            {
+                Rol = user.Rol,
+                Photo = user.Photo,
+                Biography = user.Biography,
+                Name = user.Name,
+                Email = user.Email,
+                Followers = user.Followers,
+                Followed = user.Followed
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+    public async Task<ProfileDto> GetUserDataModel(int idUser)
+    {
+        try
+        {
+            return await _userRepository.RequestProfile(idUser);
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> EditProfile(ProfileEditViewModel model, HttpContext hc)
     {
         var user = await _userRepository.EditUser(model, int.Parse(hc.User.Claims.First().Value));
         await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -172,5 +199,29 @@ public class UserServices
         if (result)
             return true;
         return false;
+    }
+    public async Task<ProfileRolViewModel> GetProfileRol(int idUser, int idRol)
+    {
+        try
+        {
+            var data = await _userRepository.RequestProfileRolData(idUser, idRol);
+            return new ProfileRolViewModel()
+            {
+                IdUser = data.IdUser,
+                IdRolNew = data.IdNewRol,
+                CurrentRol = data.CurrentRol,
+                NewRol = data.NewRol,
+                Photo = data.Photo,
+                Biography = data.Biography,
+                Name = data.Name,
+                Email = data.Email,
+                Followers = data.Followers,
+                Followed = data.Followed
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
     }
 }

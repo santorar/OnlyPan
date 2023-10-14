@@ -3,22 +3,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
-using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.ViewModels.UserViewModels;
 using OnlyPan.Services;
 
 namespace OnlyPan.Controllers;
 
 public class UserController : Controller
 {
-    private readonly OnlyPanContext _context;
     private readonly UserServices _userServices;
 
     public UserController(OnlyPanContext context)
     {
-        _context = context;
-        _userServices = new UserServices(_context);
+        _userServices = new UserServices(context);
     }
 
 
@@ -152,33 +149,30 @@ public class UserController : Controller
     [Authorize]
     public async Task<IActionResult> Profile()
     {
-        var users = await _context.Usuarios
-            .Include(u => u.RolNavigation)
-            .Where(u => u.IdUsuario == int.Parse(HttpContext.User.Claims.First().Value)).ToListAsync();
-        Usuario user = users.First();
+        var user = await _userServices.Profile(int.Parse(HttpContext.User.Claims.First().Value));
         return View(user);
     }
 
     [Authorize]
     public async Task<IActionResult> EditProfile()
     {
-        var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));
-        var rol = await _context.Rols.FindAsync(user?.Rol);
-        ViewData["Name"] = user?.Nombre;
-        ViewData["Email"] = user?.Correo;
-        ViewData["Rol"] = rol?.NombreRol;
+        var idUser = int.Parse(HttpContext.User.Claims.First().Value);
+        var user = await _userServices.GetUserDataModel(idUser);
+        ViewData["Name"] = user.Name;
+        ViewData["Email"] = user?.Email;
+        ViewData["Biography"] = user?.Biography;
         return View();
     }
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> EditProfile(ProfileViewModel model)
+    public async Task<IActionResult> EditProfile(ProfileEditViewModel model)
     {
-        var user = await _context.Usuarios.FindAsync(int.Parse(HttpContext.User.Claims.First().Value));
-        var rol = await _context.Rols.FindAsync(user?.Rol);
-        ViewData["Name"] = user?.Nombre;
-        ViewData["Email"] = user?.Correo;
-        ViewData["Rol"] = rol?.NombreRol;
+        var idUser = int.Parse(HttpContext.User.Claims.First().Value);
+        var user = await _userServices.GetUserDataModel(idUser);
+        ViewData["Name"] = user.Name;
+        ViewData["Email"] = user?.Email;
+        ViewData["Biography"] = user?.Biography;
 
         var result = await _userServices.EditProfile(model, HttpContext);
         if (!result)
@@ -187,19 +181,16 @@ public class UserController : Controller
             return View(model);
         }
 
+        var profile = await _userServices.Profile(idUser);
         ViewData["Success"] = "Datos actualizados";
-        return View(nameof(Profile), user);
+        return View(nameof(Profile), profile);
     }
 
     //TODO Fix this method to show the petition of the user
     [Authorize(Roles = "2,3")]
     public async Task<IActionResult> ViewProfileRol(int idUser, int idRol)
     {
-        var solicitud = await _context.SolicitudRols
-            .Include(s => s.IdUsuarioSolicitudNavigation)
-            .Include(s => s.IdRolSolicitudNavigation)
-            .Where(s => s.IdUsuarioSolicitud == idUser && s.IdRolSolicitud == idRol && s.IdEstado == 4)
-            .FirstOrDefaultAsync();
-        return View(solicitud);
+        var profileRol = await _userServices.GetProfileRol(idUser, idRol);
+        return View(profileRol);
     }
 }
