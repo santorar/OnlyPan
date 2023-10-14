@@ -1,18 +1,13 @@
+using OnlyPan.Models.Dtos.UserDtos;
+
 namespace OnlyPan.Models.Dtos;
 
-public class ProfileDto
+public class ProfileDto : UserDto
 {
     
-    public string? Rol { get; set; }
-
-    public byte[]? Photo { get; set; }
-
-    public string? Biography { get; set; }
-
-    public string? Name { get; set; }
-
-    public string? Email { get; set; }
+    public string? RoleName { get; set; }
 
     public int Followers { get; set; }
+    
     public int Followed { get; set; }
 }

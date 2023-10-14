@@ -1,14 +1,6 @@
-namespace OnlyPan.Models.Dtos;
+namespace OnlyPan.Models.Dtos.UserDtos;
 
-public class RegisterDto
+public class RegisterDto : UserDto
 {
-    public byte[]? Foto { get; set; }
-    
-    public string Nombre { get; set; } = null!;
-    
-    public string Correo { get; set; } = null!;
-    
-    public string Contrasena { get; set; } = null!;
-
-    public string? CodigoActivacion { get; set; }
+    public string? ActivationToken { get; set; }
 }
