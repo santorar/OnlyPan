@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.ViewModels.RolViewModels;
 using OnlyPan.Services;
 
 namespace OnlyPan.Controllers;

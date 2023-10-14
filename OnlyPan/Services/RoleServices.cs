@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.ViewModels.RolViewModels;
 
 namespace OnlyPan.Services;
 
