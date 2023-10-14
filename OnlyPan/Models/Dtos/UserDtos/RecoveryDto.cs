@@ -1,4 +1,4 @@
-namespace OnlyPan.Models.Dtos;
+namespace OnlyPan.Models.Dtos.UserDtos;
 
 public class RecoveryDto
 {

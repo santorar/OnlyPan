@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OnlyPan.Models.ViewModels;
+namespace OnlyPan.Models.ViewModels.UserViewModels;
 
-public class ProfileViewModel
+public class ProfileEditViewModel
 {
   [Display(Name="Foto de perfil")]public IFormFile? Photo { get; set; }
   [Required,Display(Name="Correo Electronico")]public string? Email { get; set; }

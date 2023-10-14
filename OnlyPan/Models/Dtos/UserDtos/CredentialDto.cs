@@ -1,6 +1,6 @@
-namespace OnlyPan.Models.Dtos;
+namespace OnlyPan.Models.Dtos.UserDtos;
 
-public class UserDto
+public class CredentialDto
 {
     public int IdUsuario { get; set; }
     public string? Nombre { get; set; }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OnlyPan.Models.ViewModels;
+namespace OnlyPan.Models.ViewModels.UserViewModels;
 
 public class ForgotPasswordViewModel
 {
