@@ -41,11 +41,11 @@ public class UserRepository
             var user = new Usuario()
             {
                 FechaInscrito = DateTime.Now,
-                Nombre = model.Nombre,
-                Correo = model.Correo,
-                Contrasena = model.Contrasena,
-                Foto = model.Foto,
-                CodigoActivacion = model.CodigoActivacion,
+                Nombre = model.Name,
+                Correo = model.Email,
+                Contrasena = model.Password!,
+                Foto = model.Photo,
+                CodigoActivacion = model.ActivationToken,
                 Estado = 1,
                 Rol = 1,
                 Activo = false,
@@ -82,7 +82,7 @@ public class UserRepository
         }
     }
 
-    public async Task<CredentialDto> LoginUser(string email, string password)
+    public async Task<UserDto> LoginUser(string email, string password)
     {
         try
         {
@@ -93,11 +93,11 @@ public class UserRepository
                 return null!;
             }
 
-            return new CredentialDto()
+            return new UserDto()
             {
-                IdUsuario = user.IdUsuario,
-                Nombre = user.Nombre,
-                Correo = user.Correo,
+                IdUser = user.IdUsuario,
+                Name = user.Nombre,
+                Email = user.Correo,
                 Rol = user.Rol,
             };
         }
@@ -160,7 +160,7 @@ public class UserRepository
             int followed = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
             return new ProfileDto()
             {
-                Rol = rol!.NombreRol,
+                RoleName = rol!.NombreRol,
                 Photo = user!.Foto,
                 Biography = user.Biografia,
                 Name = user.Nombre,
@@ -175,7 +175,7 @@ public class UserRepository
         }
         
     }
-    public async Task<CredentialDto> EditUser(ProfileEditViewModel model, int idUser)
+    public async Task<UserDto> EditUser(ProfileEditViewModel model, int idUser)
     {
         try
         {
@@ -191,11 +191,11 @@ public class UserRepository
                 user!.Foto = await pu.convertToBytes(model.Photo);
             _context.Usuarios.Update(user!);
             await _context.SaveChangesAsync();
-            return new CredentialDto()
+            return new UserDto()
             {
-                IdUsuario = user!.IdUsuario,
-                Nombre = user.Nombre,
-                Correo = user.Correo,
+                IdUser = user!.IdUsuario,
+                Name = user.Nombre,
+                Email = user.Correo,
                 Rol = user.Rol,
             };
         }

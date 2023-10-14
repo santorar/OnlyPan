@@ -46,16 +46,16 @@ public class UserServices
             var pu = new PhotoUtilities();
             var user = new RegisterDto()
             {
-                Nombre = model.Name!,
-                Correo = model.Email!,
-                Contrasena = encryptionKey2,
-                Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
-                CodigoActivacion = activationToken
+                Name = model.Name!,
+                Email = model.Email!,
+                Password = encryptionKey2,
+                Photo = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
+                ActivationToken = activationToken
             };
             var result = await _userRepository.RegisterUser(user);
             if (!result) return false;
             EmailService em = new EmailService();
-            await em.SendVerificationEmail(user.Correo, user.Nombre, activationToken);
+            await em.SendVerificationEmail(user.Email, user.Name, activationToken);
             return true;
         }
         catch (SystemException)
@@ -64,16 +64,16 @@ public class UserServices
         }
     }
 
-    public static async Task<bool> CreateCredentials(CredentialDto credential, bool remember, HttpContext hc)
+    public static async Task<bool> CreateCredentials(UserDto user, bool remember, HttpContext hc)
     {
         try
         {
             List<Claim> c = new List<Claim>()
             {
-                new(ClaimTypes.NameIdentifier, credential.IdUsuario.ToString()),
-                new(ClaimTypes.Email, credential.Correo!),
-                new(ClaimTypes.Name, credential.Nombre!),
-                new(ClaimTypes.Role, credential.Rol.ToString())
+                new(ClaimTypes.NameIdentifier, user.IdUser.ToString()),
+                new(ClaimTypes.Email, user.Email!),
+                new(ClaimTypes.Name, user.Name!),
+                new(ClaimTypes.Role, user.Rol.ToString())
             };
             ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
             AuthenticationProperties p = new AuthenticationProperties();
@@ -165,7 +165,7 @@ public class UserServices
             var user = await _userRepository.RequestProfile(idUser);
             return new ProfileViewModel()
             {
-                Rol = user.Rol,
+                Rol = user.RoleName,
                 Photo = user.Photo,
                 Biography = user.Biography,
                 Name = user.Name,
