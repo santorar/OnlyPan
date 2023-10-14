@@ -128,6 +128,22 @@ public class UserRepository
             return null!;
         }
     }
+    public async Task<bool> RecoveryValidation(string recoveryToken)
+    {
+        try
+        {
+            var user = await _context.Usuarios
+                .Where(u => u.ContrasenaToken == recoveryToken)
+                .FirstOrDefaultAsync();
+            if (user == null)
+                return false;
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
 
     public async Task<UserDto> EditUser(ProfileViewModel model, int idUser)
     {
@@ -156,6 +172,24 @@ public class UserRepository
         catch (SystemException)
         {
             return null!;
+        }
+    }
+
+    public async Task<bool> ResetPasswordDb(string recoveryToken, string passwordToken)
+    {
+        try
+        {
+            var user = await _context.Usuarios
+                .Where(u => u.ContrasenaToken == recoveryToken)
+                .FirstOrDefaultAsync();
+            user!.Contrasena = passwordToken;
+            user.ContrasenaToken = "";
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
         }
     }
 }

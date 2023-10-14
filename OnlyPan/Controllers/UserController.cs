@@ -118,7 +118,7 @@ public class UserController : Controller
     public async Task<IActionResult> ResetPassword()
     {
         string recoveryToken = Request.Query["token"].ToString();
-        var result = await _userServices.RecoveryValidation(recoveryToken);
+        var result = await _userServices.RecoveryTokenExist(recoveryToken);
         if (!result)
         {
             ViewBag.Error = "Token invalido";

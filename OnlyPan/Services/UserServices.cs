@@ -134,17 +134,14 @@ public class UserServices
         }
     }
 
-    public async Task<bool> RecoveryValidation(string recoveryToken)
+    public async Task<bool> RecoveryTokenExist(string recoveryToken)
     {
         try
         {
-            var users = await _context.Usuarios
-                .Where(u => u.ContrasenaToken == recoveryToken)
-                .ToListAsync();
-            Usuario user = users.First();
-            return true;
-        }
-        catch (SystemException)
+            if (await _userRepository.RecoveryValidation(recoveryToken))
+                return true;
+            return false;
+        }catch (SystemException)
         {
             return false;
         }
@@ -154,18 +151,11 @@ public class UserServices
     {
         try
         {
-            var users = await _context.Usuarios
-                .Where(u => u.ContrasenaToken == model.Token)
-                .ToListAsync();
-            Usuario user = users.First();
             EncryptionService enc = new EncryptionService();
             var encryptionHash1 = enc.Encrypt(model.Password!);
             var encryptionHash2 = enc.Encrypt(encryptionHash1);
-            user.Contrasena = encryptionHash2;
-            await _context.SaveChangesAsync();
-            //Delete the token for security
-            user.ContrasenaToken = "";
-            await _context.SaveChangesAsync();
+            var result = await _userRepository
+                .ResetPasswordDb(model.Token!, encryptionHash2);
             return true;
         }
         catch (SystemException)
