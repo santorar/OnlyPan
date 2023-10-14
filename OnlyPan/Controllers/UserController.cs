@@ -148,7 +148,6 @@ public class UserController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Index", "Home");
     }
-    //TODO Create a method to restore the password
 
     [Authorize]
     public async Task<IActionResult> Profile()

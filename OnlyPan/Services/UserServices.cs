@@ -50,7 +50,7 @@ public class UserServices
                 Nombre = model.Name!,
                 Correo = model.Email!,
                 Contrasena = encryptionKey2,
-                Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory()+"/Utilities/Images/default.jpeg"),
+                Foto = pu.GetPhotoFromFile(Directory.GetCurrentDirectory() + "/Utilities/Images/default.jpeg"),
                 CodigoActivacion = activationToken
             };
             var result = await _userRepository.RegisterUser(user);
@@ -65,15 +65,15 @@ public class UserServices
         }
     }
 
-    public static async Task<bool> CreateCredentials(Usuario user, bool remember, HttpContext hc)
+    public static async Task<bool> CreateCredentials(UserDto user, bool remember, HttpContext hc)
     {
         try
         {
             List<Claim> c = new List<Claim>()
             {
                 new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
-                new(ClaimTypes.Email, user.Correo),
-                new(ClaimTypes.Name, user.Nombre),
+                new(ClaimTypes.Email, user.Correo!),
+                new(ClaimTypes.Name, user.Nombre!),
                 new(ClaimTypes.Role, user.Rol.ToString())
             };
             ClaimsIdentity ci = new(c, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -100,7 +100,7 @@ public class UserServices
             EncryptionService enc = new EncryptionService();
             var encryptionHash1 = enc.Encrypt(model.Password!);
             var encryptionHash2 = enc.Encrypt(encryptionHash1);
-            var usr = ValidateUser(model.Email!, encryptionHash2)[0];
+            var usr = await _userRepository.LoginUser(model.Email!, encryptionHash2);
             var result = await CreateCredentials(usr, model.Remember, hc);
             if (result)
                 return true;
@@ -112,49 +112,20 @@ public class UserServices
         }
     }
 
-    private List<Usuario> ValidateUser(string email, string password)
-    {
-        var userdb =
-            _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password).ToList();
-        if (userdb.Count == 0)
-        {
-            return null!;
-        }
-
-        return userdb;
-    }
-
     public async Task<bool> ActivateAccount(string token)
     {
-        try
-        {
-            var users = await _context.Usuarios
-                .Where(u => u.CodigoActivacion == token)
-                .ToListAsync();
-            Usuario user = users[0];
-            user.Activo = true;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (SystemException)
-        {
-            return false;
-        }
+        var result = await _userRepository.ActivateUser(token);
+        if (!result) return false;
+        return true;
     }
 
     public async Task<bool> ForgotPassword(string email)
     {
         try
         {
-            var users = await _context.Usuarios
-                .Where(u => u.Correo == email)
-                .ToListAsync();
-            Usuario user = users.First();
-            string recoveryToken = Guid.NewGuid().ToString();
-            user.ContrasenaToken = recoveryToken;
-            await _context.SaveChangesAsync();
+            RecoveryDto model = await _userRepository.CreateRecoveryToken(email);
             EmailService em = new EmailService();
-            await em.SendForgotPasswordEmail(user.Correo, user.Nombre, recoveryToken);
+            await em.SendForgotPasswordEmail(model.Email!, model.Name!, model.Token!);
             return true;
         }
         catch (SystemException)
@@ -205,31 +176,11 @@ public class UserServices
 
     public async Task<bool> EditProfile(ProfileViewModel model, HttpContext hc)
     {
-        try
-        {
-            var user = _context.Usuarios.Find(int.Parse(hc.User.Claims.First().Value));
-            if (model.Email != user?.Correo && model.Email != null)
-                user!.Correo = model.Email;
-            //TODO send a email for confirm email change
-            var pu = new PhotoUtilities();
-            if (model.Photo != null && model.Photo.Length > 0)
-            {
-                user!.Foto = await pu.convertToBytes(model.Photo);
-            }
-
-            if (model.Name != user!.Nombre && model.Name != null)
-                user.Nombre = model.Name;
-            await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            _context.Update(user);
-            await _context.SaveChangesAsync();
-            var result = await CreateCredentials(user, true, hc);
-            if (result)
-                return true;
-            return false;
-        }
-        catch (SystemException)
-        {
-            return false;
-        }
+        var user = await _userRepository.EditUser(model, int.Parse(hc.User.Claims.First().Value));
+        await hc.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        var result = await CreateCredentials(user, true, hc);
+        if (result)
+            return true;
+        return false;
     }
 }
