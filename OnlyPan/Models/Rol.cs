@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OnlyPan.Models;
+﻿namespace OnlyPan.Models;
 
 public partial class Rol
 {

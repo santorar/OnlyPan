@@ -1,42 +1,65 @@
-using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
-using OnlyPan.Models.ViewModels;
+using OnlyPan.Models.Dtos.RoleDtos;
 using OnlyPan.Models.ViewModels.RolViewModels;
+using OnlyPan.Repositories;
 
 namespace OnlyPan.Services;
 
 public class RoleServices
 {
-  public async Task<bool> MakePetition(RolPetitionViewModel model, OnlyPanContext context, int idUser)
+  private readonly RoleRepository _roleRepository;
+
+  public RoleServices(OnlyPanContext context)
+  {
+    _roleRepository = new RoleRepository(context);
+  }
+
+  public async Task<List<RoleDto>> GetRoles()
   {
     try
     {
-      var peticion = new SolicitudRol()
-      {
-        IdUsuarioSolicitud = idUser,
-        IdRolSolicitud = model.Role,
-        IdEstado = 4,
-        //TODO fix the error that is showing always the time in 12 AM
-        FechaSolicitud = DateTime.UtcNow
-      };
-
-      context.Add(peticion);
-      var result = await context.SaveChangesAsync();
-      return true;
+      return await _roleRepository.RequestRoles();
     }
-    catch (SystemException e)
+    catch (SystemException)
     {
-      return false;
+      return null!;
     }
   }
-
-  public bool CheckPetitions(OnlyPanContext context, int idUser)
+  public async Task<bool> MakePetition(RoleMakePetitionViewModel model, int idUser)
   {
-    var request = context.SolicitudRols.FromSqlRaw("EXECUTE sp_check_petitions {0}", idUser).ToListAsync();
-    if (request.Result.Count > 0)
+    return await _roleRepository.CreatePetition(model, idUser);
+  }
+
+  public async Task<bool> CheckPetitions(int idUser, int idRole)
+  {
+    return await _roleRepository.RequestUserPetitions(idUser,idRole);
+  }
+
+  public async Task<List<RolePetitionViewModel>> GetPetitions()
+  {
+    try
     {
-      return true;
+      List<RolePetitionDto> rolePetitionDtos = await _roleRepository.RequestPetitions();
+      List<RolePetitionViewModel> resultSet = new List<RolePetitionViewModel>();
+      foreach (var rolePetitionDto in rolePetitionDtos)
+      {
+        var rolePetitionViewModel = new RolePetitionViewModel()
+        {
+          IdUser = rolePetitionDto.IdUser,
+          UserName = rolePetitionDto.UserName,
+          CurrentRoleName = rolePetitionDto.CurrentRoleName,
+          IdRequesedRole = rolePetitionDto.IdRequesedRole,
+          RequesedRoleName = rolePetitionDto.RequesedRoleName,
+          Time = rolePetitionDto.Time
+        };
+        resultSet.Add(rolePetitionViewModel);
+      }
+
+      return resultSet;
     }
-    return false;
+    catch (SystemException)
+    {
+      return null!;
+    }
   }
 }

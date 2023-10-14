@@ -1,4 +1,4 @@
-@model List<SolicitudRol>
+@model List<OnlyPan.Models.ViewModels.RolViewModels.RolePetitionViewModel>
 
 <h1>Solicitudes de cambio de rol</h1>
 
@@ -7,10 +7,13 @@
   <thead>
   <tr>
     <th>
-      Nombre
+      Nombre Usuario
     </th>
     <th>
-      Rol
+      Rol Actual
+    </th>
+    <th>
+      Rol Solicitado
     </th>
     <th>
       Fecha
@@ -21,21 +24,24 @@
   </tr>
   </thead>
   <tbody>
-  @foreach (var vaPetition in Model)
+  @foreach (var petition in Model)
   {
     <tr>
       <td>
-        @Html.DisplayFor(m=> vaPetition.IdUsuarioSolicitudNavigation!.Nombre)
+        @Html.DisplayFor(m=> petition.UserName)
       </td>
       <td>
-        @Html.DisplayFor(m=> vaPetition.IdRolSolicitudNavigation!.NombreRol)
+        @Html.DisplayFor(m=> petition.CurrentRoleName)
       </td>
       <td>
-        @Html.DisplayFor(m=> vaPetition.FechaSolicitud)
+        @Html.DisplayFor(m=> petition.RequesedRoleName)
+      </td>
+      <td>
+        @Html.DisplayFor(m=> petition.Time)
       </td>
       <td>
         <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
-           asp-route-idUser="@vaPetition.IdUsuarioSolicitud" asp-route-idRol="@vaPetition.IdRolSolicitud">
+           asp-route-idUser="@petition.IdUser" asp-route-idRol="@petition.IdRequesedRole">
           Ver Perfil
         </a>
       </td>
