@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels.RolViewModels;
 using OnlyPan.Services;
@@ -71,22 +70,11 @@ public class RoleController : Controller
 
     public async Task<IActionResult> AcceptPetition(int idUser, int idRol)
     {
-        // take the petition from the database
-        SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
-        if (petition != null)
+        int idUserAdmin = int.Parse(HttpContext.User.Claims.First().Value);
+        if (await _roleServices.AcceptPetition(idUser, idRol, idUserAdmin))
         {
-            petition.IdUsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
-            petition.FechaAprovacion = DateTime.UtcNow;
-            petition.IdEstado = 5;
-            // Add the rol to the user
-            Usuario? user = await _context.Usuarios.FindAsync(idUser);
-            if (user != null)
-            {
-                user.Rol = petition.IdRolSolicitud;
-                // Save the changes into the database
-                await _context.SaveChangesAsync();
-                return RedirectToAction("ViewRole");
-            }
+            ViewData["Success"] = "Solicitud aceptada con exito";
+            return RedirectToAction("ViewRole");
         }
 
         ViewBag.Error = "Error al aceptar la solicitud";
@@ -95,15 +83,10 @@ public class RoleController : Controller
 
     public async Task<IActionResult> RejectPetition(int idUser, int idRol)
     {
-        SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
-        if (petition != null)
+        int idUserAdmin = int.Parse(HttpContext.User.Claims.First().Value);
+        if (await _roleServices.RejectPetition(idUser, idRol, idUserAdmin))
         {
-            petition.IdUsuarioAprovador = int.Parse(HttpContext.User.Claims.First().Value);
-            petition.FechaAprovacion = DateTime.UtcNow;
-            petition.IdEstado = 6;
-            // Add the rol to the user
-            // Save the changes into the database
-            await _context.SaveChangesAsync();
+            ViewData["Success"] = "Solicitud rechazada con exito";
             return RedirectToAction("ViewRole");
         }
 

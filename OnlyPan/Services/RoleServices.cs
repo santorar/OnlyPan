@@ -62,4 +62,12 @@ public class RoleServices
       return null!;
     }
   }
+  public async Task<bool> AcceptPetition(int idUser, int idRole, int idUserAdmin)
+  {
+    return await _roleRepository.AcceptPetition(idUser, idRole, idUserAdmin);
+  }
+  public async Task<bool> RejectPetition(int idUser, int idRole, int idUserAdmin)
+  {
+    return await _roleRepository.RejectPetition(idUser, idRole, idUserAdmin);
+  }
 }

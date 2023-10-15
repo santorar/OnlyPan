@@ -105,4 +105,47 @@ public class RoleRepository
             return null!;
         }
     }
+    public async Task<bool> AcceptPetition(int idUser, int idRol, int idUserAdmin)
+    {
+        try
+        {
+            // take the petition from the database
+            SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
+            petition!.IdUsuarioAprovador = idUserAdmin;
+            petition.FechaAprovacion = DateTime.UtcNow;
+            petition.IdEstado = 5;
+            // Add the rol to the user
+            Usuario? user = await _context.Usuarios.FindAsync(idUser);
+            if (user != null)
+            {
+                user.Rol = petition.IdRolSolicitud;
+                // Save the changes into the database
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> RejectPetition(int idUser, int idRol, int idUserAdmin)
+    {
+        try
+        {
+            // take the petition from the database
+            SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
+            petition!.IdUsuarioAprovador = idUserAdmin;
+            petition.FechaAprovacion = DateTime.UtcNow;
+            petition.IdEstado = 6;
+            // Save the changes into the database
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
 }
