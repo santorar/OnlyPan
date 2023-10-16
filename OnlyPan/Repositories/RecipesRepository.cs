@@ -190,22 +190,26 @@ public class RecipesRepository
             RecetaChef? recipeChef =
                 await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
             string chef = ((await _context.Usuarios.FindAsync(recipeChef!.IdChef))!).Nombre!;
-            var listComments = await _context.Comentarios.Where(c => c.IdReceta == recipe.IdReceta).ToListAsync();
+            var listComments = await _context.Comentarios
+                .Where(c => c.IdReceta == recipe.IdReceta && recipe.IdEstado != 6).ToListAsync();
             List<CommentDto> comments = new List<CommentDto>();
             foreach (var comentary in listComments)
             {
                 var user = await _context.Usuarios.FindAsync(comentary.IdUsuario);
                 CommentDto commentDto = new CommentDto()
                 {
+                    IdComment = comentary.IdComentario,
                     IdUser = user!.IdUsuario,
                     UserName = user.Nombre,
                     Comment = comentary.Comentario1
                 };
                 comments.Add(commentDto);
             }
+
             string? category = ((await _context.Categoria.FindAsync(recipe.IdCategoria))!).NombreCategoria;
             string? tag = ((await _context.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
-            var listIngredientsRecipe = await _context.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).ToListAsync();
+            var listIngredientsRecipe =
+                await _context.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).ToListAsync();
             List<string> ingredients = new List<string>();
             foreach (var ingredient in listIngredientsRecipe)
             {
@@ -233,6 +237,43 @@ public class RecipesRepository
         catch (SystemException)
         {
             return null!;
+        }
+    }
+
+    public async Task<bool> CreateComment(CommentDto comment)
+    {
+        try
+        {
+            var newComment = new Comentario()
+            {
+                IdUsuario = comment.IdUser,
+                IdReceta = comment.IdRecipe,
+                Comentario1 = comment.Comment,
+                Estado = 5,
+                Fecha = DateTime.Now,
+            };
+            await _context.Comentarios.AddAsync(newComment);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> ReportComment(int commentId)
+    {
+        try
+        {
+            var comment = await _context.Comentarios.FindAsync(commentId);
+            comment!.Estado = 7;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
         }
     }
 }

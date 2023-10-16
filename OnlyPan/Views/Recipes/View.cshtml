@@ -26,7 +26,21 @@
             <div class="container">
                 <p>@comment.UserName</p>
                 <p>@comment.Comment</p>
+                <a class="text-danger" asp-action="ReportComent"
+                   asp-controller="Recipes" asp-route-commentId="@comment.IdComment"
+                   asp-route-recipeId="@Model.IdRecipe">
+                    Reportar Comentario
+                </a>
             </div>
         }
     </div>
+    <h3 class="uppercase">Comenta tu Opinion</h3>
+    <form asp-action="CreateComment" asp-controller="Recipes" method="post">
+        <label for="comment">Comentario</label>
+        <input type="text" name="comment"/>
+        <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
+        <input type="submit" value="Comentar"/>
+        <span class="text-danger">@ViewBag.Error</span>
+        <span class="text-success">@ViewBag.Success</span>
+    </form>
 </div>

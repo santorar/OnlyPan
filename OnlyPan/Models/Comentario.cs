@@ -5,6 +5,7 @@ namespace OnlyPan.Models;
 
 public partial class Comentario
 {
+    public int IdComentario { get; set; }
     public int IdUsuario { get; set; }
 
     public int IdReceta { get; set; }

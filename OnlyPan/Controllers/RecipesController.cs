@@ -65,4 +65,26 @@ public class RecipesController : Controller
         RecipeViewModel model = await _recipesServices.GetRecipe(idRecipe);
         return View(model);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateComment(string comment, int recipeId)
+    {
+        int idUser = int.Parse(HttpContext.User.Claims.First().Value);
+        var result = await _recipesServices.CreateComment(comment, recipeId, idUser);
+        if (!result)
+            ViewBag.Error = "Error al crear el comentario";
+        else
+            ViewData["Success"] = "Comentario creado correctamente";
+        return RedirectToAction(nameof(View), new { idRecipe = recipeId });
+    }
+
+    public async Task<IActionResult> ReportComent(int commentId, int recipeId)
+    {
+        var result = await _recipesServices.ReportComment(commentId);
+        if (!result)
+            ViewBag.Error = "Error al reportar el comentario";
+        else
+            ViewData["Success"] = "Comentario reportado correctamente";
+        return RedirectToAction(nameof(View), new { idRecipe = recipeId });
+    }
 }

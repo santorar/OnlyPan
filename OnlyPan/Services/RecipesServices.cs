@@ -98,6 +98,7 @@ public class RecipesServices
                 };
                 recipeFeedViewModels.Add(recipeViewModel);
             }
+
             return recipeFeedViewModels;
         }
         catch (SystemException)
@@ -131,5 +132,22 @@ public class RecipesServices
         {
             return null!;
         }
+    }
+
+    public async Task<bool> CreateComment(string comment, int recipeId, int idUser)
+    {
+        CommentDto commentDto = new CommentDto()
+        {
+            IdUser = idUser,
+            IdRecipe = recipeId,
+            Comment = comment
+        };
+        var result = await _recipesRepository.CreateComment(commentDto);
+        return result;
+    }
+
+    public async Task<bool> ReportComment(int commentId)
+    {
+        return await _recipesRepository.ReportComment(commentId);
     }
 }

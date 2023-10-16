@@ -93,10 +93,10 @@ public partial class OnlyPanContext : DbContext
 
         modelBuilder.Entity<Comentario>(entity =>
         {
-            entity.HasKey(e => new { e.IdUsuario, e.IdReceta });
+            entity.HasKey(e => e.IdComentario);
 
             entity.ToTable("COMENTARIO");
-
+            entity.Property(e => e.IdComentario).HasColumnName("id_comentario");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.IdReceta).HasColumnName("id_receta");
             entity.Property(e => e.Comentario1)
@@ -365,11 +365,13 @@ public partial class OnlyPanContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SOLICITUD_ROL_ROL");
 
-            entity.HasOne(d => d.IdUsuarioAprovadorNavigation).WithMany(p => p.SolicitudRolIdUsuarioAprovadorNavigations)
+            entity.HasOne(d => d.IdUsuarioAprovadorNavigation)
+                .WithMany(p => p.SolicitudRolIdUsuarioAprovadorNavigations)
                 .HasForeignKey(d => d.IdUsuarioAprovador)
                 .HasConstraintName("FK_SOLICITUD_ROL_USUARIO_APROVADOR");
 
-            entity.HasOne(d => d.IdUsuarioSolicitudNavigation).WithMany(p => p.SolicitudRolIdUsuarioSolicitudNavigations)
+            entity.HasOne(d => d.IdUsuarioSolicitudNavigation)
+                .WithMany(p => p.SolicitudRolIdUsuarioSolicitudNavigations)
                 .HasForeignKey(d => d.IdUsuarioSolicitud)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SOLICITUD_ROL_USUARIO_SOLICITADOR");
