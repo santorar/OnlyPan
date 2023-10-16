@@ -1,1 +1,14 @@
+@model List<OnlyPan.Models.ViewModels.RecipesViewModels.RecipeFeedViewModel>
+@foreach (var recipe in Model)
+{
+    <a asp-action="View" asp-controller="Recipes" asp-route-idRecipe="@recipe.IdRecipe">
+        <div class="container flex-column">
+            <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(recipe.Photo!)" alt="imagen @recipe.Name"/>
+            <div class="container flex-row">
+                <h1 class="title uppercase">@recipe.Name</h1>
+                <p class="text-black">@recipe.Description</p>
+            </div>
+        </div>
+    </a>
+}
 <a asp-action="Create" class="btn btn-primary bg-blue-500">Crear Receta</a>

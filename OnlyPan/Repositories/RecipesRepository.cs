@@ -36,6 +36,7 @@ public class RecipesRepository
             return null!;
         }
     }
+
     public async Task<List<IngredientDto>> RequestIngredients()
     {
         try
@@ -83,13 +84,14 @@ public class RecipesRepository
             return null!;
         }
     }
+
     public List<UnitDto> RequestUnits()
     {
         try
         {
             List<UnitDto> result = new List<UnitDto>();
-            var shortNames = new List<string>{ "g", "kg", "ml", "l", "oz", "lb" };
-            var longNames = new List<string>{ "gramos", "kilogramos", "mililitros", "litros", "onzas", "libras" };
+            var shortNames = new List<string> { "g", "kg", "ml", "l", "oz", "lb" };
+            var longNames = new List<string> { "gramos", "kilogramos", "mililitros", "litros", "onzas", "libras" };
             for (int i = 0; i < shortNames.Count; i++)
             {
                 UnitDto unitDto = new UnitDto()
@@ -99,7 +101,7 @@ public class RecipesRepository
                 };
                 result.Add(unitDto);
             }
-            
+
             return result;
         }
         catch (SystemException)
@@ -137,6 +139,7 @@ public class RecipesRepository
                 };
                 await _context.RecetaIngredientes.AddAsync(newRecipeIngredient);
             }
+
             var newRecipeUser = new RecetaChef()
             {
                 IdReceta = idRecipe,
@@ -150,6 +153,86 @@ public class RecipesRepository
         catch (SystemException)
         {
             return false;
+        }
+    }
+
+    public async Task<List<RecipeFeedDto>> RequestRecipesFeed()
+    {
+        try
+        {
+            var recipes = await _context.Receta.ToListAsync();
+            List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
+            foreach (var recipe in recipes)
+            {
+                var recipeDto = new RecipeFeedDto()
+                {
+                    IdRecipe = recipe.IdReceta,
+                    Name = recipe.NombreReceta,
+                    Description = recipe.DescripcionReceta,
+                    Photo = recipe.Foto
+                };
+                recipesDtos.Add(recipeDto);
+            }
+
+            return recipesDtos;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<RecipeDto> RequestRecipe(int idRecipe)
+    {
+        try
+        {
+            Recetum recipe = (await _context.Receta.FindAsync(idRecipe))!;
+            RecetaChef? recipeChef =
+                await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
+            string chef = ((await _context.Usuarios.FindAsync(recipeChef!.IdChef))!).Nombre!;
+            var listComments = await _context.Comentarios.Where(c => c.IdReceta == recipe.IdReceta).ToListAsync();
+            List<CommentDto> comments = new List<CommentDto>();
+            foreach (var comentary in listComments)
+            {
+                var user = await _context.Usuarios.FindAsync(comentary.IdUsuario);
+                CommentDto commentDto = new CommentDto()
+                {
+                    IdUser = user!.IdUsuario,
+                    UserName = user.Nombre,
+                    Comment = comentary.Comentario1
+                };
+                comments.Add(commentDto);
+            }
+            string? category = ((await _context.Categoria.FindAsync(recipe.IdCategoria))!).NombreCategoria;
+            string? tag = ((await _context.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
+            var listIngredientsRecipe = await _context.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).ToListAsync();
+            List<string> ingredients = new List<string>();
+            foreach (var ingredient in listIngredientsRecipe)
+            {
+                string? type = ((await _context.Ingredientes.FindAsync(ingredient.IdIngrediente))!).NombreIngrediente;
+                string stringIngredient = type + " " + ingredient.Cantidad + " " + ingredient.Unidad;
+                ingredients.Add(stringIngredient);
+            }
+
+            RecipeDto recipeDto = new RecipeDto()
+            {
+                IdRecipe = recipe.IdReceta,
+                Name = recipe.NombreReceta,
+                Description = recipe.DescripcionReceta,
+                Category = category,
+                Tag = tag,
+                Ingredients = ingredients,
+                Instructions = recipe.Instrucciones,
+                Photo = recipe.Foto,
+                Date = recipe.FechaCreacion,
+                Chef = chef,
+                CommentsDto = comments
+            };
+            return recipeDto;
+        }
+        catch (SystemException)
+        {
+            return null!;
         }
     }
 }
