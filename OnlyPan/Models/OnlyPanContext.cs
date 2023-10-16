@@ -216,6 +216,10 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.IdReceta).HasColumnName("id_receta");
             entity.Property(e => e.IdIngrediente).HasColumnName("id_ingrediente");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+            entity.Property(e => e.Unidad)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("medida");
 
             entity.HasOne(d => d.IdIngredienteNavigation).WithMany(p => p.RecetaIngredientes)
                 .HasForeignKey(d => d.IdIngrediente)

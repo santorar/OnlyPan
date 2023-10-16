@@ -1,0 +1,102 @@
+@model OnlyPan.Models.ViewModels.RecipesViewModels.RecipeCreateViewModel
+<div class="container-fluid">
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 text-uppercase">Crear una receta</h2>
+    <!--TODO Display the profile into a floating card-->
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form method="post" asp-action="Create" asp-controller="Recipes" class="space-y-6" enctype="multipart/form-data">
+            <div class="group">
+                <label asp-for="Name" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <input asp-for="Name" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            </div>
+            <div class="group">
+                <label asp-for="Photo" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <input asp-for="Photo" type="file" class="block w-full rounded-md">
+            </div>
+            <div class="group">
+                <label asp-for="Description" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <input asp-for="Description" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            </div>
+            <div class="group">
+                <label asp-for="Instructions" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <input asp-for="Instructions" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            </div>
+            <div class="group">
+                <label asp-for="IdCategory" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <select class="block w-full rounded-md 
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="IdCategory" asp-items="ViewBag.Categories"></select>
+            </div>
+            <div class="group">
+                <label asp-for="IdTag" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <select class="block w-full rounded-md 
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="IdTag" asp-items="ViewBag.Tags"></select>
+            </div>
+            
+            <div>
+                <p class="block text-sm font-medium leading-6 text-gray-900 text-uppercase">Lista de ingredientes</p>
+                <ul class="list-disc" id="ingredients-list"></ul>
+            </div>
+            <div class="group">
+                <input type="hidden" asp-for="IdsIngredients"/>
+                <input type="hidden" asp-for="IngredientsQuantity"/>
+                <input type="hidden" asp-for="IngredientsUnit"/>
+                <label asp-for="IdIngredient" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <select class="block w-full rounded-md 
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="IdIngredient" asp-items="ViewBag.Ingredients"></select>
+                <label asp-for="Quantity" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <input asp-for="Quantity" class="pl-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                
+                <label asp-for="Unit" class="block text-sm font-medium leading-6 text-gray-900 text-uppercase"></label>
+                <select class="block w-full rounded-md 
+          border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+          focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Unit" asp-items="ViewBag.Units"></select>
+                <button type="button" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded" onclick="AddIngredient(); UpdateHiddenField();">Agregar Ingrediente</button>
+                <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="RemoveIngredient(); UpdateHiddenField();">Eliminar Ingrediente</button>
+            </div>
+            <a asp-action="Index" asp-controller="Recipes" class="btn btn-danger">
+                Cancelar Creacion
+            </a>
+            <input type="submit" value="Confirmar Nueva Receta" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded"/>
+            <span class="text-danger">@ViewBag.Error</span>
+        </form>
+    </div>
+</div>
+<script>
+    var ingredients = [];
+    var quantities = [];
+    var units = [];
+    function AddIngredient() {
+        var option = document.getElementById("IdIngredient");
+        var idIngredient = option.value;
+        var ingredientName = option.options[option.selectedIndex].text;
+        var quantity = document.getElementById("Quantity").value;
+        var unit = document.getElementById("Unit").value;
+        ingredients.push(idIngredient);
+        quantities.push(quantity);
+        units.push(unit);
+        var ul = document.getElementById("ingredients-list");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(ingredientName + " " + quantity + " " + unit));
+        ul.appendChild(li);
+    }
+    //TODO: Fix this function to remove the ingredient from the list
+    function RemoveIngredient() {
+        var idIngredient = document.getElementById("IdIngredient").value;
+        var ingredient = document.getElementById("IdIngredient").text;
+        ingredients.pop(idIngredient);
+        var ul = document.getElementById("ingredients-list");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(ingredient));
+        ul.removeChild(li);
+    }
+    function UpdateHiddenField() {
+        var hiddenFieldIds = document.getElementById("IdsIngredients");
+        var hiddenFieldQuantities = document.getElementById("IngredientsQuantity");
+        var hiddenFieldUnits = document.getElementById("IngredientsUnit");
+        hiddenFieldIds.value = ingredients;
+        hiddenFieldUnits.value = units;
+        hiddenFieldQuantities.value = quantities;
+    }
+</script>

@@ -10,6 +10,7 @@ public partial class RecetaIngrediente
     public int IdIngrediente { get; set; }
 
     public int? Cantidad { get; set; }
+    public string? Unidad { get; set; }
 
     public virtual Ingrediente IdIngredienteNavigation { get; set; } = null!;
 

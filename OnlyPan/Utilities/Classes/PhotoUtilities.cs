@@ -2,7 +2,7 @@ namespace OnlyPan.Utilities.Classes;
 
 public class PhotoUtilities
 {
-  public async Task<byte[]> convertToBytes(IFormFile photo)
+  public async Task<byte[]> convertToBytes(IFormFile? photo)
   {
     using var ms = new MemoryStream();
     await photo.CopyToAsync(ms);
