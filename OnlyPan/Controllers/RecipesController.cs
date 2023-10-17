@@ -80,6 +80,13 @@ public class RecipesController : Controller
 
     public async Task<IActionResult> ReportComent(int commentId, int recipeId)
     {
+        var search = await _recipesServices.SearchReportedComment(commentId);
+        if (search)
+        {
+            ViewBag.Error = "El comentario ya ha sido reportado";
+            return RedirectToAction(nameof(View), new { idRecipe = recipeId });
+        }
+
         var result = await _recipesServices.ReportComment(commentId);
         if (!result)
             ViewBag.Error = "Error al reportar el comentario";

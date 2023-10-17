@@ -26,7 +26,7 @@ public class RoleController : Controller
 
     public async Task<IActionResult> Petition()
     {
-        var roles = await  _roleServices.GetRoles();
+        var roles = await _roleServices.GetRoles();
         ViewData["Roles"] = new SelectList(roles, "IdRol", "NombreRol");
 
         return View();
@@ -36,13 +36,14 @@ public class RoleController : Controller
     public async Task<IActionResult> Petition(RoleMakePetitionViewModel model)
     {
         var idUser = int.Parse(HttpContext.User.Claims.First().Value);
-        if (await _roleServices.CheckPetitions(idUser,model.Role))
+        if (await _roleServices.CheckPetitions(idUser, model.Role))
         {
             var roles = await _roleServices.GetRoles();
             ViewData["Roles"] = new SelectList(roles, "IdRol", "NombreRol");
             ViewBag.Error = "Solicitud ya realizada anteriormente";
             return View(model);
         }
+
         if (!await _roleServices.MakePetition(model, idUser))
         {
             var roles = await _roleServices.GetRoles();
@@ -54,15 +55,9 @@ public class RoleController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    //Moderate View for Rol petition
-    [Authorize(Roles = "2,3")]
-    public IActionResult Moderate()
-    {
-        return View();
-    }
 
     //View a list of rol petitions 
-    public async Task<IActionResult> ViewRole()
+    public async Task<IActionResult> ViewRolePetitions()
     {
         List<RolePetitionViewModel> model = await _roleServices.GetPetitions();
         return View(model);
@@ -74,11 +69,11 @@ public class RoleController : Controller
         if (await _roleServices.AcceptPetition(idUser, idRol, idUserAdmin))
         {
             ViewData["Success"] = "Solicitud aceptada con exito";
-            return RedirectToAction("ViewRole");
+            return RedirectToAction("ViewRolePetitions");
         }
 
         ViewBag.Error = "Error al aceptar la solicitud";
-        return RedirectToAction("ViewRole");
+        return RedirectToAction("ViewRolePetitions");
     }
 
     public async Task<IActionResult> RejectPetition(int idUser, int idRol)
@@ -87,10 +82,10 @@ public class RoleController : Controller
         if (await _roleServices.RejectPetition(idUser, idRol, idUserAdmin))
         {
             ViewData["Success"] = "Solicitud rechazada con exito";
-            return RedirectToAction("ViewRole");
+            return RedirectToAction("ViewRolePetitions");
         }
 
         ViewBag.Error = "Error al rechazar la solicitud";
-        return RedirectToAction("ViewRole");
+        return RedirectToAction("ViewRolePetitions");
     }
 }

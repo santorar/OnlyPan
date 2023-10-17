@@ -191,7 +191,7 @@ public class RecipesRepository
                 await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
             string chef = ((await _context.Usuarios.FindAsync(recipeChef!.IdChef))!).Nombre!;
             var listComments = await _context.Comentarios
-                .Where(c => c.IdReceta == recipe.IdReceta && recipe.IdEstado != 6).ToListAsync();
+                .Where(c => c.IdReceta == recipe.IdReceta && c.Estado != 6).ToListAsync();
             List<CommentDto> comments = new List<CommentDto>();
             foreach (var comentary in listComments)
             {
@@ -270,6 +270,21 @@ public class RecipesRepository
             comment!.Estado = 7;
             await _context.SaveChangesAsync();
             return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> SearchReportedComment(int commentId)
+    {
+        try
+        {
+            var comment = await _context.Comentarios.FindAsync(commentId);
+            if (comment!.Estado == 7)
+                return true;
+            return false;
         }
         catch (SystemException)
         {

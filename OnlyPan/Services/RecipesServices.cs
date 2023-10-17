@@ -150,4 +150,9 @@ public class RecipesServices
     {
         return await _recipesRepository.ReportComment(commentId);
     }
+
+    public async Task<bool> SearchReportedComment(int commentId)
+    {
+        return await _recipesRepository.SearchReportedComment(commentId);
+    }
 }

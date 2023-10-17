@@ -1,5 +1,7 @@
 @model OnlyPan.Models.ViewModels.RecipesViewModels.RecipeViewModel
 <div class="container">
+    <span class="text-danger">@ViewBag.Error</span>
+    <span class="text-success">@ViewBag.Success</span>
     <h2 class="uppercase">@Model.Name</h2>
     <h3 class="text-gray-500">Autor: @Model.Chef <span>@Model.Date</span></h3>
     <p> Categoria: @Model.Category, Etiqueta: @Model.Tag</p>
@@ -40,7 +42,5 @@
         <input type="text" name="comment"/>
         <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
         <input type="submit" value="Comentar"/>
-        <span class="text-danger">@ViewBag.Error</span>
-        <span class="text-success">@ViewBag.Success</span>
     </form>
 </div>
