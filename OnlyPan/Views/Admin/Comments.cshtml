@@ -1,0 +1,51 @@
+@model List<OnlyPan.Models.ViewModels.AdminViewModels.ReportedCommentViewModel>
+
+<h1>Comentarios Reportados</h1>
+
+<span class="alert-danger">@ViewBag.Error</span>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Nombre Usuario
+        </th>
+        <th>
+            Comentario
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Acciones
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var comment in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => comment.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => comment.Comment)
+            </td>
+            <td>
+                @Html.DisplayFor(m => comment.Date)
+            </td>
+            <td>
+                <a class="link-success space-x-1.5" asp-action="AcceptComment" asp-controller="Admin"
+                   asp-route-idComment="@comment.IdComment">
+                    Aceptar Comentario
+                </a>
+                <a class="link-danger space-x-1.5" asp-action="BlockComment" asp-controller="Admin"
+                   asp-route-idComment="@comment.IdComment">
+                    Bloquear Comentario
+                </a>
+            </td>
+        </tr>
+    }
+    <span class="alert-danger">@ViewBag.Error</span>
+    <span class="alert-success">@ViewBag.Success</span>
+    </tbody>
+</table>

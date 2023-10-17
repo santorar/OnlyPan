@@ -4,50 +4,50 @@
 
 <span class="alert-danger">@ViewBag.Error</span>
 <table class="table">
-  <thead>
-  <tr>
-    <th>
-      Nombre Usuario
-    </th>
-    <th>
-      Rol Actual
-    </th>
-    <th>
-      Rol Solicitado
-    </th>
-    <th>
-      Fecha
-    </th>
-    <th>
-      Acciones
-    </th>
-  </tr>
-  </thead>
-  <tbody>
-  @foreach (var petition in Model)
-  {
+    <thead>
     <tr>
-      <td>
-        @Html.DisplayFor(m=> petition.UserName)
-      </td>
-      <td>
-        @Html.DisplayFor(m=> petition.CurrentRoleName)
-      </td>
-      <td>
-        @Html.DisplayFor(m=> petition.RequesedRoleName)
-      </td>
-      <td>
-        @Html.DisplayFor(m=> petition.Time)
-      </td>
-      <td>
-        <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
-           asp-route-idUser="@petition.IdUser" asp-route-idRol="@petition.IdRequesedRole">
-          Ver Perfil
-        </a>
-      </td>
+        <th>
+            Nombre Usuario
+        </th>
+        <th>
+            Rol Actual
+        </th>
+        <th>
+            Rol Solicitado
+        </th>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Acciones
+        </th>
     </tr>
-  }
-  <span class="alert-danger">@ViewBag.Error</span>
-  <span class="alert-success">@ViewBag.Success</span>
-  </tbody>
+    </thead>
+    <tbody>
+    @foreach (var petition in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => petition.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => petition.CurrentRoleName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => petition.RequesedRoleName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => petition.Time)
+            </td>
+            <td>
+                <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
+                   asp-route-idUser="@petition.IdUser" asp-route-idRol="@petition.IdRequesedRole">
+                    Ver Perfil
+                </a>
+            </td>
+        </tr>
+    }
+    <span class="alert-danger">@ViewBag.Error</span>
+    <span class="alert-success">@ViewBag.Success</span>
+    </tbody>
 </table>
