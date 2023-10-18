@@ -207,6 +207,24 @@ public class UserRepository
         }
     }
 
+    public async Task<string> RequestUserName(int idUser)
+    {
+        try
+        {
+            var user = await _context.Usuarios.FindAsync(idUser);
+            if (user != null)
+            {
+                return user.Nombre!;
+            }
+
+            throw new SystemException();
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
     public async Task<bool> ResetPasswordDb(string recoveryToken, string passwordToken)
     {
         try

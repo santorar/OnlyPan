@@ -14,6 +14,21 @@ public class RoleRepository
         _context = context;
     }
 
+    public async Task<string> RequestRoleName(int idRole)
+    {
+        try
+        {
+            var role = await _context.Rols.FindAsync(idRole);
+            if (role != null)
+                return role.NombreRol;
+            throw new SystemException();
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
     public async Task<List<RoleDto>> RequestRoles()
     {
         try
@@ -105,6 +120,7 @@ public class RoleRepository
             return null!;
         }
     }
+
     public async Task<bool> AcceptPetition(int idUser, int idRol, int idUserAdmin)
     {
         try
@@ -123,6 +139,7 @@ public class RoleRepository
                 await _context.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
         catch (SystemException)
@@ -130,6 +147,7 @@ public class RoleRepository
             return false;
         }
     }
+
     public async Task<bool> RejectPetition(int idUser, int idRol, int idUserAdmin)
     {
         try
@@ -146,6 +164,27 @@ public class RoleRepository
         catch (SystemException)
         {
             return false;
+        }
+    }
+
+    public async Task<List<string>> RequestAdminsEmails()
+    {
+        try
+        {
+            List<string> emails = new List<string>();
+            var admins = await _context.Usuarios
+                .Where(u => u.Rol == 2 || u.Rol == 3)
+                .ToListAsync();
+            foreach (var admin in admins)
+            {
+                emails.Add(admin.Correo!);
+            }
+
+            return emails;
+        }
+        catch (SystemException)
+        {
+            return null!;
         }
     }
 }
