@@ -126,7 +126,7 @@ public class RecipesRepository
 
     public async Task<int> RequestPersonalRating(int recipeId, int userId)
     {
-        var rating = await _context.Valoracions.FindAsync(recipeId, userId);
+        var rating = await _context.Valoracions.FindAsync(userId, recipeId);
         if (rating == null) return 0;
         return rating.Valoration!.Value;
     }
@@ -136,7 +136,7 @@ public class RecipesRepository
     {
         try
         {
-            var request = await _context.Valoracions.FindAsync(recipeId, userId);
+            var request = await _context.Valoracions.FindAsync(userId, recipeId);
             if (request == null)
             {
                 var newRating = new Valoracion()
