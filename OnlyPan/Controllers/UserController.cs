@@ -154,6 +154,16 @@ public class UserController : Controller
     }
 
     [Authorize]
+    public async Task<IActionResult> ProfileUser(int userId)
+    {
+        var idUserLogged = int.Parse(HttpContext.User.Claims.First().Value);
+        if (userId == idUserLogged)
+            return RedirectToAction(nameof(Profile));
+        var user = await _userServices.Profile(idUserLogged, userId);
+        return View(user);
+    }
+
+    [Authorize]
     public async Task<IActionResult> EditProfile()
     {
         var idUser = int.Parse(HttpContext.User.Claims.First().Value);
@@ -184,6 +194,33 @@ public class UserController : Controller
         var profile = await _userServices.Profile(idUser);
         ViewData["Success"] = "Datos actualizados";
         return View(nameof(Profile), profile);
+    }
+
+    public async Task<IActionResult> Follow(int userId)
+    {
+        var idUserLogged = int.Parse(HttpContext.User.Claims.First().Value);
+        var result = await _userServices.Follow(idUserLogged, userId);
+        if (!result)
+        {
+            ViewBag.Error = "Error, intentalo De Nuevo";
+            return RedirectToAction(nameof(ProfileUser), new { userId });
+        }
+
+        return RedirectToAction(nameof(ProfileUser), new { userId });
+    }
+
+    [Authorize]
+    public async Task<IActionResult> UnFollow(int userId)
+    {
+        var idUserLogged = int.Parse(HttpContext.User.Claims.First().Value);
+        var result = await _userServices.UnFollow(idUserLogged, userId);
+        if (!result)
+        {
+            ViewBag.Error = "Error, intentalo De Nuevo";
+            return RedirectToAction(nameof(ProfileUser), new { userId });
+        }
+
+        return RedirectToAction(nameof(ProfileUser), new { userId });
     }
 
     //TODO Fix this method to show the petition of the user

@@ -14,6 +14,7 @@ public class RecipeViewModel
     public string? Instructions { get; set; }
     public byte[]? Photo { get; set; }
     public DateTime? Date { get; set; }
+    public int ChefId { get; set; }
     public string? Chef { get; set; }
     public List<CommentDto>? Comments { get; set; }
     public int PersonalRating { get; set; }

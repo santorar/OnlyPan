@@ -18,7 +18,7 @@ public class RecipeDto
     public string? Instructions { get; set; }
     public byte[]? Photo { get; set; }
     public DateTime? Date { get; set; }
-    public int IdUser { get; set; }
+    public int ChefId { get; set; }
     public string? Chef { get; set; }
     public List<CommentDto>? CommentsDto { get; set; }
 }

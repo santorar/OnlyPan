@@ -86,7 +86,8 @@ public class UserRepository
     {
         try
         {
-            var users = await _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password).ToListAsync();
+            var users = await _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password)
+                .ToListAsync();
             var user = users.FirstOrDefault();
             if (user == null)
             {
@@ -106,7 +107,7 @@ public class UserRepository
             return null!;
         }
     }
-    
+
     public async Task<RecoveryDto> CreateRecoveryToken(string email)
     {
         try
@@ -129,6 +130,7 @@ public class UserRepository
             return null!;
         }
     }
+
     public async Task<bool> RecoveryValidation(string recoveryToken)
     {
         try
@@ -173,8 +175,8 @@ public class UserRepository
         {
             return null!;
         }
-        
     }
+
     public async Task<UserDto> EditUser(ProfileEditViewModel model, int idUser)
     {
         try
@@ -249,6 +251,69 @@ public class UserRepository
         catch (SystemException)
         {
             return null!;
+        }
+    }
+
+    public async Task<bool> RequestFollow(int idUserLogged, int idUser)
+    {
+        try
+        {
+            var follow = await _context.SeguirUsuarios
+                .FindAsync(idUserLogged, idUser);
+            if (follow == null) return false;
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> FollowUser(int idUserLogged, int idUser)
+    {
+        try
+        {
+            var follow = await _context.SeguirUsuarios
+                .FindAsync(idUserLogged, idUser);
+            if (follow == null)
+            {
+                var newFollow = new SeguirUsuario()
+                {
+                    IdSeguidor = idUserLogged,
+                    IdSeguido = idUser,
+                    FechaSeguimiento = DateTime.Now
+                };
+                await _context.SeguirUsuarios.AddAsync(newFollow);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            throw new SystemException();
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UnFollowUser(int idUserLogged, int idUser)
+    {
+        try
+        {
+            var follow = await _context.SeguirUsuarios
+                .FindAsync(idUserLogged, idUser);
+            if (follow != null)
+            {
+                _context.SeguirUsuarios.Remove(follow);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            throw new SystemException();
+        }
+        catch (SystemException)
+        {
+            return false;
         }
     }
 }

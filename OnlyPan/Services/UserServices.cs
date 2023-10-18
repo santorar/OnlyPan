@@ -135,7 +135,8 @@ public class UserServices
         try
         {
             return await _userRepository.RecoveryValidation(recoveryToken);
-        }catch (SystemException)
+        }
+        catch (SystemException)
         {
             return false;
         }
@@ -165,6 +166,7 @@ public class UserServices
             var user = await _userRepository.RequestProfile(idUser);
             return new ProfileViewModel()
             {
+                UserId = idUser,
                 Rol = user.RoleName,
                 Photo = user.Photo,
                 Biography = user.Biography,
@@ -179,6 +181,32 @@ public class UserServices
             return null!;
         }
     }
+
+    public async Task<ProfileViewModel> Profile(int idUserLogged, int idUser)
+    {
+        try
+        {
+            var followed = await IsFollowed(idUserLogged, idUser);
+            var user = await _userRepository.RequestProfile(idUser);
+            return new ProfileViewModel()
+            {
+                UserId = idUser,
+                Rol = user.RoleName,
+                Photo = user.Photo,
+                Biography = user.Biography,
+                Name = user.Name,
+                Email = user.Email,
+                Followers = user.Followers,
+                Followed = user.Followed,
+                isFollowed = followed
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
     public async Task<ProfileDto> GetUserDataModel(int idUser)
     {
         try
@@ -200,6 +228,7 @@ public class UserServices
             return true;
         return false;
     }
+
     public async Task<ProfileRolViewModel> GetProfileRol(int idUser, int idRol)
     {
         try
@@ -223,5 +252,20 @@ public class UserServices
         {
             return null!;
         }
+    }
+
+    public async Task<bool> IsFollowed(int idUserLogged, int idUser)
+    {
+        return await _userRepository.RequestFollow(idUserLogged, idUser);
+    }
+
+    public async Task<bool> Follow(int idUserLogged, int idUser)
+    {
+        return await _userRepository.FollowUser(idUserLogged, idUser);
+    }
+
+    public async Task<bool> UnFollow(int idUserLogged, int userId)
+    {
+        return await _userRepository.UnFollowUser(idUserLogged, userId);
     }
 }

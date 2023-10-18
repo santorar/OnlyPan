@@ -61,7 +61,7 @@ public class RecipesServices
             List<string> units = model.IngredientsUnit!.Split(',').ToList();
             RecipeDto recipe = new RecipeDto()
             {
-                IdUser = idUser,
+                ChefId = idUser,
                 Name = model.Name,
                 Description = model.Description,
                 IdCategory = model.IdCategory,
@@ -126,6 +126,7 @@ public class RecipesServices
                 Category = recipeDto.Category,
                 Tag = recipeDto.Tag,
                 Date = recipeDto.Date,
+                ChefId = recipeDto.ChefId,
                 Chef = recipeDto.Chef,
                 Comments = recipeDto.CommentsDto
             };

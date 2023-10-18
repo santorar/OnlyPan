@@ -197,7 +197,7 @@ public class RecipesRepository
             var newRecipeUser = new RecetaChef()
             {
                 IdReceta = idRecipe,
-                IdChef = recipe.IdUser,
+                IdChef = recipe.ChefId,
                 FechaActualizacion = DateTime.Now
             };
             await _context.RecetaChefs.AddAsync(newRecipeUser);
@@ -244,7 +244,7 @@ public class RecipesRepository
             Recetum recipe = (await _context.Receta.FindAsync(recipeId))!;
             RecetaChef? recipeChef =
                 await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
-            string chef = ((await _context.Usuarios.FindAsync(recipeChef!.IdChef))!).Nombre!;
+            var chef = await _context.Usuarios.FindAsync(recipeChef!.IdChef);
             var listComments = await _context.Comentarios
                 .Where(c => c.IdReceta == recipe.IdReceta && c.Estado != 6).ToListAsync();
             List<CommentDto> comments = new List<CommentDto>();
@@ -288,7 +288,8 @@ public class RecipesRepository
                 Instructions = recipe.Instrucciones,
                 Photo = recipe.Foto,
                 Date = recipe.FechaCreacion,
-                Chef = chef,
+                ChefId = recipeChef.IdChef,
+                Chef = chef.Nombre,
                 CommentsDto = comments
             };
             return recipeDto;
