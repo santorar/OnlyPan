@@ -5,6 +5,8 @@ public class RecipeDto
     public int IdRecipe { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+    public double Rating { get; set; }
+    public int PersonalRating { get; set; }
     public int IdCategory { get; set; }
     public string? Category { get; set; }
     public int IdTag { get; set; }

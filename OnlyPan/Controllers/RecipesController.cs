@@ -62,8 +62,24 @@ public class RecipesController : Controller
 
     public async Task<IActionResult> View(int idRecipe)
     {
-        RecipeViewModel model = await _recipesServices.GetRecipe(idRecipe);
+        var userId = int.Parse(HttpContext.User.Claims.First().Value);
+        var ratingList = _recipesServices.GetRatingList();
+        ;
+        ViewData["Ratings"] = new SelectList(ratingList);
+        RecipeViewModel model = await _recipesServices.GetRecipe(idRecipe, userId);
         return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RateRecipe(int recipeId, int pRating)
+    {
+        var userId = int.Parse(HttpContext.User.Claims.First().Value);
+        var result = await _recipesServices.RateRecipe(recipeId, pRating, userId);
+        if (!result)
+            ViewBag.Error = "Error al valorar la receta";
+        else
+            ViewData["Success"] = "Receta valorada correctamente";
+        return RedirectToAction(nameof(View), new { idRecipe = recipeId });
     }
 
     [HttpPost]

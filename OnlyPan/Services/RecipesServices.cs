@@ -94,6 +94,7 @@ public class RecipesServices
                     IdRecipe = recipeDto.IdRecipe,
                     Name = recipeDto.Name,
                     Description = recipeDto.Description,
+                    Rating = recipeDto.Rating,
                     Photo = recipeDto.Photo
                 };
                 recipeFeedViewModels.Add(recipeViewModel);
@@ -107,11 +108,11 @@ public class RecipesServices
         }
     }
 
-    public async Task<RecipeViewModel> GetRecipe(int idRecipe)
+    public async Task<RecipeViewModel> GetRecipe(int idRecipe, int userId)
     {
         try
         {
-            RecipeDto recipeDto = await _recipesRepository.RequestRecipe(idRecipe);
+            RecipeDto recipeDto = await _recipesRepository.RequestRecipe(idRecipe, userId);
             RecipeViewModel recipeViewModel = new RecipeViewModel()
             {
                 IdRecipe = recipeDto.IdRecipe,
@@ -119,6 +120,8 @@ public class RecipesServices
                 Description = recipeDto.Description,
                 Photo = recipeDto.Photo,
                 Instructions = recipeDto.Instructions,
+                Rating = recipeDto.Rating,
+                PersonalRating = recipeDto.PersonalRating,
                 Ingredients = recipeDto.Ingredients,
                 Category = recipeDto.Category,
                 Tag = recipeDto.Tag,
@@ -132,6 +135,22 @@ public class RecipesServices
         {
             return null!;
         }
+    }
+
+    public List<int> GetRatingList()
+    {
+        List<int> rating = new List<int>();
+        for (int i = 1; i <= 5; i++)
+        {
+            rating.Add(i);
+        }
+
+        return rating;
+    }
+
+    public async Task<bool> RateRecipe(int recipeId, int rating, int userId)
+    {
+        return await _recipesRepository.SetPersonalRating(recipeId, userId, rating);
     }
 
     public async Task<bool> CreateComment(string comment, int recipeId, int idUser)

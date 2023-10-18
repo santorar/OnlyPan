@@ -28,7 +28,6 @@ public class RoleController : Controller
     {
         var roles = await _roleServices.GetRoles();
         ViewData["Roles"] = new SelectList(roles, "IdRol", "NombreRol");
-
         return View();
     }
 

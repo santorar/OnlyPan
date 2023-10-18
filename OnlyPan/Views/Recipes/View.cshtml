@@ -19,6 +19,21 @@
     <p class="text-black">@Model.Instructions</p>
     <h3 class="uppercase">Comentarios</h3>
     <div class="container">
+        <div class="rating">
+            Valoracion General: @Model.Rating
+        </div>
+        @* TODO: Fix the personal rating to be shown *@
+        <div class="personal-rating">
+            Valoracion Personal: @Model.PersonalRating
+        </div>
+        <form method="post" asp-action="RateRecipe" asp-controller="Recipes">
+            <h3 class="uppercase">Valora esta receta</h3>
+            <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
+            <select name="pRating" asp-items="@ViewBag.Ratings"></select>
+            <input type="submit" value="Aceptar"/>
+        </form>
+    </div>
+    <div class="container">
         @if (Model.Comments == null || Model.Comments.Count == 0)
         {
             <p class="text-black">No hay comentarios</p>

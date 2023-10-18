@@ -110,6 +110,60 @@ public class RecipesRepository
         }
     }
 
+    public async Task<double> RequestRating(int recipeId)
+    {
+        double finalRating = 0;
+        List<Valoracion> ratings = await _context.Valoracions.Where(v => v.IdReceta == recipeId).ToListAsync();
+        if (ratings.Count == 0) return 0;
+        foreach (var rating in ratings)
+        {
+            finalRating += rating.Valoration!.Value;
+        }
+
+        finalRating /= ratings.Count;
+        return finalRating;
+    }
+
+    public async Task<int> RequestPersonalRating(int recipeId, int userId)
+    {
+        var rating = await _context.Valoracions.FindAsync(recipeId, userId);
+        if (rating == null) return 0;
+        return rating.Valoration!.Value;
+    }
+
+    //TODO: Check if the user has already rated the recipe
+    public async Task<bool> SetPersonalRating(int recipeId, int userId, int rating)
+    {
+        try
+        {
+            var request = await _context.Valoracions.FindAsync(recipeId, userId);
+            if (request == null)
+            {
+                var newRating = new Valoracion()
+                {
+                    IdReceta = recipeId,
+                    IdUsuario = userId,
+                    Valoration = rating,
+                    FechaInteracion = DateTime.Now,
+                    IdEstado = 5
+                };
+                await _context.Valoracions.AddAsync(newRating);
+            }
+            else
+            {
+                if (rating > 5 || rating < 0) return false;
+                request!.Valoration = rating;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
     public async Task<bool> CreateRecipe(RecipeDto recipe)
     {
         try
@@ -168,6 +222,7 @@ public class RecipesRepository
                 {
                     IdRecipe = recipe.IdReceta,
                     Name = recipe.NombreReceta,
+                    Rating = await RequestRating(recipe.IdReceta),
                     Description = recipe.DescripcionReceta,
                     Photo = recipe.Foto
                 };
@@ -182,11 +237,11 @@ public class RecipesRepository
         }
     }
 
-    public async Task<RecipeDto> RequestRecipe(int idRecipe)
+    public async Task<RecipeDto> RequestRecipe(int recipeId, int userId)
     {
         try
         {
-            Recetum recipe = (await _context.Receta.FindAsync(idRecipe))!;
+            Recetum recipe = (await _context.Receta.FindAsync(recipeId))!;
             RecetaChef? recipeChef =
                 await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
             string chef = ((await _context.Usuarios.FindAsync(recipeChef!.IdChef))!).Nombre!;
@@ -218,11 +273,15 @@ public class RecipesRepository
                 ingredients.Add(stringIngredient);
             }
 
+            double rating = await RequestRating(recipe.IdReceta);
+            int personalRating = await RequestPersonalRating(recipe.IdReceta, userId);
             RecipeDto recipeDto = new RecipeDto()
             {
                 IdRecipe = recipe.IdReceta,
                 Name = recipe.NombreReceta,
                 Description = recipe.DescripcionReceta,
+                Rating = rating,
+                PersonalRating = personalRating,
                 Category = category,
                 Tag = tag,
                 Ingredients = ingredients,
