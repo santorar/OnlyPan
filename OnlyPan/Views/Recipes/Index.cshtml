@@ -1,15 +1,23 @@
 @model List<OnlyPan.Models.ViewModels.RecipesViewModels.RecipeFeedViewModel>
+<a asp-action="Create" class="btn btn-primary bg-blue-500 m-11 mb-0">Crear Receta</a>
+ <div class = "grid lg:grid-cols-3 m-5 gap-2">
 @foreach (var recipe in Model)
 {
     <a asp-action="View" asp-controller="Recipes" asp-route-idRecipe="@recipe.IdRecipe">
-        <div class="container flex-column">
-            <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(recipe.Photo!)" alt="imagen @recipe.Name"/>
-            <div class="container flex-row">
-                <h1 class="title uppercase">@recipe.Name</h1>
+            <div class="max-w-sm rounded overflow-hidden shadow-lg ">
+            <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(recipe.Photo!)" alt="imagen @recipe.Name" />
+            <div class="px-6 py-4">
+                <div class="font-bold text-xl mb-2"><h1 class="title uppercase">@recipe.Name</h1></div>
+                <p class="text-gray-700 text-base">@recipe.Description</p>
+            </div>
+            <div class="px-6 pt-4 pb-2">
                 <p class="disabled:text-gray-500">Valoracion General: @recipe.Rating</p>
-                <p class="text-black">@recipe.Description</p>
+
             </div>
         </div>
     </a>
+
+
 }
-<a asp-action="Create" class="btn btn-primary bg-blue-500">Crear Receta</a>
+</div>
+
