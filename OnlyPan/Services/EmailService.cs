@@ -46,4 +46,14 @@ public class EmailService
         body += "Ingrese a la plataforma para aceptar o rechazar la solicitud <br>";
         await SendEmail(email, "Solicitud de rol para el usuario " + nameUser, body);
     }
+
+    public async Task SendNotificationNewRecipe(string email, string nameUser, string idRecipe, string nameRecipe)
+    {
+        string body = "Querido usuario " + nameUser + "<br>";
+        body += "El usuario " + nameUser + " ha subido una nueva receta <br>";
+        body += "Ingrese a la plataforma para ver la receta <br>";
+        body += "<a href=\"https://localhost:7077/Recipes/View?idRecipe=" + idRecipe + "\">Ver receta " + nameRecipe +
+                "</a>";
+        await SendEmail(email, "Solicitud de rol para el usuario " + nameUser, body);
+    }
 }
