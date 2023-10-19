@@ -1,24 +1,40 @@
 @model List<OnlyPan.Models.ViewModels.RolViewModels.RolePetitionViewModel>
 
-<h1>Solicitudes de cambio de rol</h1>
+<h1 class = "uppercase font-bold my-3 text-center mt-5">Solicitudes de cambio de rol</h1>
 
 <span class="alert-danger">@ViewBag.Error</span>
-<table class="table">
-    <thead>
+
+
+<div class = "flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-hidden">
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table min-w-full text-left text-sm">
+    <thead class=" border-b font-medium dark:border-neutral-500">
     <tr>
-        <th>
+        <th scope="col" class="px-6 py-4">
             Nombre Usuario
         </th>
-        <th>
+            <th scope="col" class="px-6 py-4">
             Rol Actual
         </th>
-        <th>
+            <th scope="col" class="px-6 py-4">
             Rol Solicitado
         </th>
-        <th>
-            Fecha
+            <th scope="col" class="px-6 py-4">
+            Fecha de Solicitud
         </th>
-        <th>
+            <th scope="col" class="px-6 py-4">
             Acciones
         </th>
     </tr>
@@ -26,20 +42,20 @@
     <tbody>
     @foreach (var petition in Model)
     {
-        <tr>
-            <td>
+            <tr class="border-b transition duration-300 ease-in-out hover:bg-orange-200 dark:border-orange-200 dark:hover:bg-orange-200">
+                <td class="whitespace-nowrap px-6 py-4 font-medium">
                 @Html.DisplayFor(m => petition.UserName)
             </td>
-            <td>
+                <td class="whitespace-nowrap px-6 py-4">
                 @Html.DisplayFor(m => petition.CurrentRoleName)
             </td>
-            <td>
+                <td class="whitespace-nowrap px-6 py-4">
                 @Html.DisplayFor(m => petition.RequesedRoleName)
             </td>
-            <td>
+                <td class="whitespace-nowrap px-6 py-4">
                 @Html.DisplayFor(m => petition.Time)
             </td>
-            <td>
+                <td class="whitespace-nowrap px-6 py-4">
                 <a class="link-success space-x-1.5" asp-action="ViewProfileRol" asp-controller="User"
                    asp-route-idUser="@petition.IdUser" asp-route-idRol="@petition.IdRequesedRole">
                     Ver Perfil
