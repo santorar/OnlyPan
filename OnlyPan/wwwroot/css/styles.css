@@ -662,3 +662,12 @@ a {
 .user-image {
   border-radius: 12px;
 }
+
+footer {
+  bottom: 0;
+  width: 100%;
+}
+
+main {
+  min-height: 80vh;
+}

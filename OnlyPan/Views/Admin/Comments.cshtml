@@ -1,51 +1,64 @@
-@model List<OnlyPan.Models.ViewModels.AdminViewModels.ReportedCommentViewModel>
+﻿@model List<OnlyPan.Models.ViewModels.AdminViewModels.ReportedCommentViewModel>
 
-<h1>Comentarios Reportados</h1>
+<h1 class="uppercase font-bold my-3 text-center mt-5">Comentarios Reportados</h1>
 
-<span class="alert-danger">@ViewBag.Error</span>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            Nombre Usuario
-        </th>
-        <th>
-            Comentario
-        </th>
-        <th>
-            Fecha
-        </th>
-        <th>
-            Acciones
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var comment in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => comment.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(m => comment.Comment)
-            </td>
-            <td>
-                @Html.DisplayFor(m => comment.Date)
-            </td>
-            <td>
-                <a class="link-success space-x-1.5" asp-action="AcceptComment" asp-controller="Admin"
-                   asp-route-idComment="@comment.IdComment">
-                    Aceptar Comentario
-                </a>
-                <a class="link-danger space-x-1.5" asp-action="BlockComment" asp-controller="Admin"
-                   asp-route-idComment="@comment.IdComment">
-                    Bloquear Comentario
-                </a>
-            </td>
-        </tr>
-    }
-    <span class="alert-danger">@ViewBag.Error</span>
-    <span class="alert-success">@ViewBag.Success</span>
-    </tbody>
-</table>
+<div class="flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-hidden">
+
+                <span class="alert-danger">@ViewBag.Error</span>
+                <table class="table min-w-full text-left text-sm">
+                    <thead class="border-b font-medium dark:border-neutral-500">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Nombre de Usuario
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Comentario
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Fecha de Publicación
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var comment in Model)
+                        {
+                            <tr class=" border-b transition duration-300 ease-in-out hover:bg-orange-200 dark:border-orange-200 dark:hover:bg-orange-200">
+                                <td class="whitespace-nowrap px-6 py-4 font-medium">
+                                    @Html.DisplayFor(m => comment.UserName)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    @Html.DisplayFor(m => comment.Comment)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    @Html.DisplayFor(m => comment.Date)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <a class="link-success space-x-1.5" asp-action="AcceptComment" asp-controller="Admin"
+                                       asp-route-idComment="@comment.IdComment">
+                                        Aceptar Comentario
+                                    </a>
+                                    <a class="link-danger space-x-1.5" asp-action="BlockComment" asp-controller="Admin"
+                                       asp-route-idComment="@comment.IdComment">
+                                        Bloquear Comentario
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        <span class="alert-danger">@ViewBag.Error</span>
+                        <span class="alert-success">@ViewBag.Success</span>
+                    </tbody>
+                </table>
+
+            
+            
+            </div>
+        </div>
+    </div>
+</div>
+
