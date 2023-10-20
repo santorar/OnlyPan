@@ -52,7 +52,7 @@
                     @if (Context.User.IsInRole("2") || Context.User.IsInRole("3"))
                     {
                         <li class="nav-item font-bold">
-                            <a class="nav-link text-black hover:bg-amber-600   bg-[var(--second-color)] hover:text-white rounded-md px-3 py-2 flex flex-row gap-2" asp-area="" asp-controller="Admin" asp-action="Moderate">Admin panel</a>
+                            <a class="nav-link text-black hover:bg-amber-600   bg-[var(--second-color)] hover:text-white rounded-md px-3 py-2 flex flex-row gap-2" asp-area="" asp-controller="Admin" asp-action="Moderate">Panel De Administración</a>
                         </li>
                     }
                 </ul>
@@ -172,6 +172,13 @@
         @RenderBody()
     </main>
 </div>
+    <footer class="bg-neutral-200 text-center dark:bg-neutral-700 lg:text-left">
+        <div class="p-4 text-center text-neutral-700 dark:text-neutral-200">
+            © 2023 Copyright:
+            <a class="text-neutral-800 dark:text-neutral-400"
+               href="https://tailwind-elements.com/">Tailwind Elements</a>
+        </div>
+    </footer>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
