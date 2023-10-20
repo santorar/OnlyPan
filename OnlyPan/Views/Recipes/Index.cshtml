@@ -5,7 +5,7 @@
 {
     <a asp-action="View" asp-controller="Recipes" asp-route-idRecipe="@recipe.IdRecipe">
             <div class="max-w-sm rounded overflow-hidden shadow-lg ">
-            <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(recipe.Photo!)" alt="imagen @recipe.Name" />
+            <img class="img-thumbnail object-fill justify-content-center" style='max-height:170px;' src="data:image;base64,@Convert.ToBase64String(recipe.Photo!)" alt="imagen @recipe.Name"/>
             <div class="px-6 py-4">
                 <div class="font-bold text-xl mb-2"><h1 class="title uppercase">@recipe.Name</h1></div>
                 <p class="text-gray-700 text-base">@recipe.Description</p>

@@ -1,4 +1,4 @@
-@model List<OnlyPan.Models.ViewModels.RolViewModels.RolePetitionViewModel>
+﻿@model List<OnlyPan.Models.ViewModels.RolViewModels.RolePetitionViewModel>
 
 <h1 class = "uppercase font-bold my-3 text-center mt-5">Solicitudes de cambio de rol</h1>
 
@@ -54,11 +54,11 @@
                                 </td>
                             </tr>
                         }
-                        <span class="alert-danger">@ViewBag.Error</span>
-                        <span class="alert-success">@ViewBag.Success</span>
+                      
                     </tbody>
                 </table>
-
+                <span class="alert-danger">@ViewBag.Error</span>
+                <span class="alert-success">@ViewBag.Success</span>
 
             </div>
         </div>
