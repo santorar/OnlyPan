@@ -9,18 +9,18 @@ namespace OnlyPan.Repositories;
 
 public class UserRepository
 {
-    private readonly OnlyPanContext _context;
+    private readonly OnlyPanDbContext _dbContext;
 
-    public UserRepository(OnlyPanContext context)
+    public UserRepository(OnlyPanDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task<bool> EmailInDb(string email)
     {
         try
         {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == email);
+            var user = await _dbContext.Usuarios.FirstOrDefaultAsync(u => u.Correo == email);
             if (user == null)
             {
                 return false;
@@ -51,8 +51,8 @@ public class UserRepository
                 Activo = false,
                 Biografia = "¡Hola! Soy nuevo en OnlyPan"
             };
-            await _context.Usuarios.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await _dbContext.Usuarios.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -65,7 +65,7 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.CodigoActivacion == activationCode);
+            var user = await _dbContext.Usuarios.FirstOrDefaultAsync(u => u.CodigoActivacion == activationCode);
             if (user == null)
             {
                 return false;
@@ -73,7 +73,7 @@ public class UserRepository
 
             user.Activo = true;
             user.CodigoActivacion = null;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -86,7 +86,7 @@ public class UserRepository
     {
         try
         {
-            var users = await _context.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password)
+            var users = await _dbContext.Usuarios.FromSqlRaw("EXECUTE sp_validate_user {0}, {1}", email, password)
                 .ToListAsync();
             var user = users.FirstOrDefault();
             if (user == null)
@@ -112,12 +112,12 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios
+            var user = await _dbContext.Usuarios
                 .Where(u => u.Correo == email)
                 .FirstOrDefaultAsync();
             string recoveryToken = Guid.NewGuid().ToString();
             user!.ContrasenaToken = recoveryToken;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return new RecoveryDto()
             {
                 Email = user.Correo,
@@ -135,7 +135,7 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios
+            var user = await _dbContext.Usuarios
                 .Where(u => u.ContrasenaToken == recoveryToken)
                 .FirstOrDefaultAsync();
             if (user == null)
@@ -152,14 +152,14 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios
+            var user = await _dbContext.Usuarios
                 .Where(u => u.IdUsuario == idUser)
                 .FirstOrDefaultAsync();
-            var rol = await _context.Rols
+            var rol = await _dbContext.Rols
                 .Where(r => r.IdRol == user!.Rol)
                 .FirstOrDefaultAsync();
-            int followers = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
-            int followed = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
+            int followers = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
+            int followed = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
             return new ProfileDto()
             {
                 RoleName = rol!.NombreRol,
@@ -181,7 +181,7 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios.FindAsync(idUser);
+            var user = await _dbContext.Usuarios.FindAsync(idUser);
             var pu = new PhotoUtilities();
             if (model.Email != user?.Correo)
                 user!.Correo = model.Email!;
@@ -191,8 +191,8 @@ public class UserRepository
                 user!.Biografia = model.Biography;
             if (model.Photo != null && model.Photo.Length > 0)
                 user!.Foto = await pu.convertToBytes(model.Photo);
-            _context.Usuarios.Update(user!);
-            await _context.SaveChangesAsync();
+            _dbContext.Usuarios.Update(user!);
+            await _dbContext.SaveChangesAsync();
             return new UserDto()
             {
                 IdUser = user!.IdUsuario,
@@ -211,7 +211,7 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios.FindAsync(idUser);
+            var user = await _dbContext.Usuarios.FindAsync(idUser);
             if (user != null)
             {
                 return user.Nombre!;
@@ -229,12 +229,12 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios
+            var user = await _dbContext.Usuarios
                 .Where(u => u.ContrasenaToken == recoveryToken)
                 .FirstOrDefaultAsync();
             user!.Contrasena = passwordToken;
             user.ContrasenaToken = "";
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -247,11 +247,11 @@ public class UserRepository
     {
         try
         {
-            var user = await _context.Usuarios.FindAsync(idUser);
-            var currentRol = await _context.Rols.FindAsync(user!.Rol);
-            var newRol = await _context.Rols.FindAsync(idRolNew);
-            int followers = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
-            int followed = await _context.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
+            var user = await _dbContext.Usuarios.FindAsync(idUser);
+            var currentRol = await _dbContext.Rols.FindAsync(user!.Rol);
+            var newRol = await _dbContext.Rols.FindAsync(idRolNew);
+            int followers = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
+            int followed = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
             return new ProfileRolDto()
             {
                 IdUser = user.IdUsuario,
@@ -276,7 +276,7 @@ public class UserRepository
     {
         try
         {
-            var follow = await _context.SeguirUsuarios
+            var follow = await _dbContext.SeguirUsuarios
                 .FindAsync(idUserLogged, idUser);
             if (follow == null) return false;
             return true;
@@ -291,7 +291,7 @@ public class UserRepository
     {
         try
         {
-            var follow = await _context.SeguirUsuarios
+            var follow = await _dbContext.SeguirUsuarios
                 .FindAsync(idUserLogged, idUser);
             if (follow == null)
             {
@@ -301,8 +301,8 @@ public class UserRepository
                     IdSeguido = idUser,
                     FechaSeguimiento = DateTime.Now
                 };
-                await _context.SeguirUsuarios.AddAsync(newFollow);
-                await _context.SaveChangesAsync();
+                await _dbContext.SeguirUsuarios.AddAsync(newFollow);
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
 
@@ -318,12 +318,12 @@ public class UserRepository
     {
         try
         {
-            var follow = await _context.SeguirUsuarios
+            var follow = await _dbContext.SeguirUsuarios
                 .FindAsync(idUserLogged, idUser);
             if (follow != null)
             {
-                _context.SeguirUsuarios.Remove(follow);
-                await _context.SaveChangesAsync();
+                _dbContext.SeguirUsuarios.Remove(follow);
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
 

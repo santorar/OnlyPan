@@ -10,7 +10,7 @@ using OnlyPan.Models;
 
 namespace OnlyPan.Migrations
 {
-    [DbContext(typeof(OnlyPanContext))]
+    [DbContext(typeof(OnlyPanDbContext))]
     partial class OnlyPanContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

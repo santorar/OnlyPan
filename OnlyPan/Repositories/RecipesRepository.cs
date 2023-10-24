@@ -1,23 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
+using OnlyPan.Models.Dtos.RecipesDtos;
+using OnlyPan.Utilities.Classes;
 
 namespace OnlyPan.Repositories;
 
 public class RecipesRepository
 {
-    private readonly OnlyPanContext _context;
+    private readonly OnlyPanDbContext _dbContext;
 
-    public RecipesRepository(OnlyPanContext context)
+    public RecipesRepository(OnlyPanDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task<List<CategoryDto>> RequestCategories()
     {
         try
         {
-            var categories = await _context.Categoria.ToListAsync();
+            var categories = await _dbContext.Categoria.ToListAsync();
             List<CategoryDto> result = new List<CategoryDto>();
             foreach (var category in categories)
             {
@@ -41,7 +43,7 @@ public class RecipesRepository
     {
         try
         {
-            var ingredients = await _context.Ingredientes.ToListAsync();
+            var ingredients = await _dbContext.Ingredientes.ToListAsync();
             List<IngredientDto> result = new List<IngredientDto>();
             foreach (var ingredient in ingredients)
             {
@@ -65,7 +67,7 @@ public class RecipesRepository
     {
         try
         {
-            var tags = await _context.Etiqueta.ToListAsync();
+            var tags = await _dbContext.Etiqueta.ToListAsync();
             List<TagDto> result = new List<TagDto>();
             foreach (var tag in tags)
             {
@@ -85,23 +87,21 @@ public class RecipesRepository
         }
     }
 
-    public List<UnitDto> RequestUnits()
+    public async Task<List<UnitDto>> RequestUnits()
     {
         try
         {
-            List<UnitDto> result = new List<UnitDto>();
-            var shortNames = new List<string> { "g", "kg", "ml", "l", "oz", "lb" };
-            var longNames = new List<string> { "gramos", "kilogramos", "mililitros", "litros", "onzas", "libras" };
-            for (int i = 0; i < shortNames.Count; i++)
+            var units = await _dbContext.Unidads.ToListAsync();
+            var result = new List<UnitDto>();
+            foreach (var unit in units)
             {
-                UnitDto unitDto = new UnitDto()
+                result.Add(new UnitDto()
                 {
-                    ShortName = shortNames[i],
-                    LongName = longNames[i]
-                };
-                result.Add(unitDto);
+                    IdUnit = unit.IdUnidad,
+                    ShortName = unit.NombreCorto,
+                    LongName = unit.NombreLargo
+                });
             }
-
             return result;
         }
         catch (SystemException)
@@ -113,7 +113,7 @@ public class RecipesRepository
     public async Task<double> RequestRating(int recipeId)
     {
         double finalRating = 0;
-        List<Valoracion> ratings = await _context.Valoracions.Where(v => v.IdReceta == recipeId).ToListAsync();
+        List<Valoracion> ratings = await _dbContext.Valoracions.Where(v => v.IdReceta == recipeId).ToListAsync();
         if (ratings.Count == 0) return 0;
         foreach (var rating in ratings)
         {
@@ -126,7 +126,7 @@ public class RecipesRepository
 
     public async Task<int> RequestPersonalRating(int recipeId, int userId)
     {
-        var rating = await _context.Valoracions.FindAsync(userId, recipeId);
+        var rating = await _dbContext.Valoracions.FindAsync(userId, recipeId);
         if (rating == null) return 0;
         return rating.Valoration!.Value;
     }
@@ -136,7 +136,7 @@ public class RecipesRepository
     {
         try
         {
-            var request = await _context.Valoracions.FindAsync(userId, recipeId);
+            var request = await _dbContext.Valoracions.FindAsync(userId, recipeId);
             if (request == null)
             {
                 var newRating = new Valoracion()
@@ -147,7 +147,7 @@ public class RecipesRepository
                     FechaInteracion = DateTime.Now,
                     IdEstado = 5
                 };
-                await _context.Valoracions.AddAsync(newRating);
+                await _dbContext.Valoracions.AddAsync(newRating);
             }
             else
             {
@@ -155,7 +155,7 @@ public class RecipesRepository
                 request!.Valoration = rating;
             }
 
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -175,12 +175,11 @@ public class RecipesRepository
                 IdCategoria = recipe.IdCategory,
                 IdEtiqueta = recipe.IdTag,
                 Instrucciones = recipe.Instructions,
-                Foto = recipe.Photo,
                 FechaCreacion = recipe.Date,
                 IdEstado = 4
             };
-            await _context.Receta.AddAsync(newRecipe);
-            await _context.SaveChangesAsync();
+            await _dbContext.Receta.AddAsync(newRecipe);
+            await _dbContext.SaveChangesAsync();
             var idRecipe = newRecipe.IdReceta;
             for (int i = 0; i < recipe.IdsIngredients!.Count; i++)
             {
@@ -189,19 +188,28 @@ public class RecipesRepository
                     IdReceta = idRecipe,
                     IdIngrediente = recipe.IdsIngredients[i],
                     Cantidad = recipe.IngredientsQuantity![i],
-                    Unidad = recipe.IngredientsUnit![i]
+                    IdUnidad = recipe.IngredientsUnit![i]
                 };
-                await _context.RecetaIngredientes.AddAsync(newRecipeIngredient);
+                await _dbContext.RecetaIngredientes.AddAsync(newRecipeIngredient);
             }
 
+            foreach(var image in recipe.Photos!)
+            {
+                var newImage = new ImagenRecetum()
+                {
+                    IdReceta = idRecipe,
+                    Imagen = image
+                };
+                await _dbContext.ImagenReceta.AddAsync(newImage);
+            }
             var newRecipeUser = new RecetaChef()
             {
                 IdReceta = idRecipe,
                 IdChef = recipe.ChefId,
                 FechaActualizacion = DateTime.Now
             };
-            await _context.RecetaChefs.AddAsync(newRecipeUser);
-            await _context.SaveChangesAsync();
+            await _dbContext.RecetaChefs.AddAsync(newRecipeUser);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -214,17 +222,28 @@ public class RecipesRepository
     {
         try
         {
-            var recipes = await _context.Receta.ToListAsync();
+            var recipes = await _dbContext.Receta.ToListAsync();
             List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
             foreach (var recipe in recipes)
             {
+                var image = await _dbContext.ImagenReceta
+                    .Where(i => i.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
+                byte[]? imageBytes;
+                if (image == null)
+                {
+                    imageBytes = new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory()+"/wwwroot/icons/recipeDefault.jpg");
+                }
+                else
+                {
+                    imageBytes = image.Imagen;
+                }
                 var recipeDto = new RecipeFeedDto()
                 {
                     IdRecipe = recipe.IdReceta,
                     Name = recipe.NombreReceta,
                     Rating = await RequestRating(recipe.IdReceta),
                     Description = recipe.DescripcionReceta,
-                    Photo = recipe.Foto
+                    Photo = imageBytes
                 };
                 recipesDtos.Add(recipeDto);
             }
@@ -241,16 +260,18 @@ public class RecipesRepository
     {
         try
         {
-            Recetum recipe = (await _context.Receta.FindAsync(recipeId))!;
+            Recetum? recipe = await _dbContext.Receta.FindAsync(recipeId);
+            List<ImagenRecetum>? photos =
+                await _dbContext.ImagenReceta.Where(p => p.IdReceta == recipeId).ToListAsync();
             RecetaChef? recipeChef =
-                await _context.RecetaChefs.Where(r => r.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
-            var chef = await _context.Usuarios.FindAsync(recipeChef!.IdChef);
-            var listComments = await _context.Comentarios
-                .Where(c => c.IdReceta == recipe.IdReceta && c.Estado != 6).ToListAsync();
+                await _dbContext.RecetaChefs.Where(r => r.IdReceta == recipe!.IdReceta).FirstOrDefaultAsync();
+            var chef = await _dbContext.Usuarios.FindAsync(recipeChef!.IdChef);
+            var listComments = await _dbContext.Comentarios
+                .Where(c => c.IdReceta == recipe!.IdReceta && c.Estado != 6).ToListAsync();
             List<CommentDto> comments = new List<CommentDto>();
             foreach (var comentary in listComments)
             {
-                var user = await _context.Usuarios.FindAsync(comentary.IdUsuario);
+                var user = await _dbContext.Usuarios.FindAsync(comentary.IdUsuario);
                 CommentDto commentDto = new CommentDto()
                 {
                     IdComment = comentary.IdComentario,
@@ -261,15 +282,16 @@ public class RecipesRepository
                 comments.Add(commentDto);
             }
 
-            string? category = ((await _context.Categoria.FindAsync(recipe.IdCategoria))!).NombreCategoria;
-            string? tag = ((await _context.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
+            string? category = ((await _dbContext.Categoria.FindAsync(recipe!.IdCategoria))!).NombreCategoria;
+            string? tag = ((await _dbContext.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
             var listIngredientsRecipe =
-                await _context.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).ToListAsync();
+                await _dbContext.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).Include(i => i.IdUnidadNavigation).ToListAsync();
             List<string> ingredients = new List<string>();
             foreach (var ingredient in listIngredientsRecipe)
             {
-                string? type = ((await _context.Ingredientes.FindAsync(ingredient.IdIngrediente))!).NombreIngrediente;
-                string stringIngredient = type + " " + ingredient.Cantidad + " " + ingredient.Unidad;
+                string? type = ((await _dbContext.Ingredientes.FindAsync(ingredient.IdIngrediente))!).NombreIngrediente;
+                string stringIngredient =
+                    type + " " + ingredient.Cantidad + " " + ingredient.IdUnidadNavigation!.NombreCorto;
                 ingredients.Add(stringIngredient);
             }
 
@@ -286,10 +308,10 @@ public class RecipesRepository
                 Tag = tag,
                 Ingredients = ingredients,
                 Instructions = recipe.Instrucciones,
-                Photo = recipe.Foto,
+                Photos = photos!.Select(p => p.Imagen).ToList(),
                 Date = recipe.FechaCreacion,
                 ChefId = recipeChef.IdChef,
-                Chef = chef.Nombre,
+                Chef = chef!.Nombre,
                 CommentsDto = comments
             };
             return recipeDto;
@@ -312,8 +334,8 @@ public class RecipesRepository
                 Estado = 5,
                 Fecha = DateTime.Now,
             };
-            await _context.Comentarios.AddAsync(newComment);
-            await _context.SaveChangesAsync();
+            await _dbContext.Comentarios.AddAsync(newComment);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -326,9 +348,9 @@ public class RecipesRepository
     {
         try
         {
-            var comment = await _context.Comentarios.FindAsync(commentId);
+            var comment = await _dbContext.Comentarios.FindAsync(commentId);
             comment!.Estado = 7;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -341,7 +363,7 @@ public class RecipesRepository
     {
         try
         {
-            var comment = await _context.Comentarios.FindAsync(commentId);
+            var comment = await _dbContext.Comentarios.FindAsync(commentId);
             if (comment!.Estado == 7)
                 return true;
             return false;

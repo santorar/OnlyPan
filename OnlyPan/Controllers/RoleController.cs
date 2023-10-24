@@ -10,13 +10,13 @@ namespace OnlyPan.Controllers;
 [Authorize]
 public class RoleController : Controller
 {
-    private readonly OnlyPanContext _context;
+    private readonly OnlyPanDbContext _dbContext;
     private readonly RoleServices _roleServices;
 
-    public RoleController(OnlyPanContext context)
+    public RoleController(OnlyPanDbContext dbContext)
     {
-        _context = context;
-        _roleServices = new RoleServices(context);
+        _dbContext = dbContext;
+        _roleServices = new RoleServices(dbContext);
     }
 
     public IActionResult Index()

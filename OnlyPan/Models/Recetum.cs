@@ -15,13 +15,15 @@ public partial class Recetum
 
     public string? Instrucciones { get; set; }
 
-    public byte[]? Foto { get; set; }
-
     public string? DescripcionReceta { get; set; }
 
     public DateTime? FechaCreacion { get; set; }
 
     public int? IdEstado { get; set; }
+
+    public double? Valoracion { get; set; }
+
+    public int? NValoraciones { get; set; }
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 

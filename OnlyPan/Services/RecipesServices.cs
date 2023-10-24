@@ -1,5 +1,6 @@
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
+using OnlyPan.Models.Dtos.RecipesDtos;
 using OnlyPan.Models.ViewModels.RecipesViewModels;
 using OnlyPan.Repositories;
 using OnlyPan.Utilities.Classes;
@@ -10,9 +11,9 @@ public class RecipesServices
 {
     private readonly RecipesRepository _recipesRepository;
 
-    public RecipesServices(OnlyPanContext context)
+    public RecipesServices(OnlyPanDbContext dbContext)
     {
-        _recipesRepository = new RecipesRepository(context);
+        _recipesRepository = new RecipesRepository(dbContext);
     }
 
     public async Task<List<CategoryDto>> GetCategories()
@@ -30,9 +31,9 @@ public class RecipesServices
         return await _recipesRepository.RequestTags();
     }
 
-    public List<UnitDto> GetUnits()
+    public async Task<List<UnitDto>> GetUnits()
     {
-        return _recipesRepository.RequestUnits();
+        return await _recipesRepository.RequestUnits();
     }
 
     public async Task<bool> CreateRecipe(RecipeCreateViewModel model, int idUser)
@@ -57,8 +58,17 @@ public class RecipesServices
             {
                 quantitiesInt.Add(int.Parse(quantity));
             }
-
-            List<string> units = model.IngredientsUnit!.Split(',').ToList();
+            List<byte[]> photos = new List<byte[]>();
+            foreach(var photo in model.Photos!)
+            {
+                photos.Add(await pu.convertToBytes(photo));
+            }
+            List<string> unitsStringList = model.IngredientsUnit!.Split(',').ToList();
+            List<int> units = new List<int>();
+            foreach (var unitString in unitsStringList)
+            {
+                units.Add(int.Parse(unitString));
+            }
             RecipeDto recipe = new RecipeDto()
             {
                 ChefId = idUser,
@@ -70,7 +80,7 @@ public class RecipesServices
                 IngredientsQuantity = quantitiesInt,
                 IngredientsUnit = units,
                 Instructions = model.Instructions,
-                Photo = await pu.convertToBytes(model.Photo),
+                Photos = photos!,
                 Date = DateTime.Now
             };
             return await _recipesRepository.CreateRecipe(recipe);
@@ -118,7 +128,7 @@ public class RecipesServices
                 IdRecipe = recipeDto.IdRecipe,
                 Name = recipeDto.Name,
                 Description = recipeDto.Description,
-                Photo = recipeDto.Photo,
+                Photos = recipeDto.Photos,
                 Instructions = recipeDto.Instructions,
                 Rating = recipeDto.Rating,
                 PersonalRating = recipeDto.PersonalRating,

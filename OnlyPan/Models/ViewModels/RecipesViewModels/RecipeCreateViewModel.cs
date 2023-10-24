@@ -27,6 +27,6 @@ public class RecipeCreateViewModel
     [Display(Name="Instrucciones"), DataType(DataType.Text), Required(ErrorMessage = "Las instrucciones de la receta son requeridas")]
     public string? Instructions { get; set; }
     [Display(Name="Foto"), DataType(DataType.Upload), Required(ErrorMessage = "La foto de la receta es requerida")]
-    public IFormFile? Photo { get; set; }
+    public List<IFormFile>? Photos { get; set; }
     
 }

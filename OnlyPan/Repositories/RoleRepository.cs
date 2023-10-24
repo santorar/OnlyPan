@@ -7,18 +7,18 @@ namespace OnlyPan.Repositories;
 
 public class RoleRepository
 {
-    private readonly OnlyPanContext _context;
+    private readonly OnlyPanDbContext _dbContext;
 
-    public RoleRepository(OnlyPanContext context)
+    public RoleRepository(OnlyPanDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task<string> RequestRoleName(int idRole)
     {
         try
         {
-            var role = await _context.Rols.FindAsync(idRole);
+            var role = await _dbContext.Rols.FindAsync(idRole);
             if (role != null)
                 return role.NombreRol;
             throw new SystemException();
@@ -33,7 +33,7 @@ public class RoleRepository
     {
         try
         {
-            var roles = await _context.Rols.Where(r => r.IdRol >= 2 && r.IdRol <= 4).ToListAsync();
+            var roles = await _dbContext.Rols.Where(r => r.IdRol >= 2 && r.IdRol <= 4).ToListAsync();
             List<RoleDto> result = new List<RoleDto>();
             foreach (var role in roles)
             {
@@ -57,7 +57,7 @@ public class RoleRepository
     {
         try
         {
-            var petition = await _context
+            var petition = await _dbContext
                 .SolicitudRols.FindAsync(idUser, idRole);
             if (petition == null) return false;
             return true;
@@ -79,8 +79,8 @@ public class RoleRepository
                 IdEstado = 4,
                 FechaSolicitud = DateTime.Now
             };
-            await _context.AddAsync(petition);
-            await _context.SaveChangesAsync();
+            await _dbContext.AddAsync(petition);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -93,7 +93,7 @@ public class RoleRepository
     {
         try
         {
-            var petitions = await _context.SolicitudRols
+            var petitions = await _dbContext.SolicitudRols
                 .Include(u => u.IdUsuarioSolicitudNavigation)
                 .Include(u => u.IdUsuarioSolicitudNavigation.RolNavigation)
                 .Include(r => r.IdRolSolicitudNavigation)
@@ -126,17 +126,17 @@ public class RoleRepository
         try
         {
             // take the petition from the database
-            SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
+            SolicitudRol? petition = await _dbContext.SolicitudRols.FindAsync(idUser, idRol);
             petition!.IdUsuarioAprovador = idUserAdmin;
             petition.FechaAprovacion = DateTime.UtcNow;
             petition.IdEstado = 5;
             // Add the rol to the user
-            Usuario? user = await _context.Usuarios.FindAsync(idUser);
+            Usuario? user = await _dbContext.Usuarios.FindAsync(idUser);
             if (user != null)
             {
                 user.Rol = petition.IdRolSolicitud;
                 // Save the changes into the database
-                await _context.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
                 return true;
             }
 
@@ -153,12 +153,12 @@ public class RoleRepository
         try
         {
             // take the petition from the database
-            SolicitudRol? petition = await _context.SolicitudRols.FindAsync(idUser, idRol);
+            SolicitudRol? petition = await _dbContext.SolicitudRols.FindAsync(idUser, idRol);
             petition!.IdUsuarioAprovador = idUserAdmin;
             petition.FechaAprovacion = DateTime.UtcNow;
             petition.IdEstado = 6;
             // Save the changes into the database
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -172,7 +172,7 @@ public class RoleRepository
         try
         {
             List<string> emails = new List<string>();
-            var admins = await _context.Usuarios
+            var admins = await _dbContext.Usuarios
                 .Where(u => u.Rol == 2 || u.Rol == 3)
                 .ToListAsync();
             foreach (var admin in admins)

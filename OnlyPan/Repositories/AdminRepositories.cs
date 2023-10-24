@@ -7,18 +7,18 @@ namespace OnlyPan.Repositories;
 
 public class AdminRepositories
 {
-    private OnlyPanContext _context;
+    private OnlyPanDbContext _dbContext;
 
-    public AdminRepositories(OnlyPanContext context)
+    public AdminRepositories(OnlyPanDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task<List<ReportedCommentDto>> RequestReportedComments()
     {
         try
         {
-            var reportedComments = await _context.Comentarios.Where(x => x.Estado == 7)
+            var reportedComments = await _dbContext.Comentarios.Where(x => x.Estado == 7)
                 .Include(x => x.IdUsuarioNavigation).ToListAsync();
             List<ReportedCommentDto> result = new List<ReportedCommentDto>();
             foreach (var reportedComment in reportedComments)
@@ -47,9 +47,9 @@ public class AdminRepositories
     {
         try
         {
-            var comment = await _context.Comentarios.FirstOrDefaultAsync(x => x.IdComentario == idComment);
+            var comment = await _dbContext.Comentarios.FirstOrDefaultAsync(x => x.IdComentario == idComment);
             if (comment != null) comment.Estado = 6;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)
@@ -62,9 +62,9 @@ public class AdminRepositories
     {
         try
         {
-            var comment = await _context.Comentarios.FirstOrDefaultAsync(x => x.IdComentario == idComment);
+            var comment = await _dbContext.Comentarios.FirstOrDefaultAsync(x => x.IdComentario == idComment);
             if (comment != null) comment.Estado = 5;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         catch (SystemException)

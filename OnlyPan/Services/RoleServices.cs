@@ -11,10 +11,10 @@ public class RoleServices
     private readonly RoleRepository _roleRepository;
     private readonly UserRepository _userRepository;
 
-    public RoleServices(OnlyPanContext context)
+    public RoleServices(OnlyPanDbContext dbContext)
     {
-        _roleRepository = new RoleRepository(context);
-        _userRepository = new UserRepository(context);
+        _roleRepository = new RoleRepository(dbContext);
+        _userRepository = new UserRepository(dbContext);
     }
 
     public async Task<List<RoleDto>> GetRoles()

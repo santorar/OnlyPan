@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<OnlyPanContext>(options =>
+builder.Services.AddDbContext<OnlyPanDbContext>(options =>
 {
   options.UseSqlServer(builder.Configuration.GetConnectionString("OnlyPanContext"));
 });

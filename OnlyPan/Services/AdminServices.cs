@@ -8,9 +8,9 @@ public class AdminServices
 {
     private AdminRepositories _adminRepositories;
 
-    public AdminServices(OnlyPanContext context)
+    public AdminServices(OnlyPanDbContext dbContext)
     {
-        _adminRepositories = new AdminRepositories(context);
+        _adminRepositories = new AdminRepositories(dbContext);
     }
 
     public async Task<List<ReportedCommentViewModel>> GetReportedComments()

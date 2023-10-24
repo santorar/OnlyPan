@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OnlyPan.Models;
 
-public partial class OnlyPanContext : DbContext
+public partial class OnlyPanDbContext : DbContext
 {
-    public OnlyPanContext()
+    public OnlyPanDbContext()
     {
     }
 
-    public OnlyPanContext(DbContextOptions<OnlyPanContext> options)
+    public OnlyPanDbContext(DbContextOptions<OnlyPanDbContext> options)
         : base(options)
     {
     }
@@ -26,6 +26,8 @@ public partial class OnlyPanContext : DbContext
     public virtual DbSet<Estado> Estados { get; set; }
 
     public virtual DbSet<Etiquetum> Etiqueta { get; set; }
+
+    public virtual DbSet<ImagenRecetum> ImagenReceta { get; set; }
 
     public virtual DbSet<Ingrediente> Ingredientes { get; set; }
 
@@ -43,12 +45,14 @@ public partial class OnlyPanContext : DbContext
 
     public virtual DbSet<SolicitudRol> SolicitudRols { get; set; }
 
+    public virtual DbSet<Unidad> Unidads { get; set; }
+
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Valoracion> Valoracions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:OnlyPanContext");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:OnlyPanDbContext");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,11 +72,13 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
-            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Tabla)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("tabla");
+            entity.Property(e => e.Usuario)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Categorium>(entity =>
@@ -96,9 +102,8 @@ public partial class OnlyPanContext : DbContext
             entity.HasKey(e => e.IdComentario);
 
             entity.ToTable("COMENTARIO");
+
             entity.Property(e => e.IdComentario).HasColumnName("id_comentario");
-            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-            entity.Property(e => e.IdReceta).HasColumnName("id_receta");
             entity.Property(e => e.Comentario1)
                 .IsUnicode(false)
                 .HasColumnName("comentario");
@@ -106,6 +111,8 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
+            entity.Property(e => e.IdReceta).HasColumnName("id_receta");
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
 
             entity.HasOne(d => d.IdRecetaNavigation).WithMany(p => p.Comentarios)
                 .HasForeignKey(d => d.IdReceta)
@@ -168,6 +175,21 @@ public partial class OnlyPanContext : DbContext
                 .HasColumnName("nombre_etiqueta");
         });
 
+        modelBuilder.Entity<ImagenRecetum>(entity =>
+        {
+            entity.HasKey(e => new { e.IdImagen, e.IdReceta });
+
+            entity.ToTable("IMAGEN_RECETA");
+
+            entity.Property(e => e.IdImagen)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("id_imagen");
+            entity.Property(e => e.IdReceta).HasColumnName("id_receta");
+            entity.Property(e => e.Imagen)
+                .HasColumnType("image")
+                .HasColumnName("imagen");
+        });
+
         modelBuilder.Entity<Ingrediente>(entity =>
         {
             entity.HasKey(e => e.IdIngrediente);
@@ -216,10 +238,7 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.IdReceta).HasColumnName("id_receta");
             entity.Property(e => e.IdIngrediente).HasColumnName("id_ingrediente");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
-            entity.Property(e => e.Unidad)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("medida");
+            entity.Property(e => e.IdUnidad).HasColumnName("id_unidad");
 
             entity.HasOne(d => d.IdIngredienteNavigation).WithMany(p => p.RecetaIngredientes)
                 .HasForeignKey(d => d.IdIngrediente)
@@ -230,6 +249,10 @@ public partial class OnlyPanContext : DbContext
                 .HasForeignKey(d => d.IdReceta)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RECETA");
+
+            entity.HasOne(d => d.IdUnidadNavigation).WithMany(p => p.RecetaIngredientes)
+                .HasForeignKey(d => d.IdUnidad)
+                .HasConstraintName("FK_RECETA_INGREDIENTE_UNIDAD");
         });
 
         modelBuilder.Entity<Recetum>(entity =>
@@ -245,19 +268,22 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.FechaCreacion)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_creacion");
-            entity.Property(e => e.Foto)
-                .HasColumnType("image")
-                .HasColumnName("foto");
             entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
             entity.Property(e => e.IdEstado).HasColumnName("id_estado");
             entity.Property(e => e.IdEtiqueta).HasColumnName("id_etiqueta");
             entity.Property(e => e.Instrucciones)
                 .IsUnicode(false)
                 .HasColumnName("instrucciones");
+            entity.Property(e => e.NValoraciones)
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("n_valoraciones");
             entity.Property(e => e.NombreReceta)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombre_receta");
+            entity.Property(e => e.Valoracion)
+                .HasDefaultValueSql("((0))")
+                .HasColumnName("valoracion");
 
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Receta)
                 .HasForeignKey(d => d.IdCategoria)
@@ -353,28 +379,43 @@ public partial class OnlyPanContext : DbContext
             entity.Property(e => e.FechaSolicitud)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_solicitud");
-            entity.Property(e => e.IdUsuarioAprovador).HasColumnName("id_usuario_aprovador");
             entity.Property(e => e.IdEstado).HasColumnName("id_estado");
+            entity.Property(e => e.IdUsuarioAprovador).HasColumnName("id_usuario_aprovador");
 
             entity.HasOne(d => d.IdEstadoNavigation).WithMany(p => p.SolicitudRols)
                 .HasForeignKey(d => d.IdEstado)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SOLICITUD_ROL_ESTADO");
+
             entity.HasOne(d => d.IdRolSolicitudNavigation).WithMany(p => p.SolicitudRols)
                 .HasForeignKey(d => d.IdRolSolicitud)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SOLICITUD_ROL_ROL");
 
-            entity.HasOne(d => d.IdUsuarioAprovadorNavigation)
-                .WithMany(p => p.SolicitudRolIdUsuarioAprovadorNavigations)
+            entity.HasOne(d => d.IdUsuarioAprovadorNavigation).WithMany(p => p.SolicitudRolIdUsuarioAprovadorNavigations)
                 .HasForeignKey(d => d.IdUsuarioAprovador)
                 .HasConstraintName("FK_SOLICITUD_ROL_USUARIO_APROVADOR");
 
-            entity.HasOne(d => d.IdUsuarioSolicitudNavigation)
-                .WithMany(p => p.SolicitudRolIdUsuarioSolicitudNavigations)
+            entity.HasOne(d => d.IdUsuarioSolicitudNavigation).WithMany(p => p.SolicitudRolIdUsuarioSolicitudNavigations)
                 .HasForeignKey(d => d.IdUsuarioSolicitud)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SOLICITUD_ROL_USUARIO_SOLICITADOR");
+        });
+
+        modelBuilder.Entity<Unidad>(entity =>
+        {
+            entity.HasKey(e => e.IdUnidad);
+
+            entity.ToTable("UNIDAD");
+
+            entity.Property(e => e.IdUnidad).HasColumnName("id_unidad");
+            entity.Property(e => e.NombreCorto)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("nombre_corto");
+            entity.Property(e => e.NombreLargo)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombre_largo");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -385,7 +426,7 @@ public partial class OnlyPanContext : DbContext
 
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Activo)
-                .HasDefaultValueSql("((0))")
+                .HasDefaultValueSql("((1))")
                 .HasColumnName("activo");
             entity.Property(e => e.Biografia)
                 .HasColumnType("text")
@@ -414,7 +455,9 @@ public partial class OnlyPanContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
-            entity.Property(e => e.Rol).HasColumnName("rol");
+            entity.Property(e => e.Rol)
+                .HasDefaultValueSql("((1))")
+                .HasColumnName("rol");
 
             entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Estado)

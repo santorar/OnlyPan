@@ -9,12 +9,12 @@ namespace OnlyPan.Controllers;
 public class HomeController : Controller
 {
   private readonly ILogger<HomeController> _logger;
-  private readonly OnlyPanContext _context;
+  private readonly OnlyPanDbContext _dbContext;
 
-  public HomeController(ILogger<HomeController> logger, OnlyPanContext context)
+  public HomeController(ILogger<HomeController> logger, OnlyPanDbContext dbContext)
   {
     _logger = logger;
-    _context = context;
+    _dbContext = dbContext;
   }
 
   public IActionResult Index()
@@ -31,11 +31,5 @@ public class HomeController : Controller
   public IActionResult Error()
   {
     return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-  }
-
-  public async Task<IActionResult> Feed()
-  {
-    List<Recetum> recipes = await _context.Receta.ToListAsync();
-    return View(recipes);
   }
 }

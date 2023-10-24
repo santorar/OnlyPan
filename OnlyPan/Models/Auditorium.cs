@@ -7,7 +7,7 @@ public partial class Auditorium
 {
     public int IdAuditoria { get; set; }
 
-    public int? IdUsuario { get; set; }
+    public string? Usuario { get; set; }
 
     public string? Accion { get; set; }
 

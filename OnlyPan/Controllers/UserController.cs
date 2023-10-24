@@ -13,9 +13,9 @@ public class UserController : Controller
 {
     private readonly UserServices _userServices;
 
-    public UserController(OnlyPanContext context)
+    public UserController(OnlyPanDbContext dbContext)
     {
-        _userServices = new UserServices(context);
+        _userServices = new UserServices(dbContext);
     }
 
 

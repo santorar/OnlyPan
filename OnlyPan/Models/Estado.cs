@@ -13,8 +13,9 @@ public partial class Estado
 
     public virtual ICollection<Recetum> Receta { get; set; } = new List<Recetum>();
 
+    public virtual ICollection<SolicitudRol> SolicitudRols { get; set; } = new List<SolicitudRol>();
+
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 
     public virtual ICollection<Valoracion> Valoracions { get; set; } = new List<Valoracion>();
-    public virtual ICollection<SolicitudRol> SolicitudRols { get; set; } = new List<SolicitudRol>();
 }

@@ -10,9 +10,9 @@ public class AdminController : Controller
 {
     AdminServices _adminServices;
 
-    public AdminController(OnlyPanContext context)
+    public AdminController(OnlyPanDbContext dbContext)
     {
-        _adminServices = new AdminServices(context);
+        _adminServices = new AdminServices(dbContext);
     }
 
     //Moderate View for Rol petition

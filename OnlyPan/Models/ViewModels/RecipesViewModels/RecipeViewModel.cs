@@ -12,7 +12,7 @@ public class RecipeViewModel
     public string? Tag { get; set; }
     public List<string>? Ingredients { get; set; }
     public string? Instructions { get; set; }
-    public byte[]? Photo { get; set; }
+    public List<byte[]>? Photos { get; set; }
     public DateTime? Date { get; set; }
     public int ChefId { get; set; }
     public string? Chef { get; set; }

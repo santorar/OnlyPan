@@ -16,9 +16,9 @@ public class UserServices
 {
     private readonly UserRepository _userRepository;
 
-    public UserServices(OnlyPanContext context)
+    public UserServices(OnlyPanDbContext dbContext)
     {
-        _userRepository = new UserRepository(context);
+        _userRepository = new UserRepository(dbContext);
     }
 
     public async Task<bool> CheckEmail(string email)

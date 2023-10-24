@@ -12,9 +12,9 @@ public class RecipesController : Controller
 {
     private readonly RecipesServices _recipesServices;
 
-    public RecipesController(OnlyPanContext context)
+    public RecipesController(OnlyPanDbContext dbContext)
     {
-        _recipesServices = new RecipesServices(context);
+        _recipesServices = new RecipesServices(dbContext);
     }
 
     // GET
@@ -30,11 +30,11 @@ public class RecipesController : Controller
         var categories = await _recipesServices.GetCategories();
         var ingredients = await _recipesServices.GetIngredients();
         var tags = await _recipesServices.GetTags();
-        var units = _recipesServices.GetUnits();
+        var units = await _recipesServices.GetUnits();
         ViewData["Categories"] = new SelectList(categories, "IdCategory", "NameCategory");
         ViewData["Ingredients"] = new SelectList(ingredients, "IdIngredient", "NameIngredient");
         ViewData["Tags"] = new SelectList(tags, "IdTag", "NameTag");
-        ViewData["Units"] = new SelectList(units, "ShortName", "LongName");
+        ViewData["Units"] = new SelectList(units, "IdUnit", "LongName");
         return View();
     }
 
@@ -48,18 +48,18 @@ public class RecipesController : Controller
             var categories = await _recipesServices.GetCategories();
             var ingredients = await _recipesServices.GetIngredients();
             var tags = await _recipesServices.GetTags();
-            var units = _recipesServices.GetUnits();
+            var units = await _recipesServices.GetUnits();
             ViewData["Categories"] = new SelectList(categories, "IdCategory", "NameCategory");
             ViewData["Ingredients"] = new SelectList(ingredients, "IdIngredient", "NameIngredient");
             ViewData["Tags"] = new SelectList(tags, "IdTag", "NameTag");
-            ViewData["Units"] = new SelectList(units, "ShortName", "LongName");
+            ViewData["Units"] = new SelectList(units, "IdUnit", "LongName");
             ViewBag.Error = "Error al crear la receta";
             return View(model);
         }
 
         return RedirectToAction(nameof(Index));
     }
-
+    [Authorize]
     public async Task<IActionResult> View(int idRecipe)
     {
         var userId = int.Parse(HttpContext.User.Claims.First().Value);
@@ -70,6 +70,7 @@ public class RecipesController : Controller
         return View(model);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> RateRecipe(int recipeId, int pRating)
     {
@@ -82,6 +83,7 @@ public class RecipesController : Controller
         return RedirectToAction(nameof(View), new { idRecipe = recipeId });
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateComment(string comment, int recipeId)
     {
@@ -94,6 +96,7 @@ public class RecipesController : Controller
         return RedirectToAction(nameof(View), new { idRecipe = recipeId });
     }
 
+    [Authorize]
     public async Task<IActionResult> ReportComent(int commentId, int recipeId)
     {
         var search = await _recipesServices.SearchReportedComment(commentId);

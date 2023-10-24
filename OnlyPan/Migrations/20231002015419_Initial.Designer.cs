@@ -11,7 +11,7 @@ using OnlyPan.Models;
 
 namespace OnlyPan.Migrations
 {
-    [DbContext(typeof(OnlyPanContext))]
+    [DbContext(typeof(OnlyPanDbContext))]
     [Migration("20231002015419_Initial")]
     partial class Initial
     {

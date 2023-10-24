@@ -5,7 +5,6 @@ namespace OnlyPan.Models;
 
 public partial class Comentario
 {
-    public int IdComentario { get; set; }
     public int IdUsuario { get; set; }
 
     public int IdReceta { get; set; }
@@ -15,6 +14,8 @@ public partial class Comentario
     public string? Comentario1 { get; set; }
 
     public int? Estado { get; set; }
+
+    public int IdComentario { get; set; }
 
     public virtual Recetum IdRecetaNavigation { get; set; } = null!;
 
