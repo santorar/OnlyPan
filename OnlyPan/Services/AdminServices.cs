@@ -50,4 +50,41 @@ public class AdminServices
     {
         return await _adminRepositories.AcceptComment(idComment);
     }
+
+    public async Task<List<DonationsViewModel>> GetDonations()
+    {
+        try
+        {
+            var donations = await _adminRepositories.RequestDonations();
+            List<DonationsViewModel> result = new List<DonationsViewModel>();
+            foreach (var donation in donations)
+            {
+                DonationsViewModel donationsViewModelDto = new DonationsViewModel()
+                {
+                    DonationId = donation.DonationId,
+                    Amount = donation.Amount,
+                    ChefName = donation.ChefName,
+                    Date = donation.Date,
+                    State = donation.State,
+                    UserName = donation.UserName
+                };
+                result.Add(donationsViewModelDto);
+            }
+
+            return result;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> AcceptDonation(int donationId)
+    {
+        return await _adminRepositories.AcceptDonation(donationId);
+    }
+    public async Task<bool> BlockDonation(int donationId)
+    {
+        return await _adminRepositories.BlockDonation(donationId);
+    }
 }

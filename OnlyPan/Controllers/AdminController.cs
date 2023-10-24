@@ -6,6 +6,7 @@ using OnlyPan.Services;
 
 namespace OnlyPan.Controllers;
 
+[Authorize(Roles = "2,3")]
 public class AdminController : Controller
 {
     AdminServices _adminServices;
@@ -16,7 +17,6 @@ public class AdminController : Controller
     }
 
     //Moderate View for Rol petition
-    [Authorize(Roles = "2,3")]
     public IActionResult Moderate()
     {
         return View();
@@ -46,5 +46,29 @@ public class AdminController : Controller
         else
             ViewData["Error"] = "Error al aceptar el comentario";
         return RedirectToAction(nameof(Comments));
+    }
+    public async Task<IActionResult> Donations()
+    {
+        List<DonationsViewModel> model = await _adminServices.GetDonations();
+        return View(model);
+    }
+    public async Task<IActionResult> AcceptDonation(int donationId)
+    {
+        var result = await _adminServices.AcceptDonation(donationId);
+        if (result)
+            ViewData["Success"] = "Donacion aceptada con exito";
+        else
+            ViewData["Error"] = "Error al aceptar la donacion";
+        return RedirectToAction(nameof(Donations));
+    }
+
+    public async Task<IActionResult> BlockDonation(int donationId)
+    {
+        var result = await _adminServices.BlockDonation(donationId);
+        if(result)
+            ViewData["Success"] = "Donacion bloqueada con exito";
+        else
+            ViewData["Error"] = "Error al bloquear la donacion";
+        return RedirectToAction(nameof(Donations));
     }
 }

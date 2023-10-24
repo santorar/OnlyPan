@@ -31,7 +31,9 @@ public partial class Usuario
 
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 
-    public virtual ICollection<Donacion> Donacions { get; set; } = new List<Donacion>();
+    public virtual ICollection<Donacion> DonacionIdChefNavigations { get; set; } = new List<Donacion>();
+
+    public virtual ICollection<Donacion> DonacionIdUsuarioNavigations { get; set; } = new List<Donacion>();
 
     public virtual Estado EstadoNavigation { get; set; } = null!;
 

@@ -26,12 +26,19 @@
     </ul>
     <h3 class="uppercase">Pasos de la receta</h3>
     <p class="text-black">@Model.Instructions</p>
-    <h3 class="uppercase">Comentarios</h3>
+    <div class="container">
+        <h4 class="uppercase">Haz una donacion de lo que coinsideres correcto</h4>
+        <form method="post" asp-action="MakeDonation" asp-controller="Recipes">
+            <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
+            <label for="amount">Cantidad</label>
+            <input type="number" name="amount" min="0" step="0.01"/>
+            <input type="submit" value="Donar"/>
+        </form>
+    </div>
     <div class="container">
         <div class="rating">
             Valoracion General: @Model.Rating
         </div>
-        @* TODO: Fix the personal rating to be shown *@
         <div class="personal-rating">
             Valoracion Personal: @Model.PersonalRating
         </div>
@@ -42,6 +49,7 @@
             <input type="submit" value="Aceptar"/>
         </form>
     </div>
+    <h3 class="uppercase">Comentarios</h3>
     <div class="container">
         @if (Model.Comments == null || Model.Comments.Count == 0)
         {

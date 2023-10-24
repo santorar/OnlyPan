@@ -66,7 +66,8 @@ public class RecipesController : Controller
         var ratingList = _recipesServices.GetRatingList();
         ;
         ViewData["Ratings"] = new SelectList(ratingList);
-        RecipeViewModel model = await _recipesServices.GetRecipe(idRecipe, userId);
+        RecipeViewModel? model = await _recipesServices.GetRecipe(idRecipe, userId);
+        if (model == null) return RedirectToAction(nameof(Index));
         return View(model);
     }
 
@@ -112,5 +113,21 @@ public class RecipesController : Controller
         else
             ViewData["Success"] = "Comentario reportado correctamente";
         return RedirectToAction(nameof(View), new { idRecipe = recipeId });
+    }
+    [Authorize]
+    public IActionResult Donation(int idRecipe)
+    {
+        return View();
+    }
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> MakeDonation(int recipeId, float amount)
+    {
+        var userId = int.Parse(HttpContext.User.Claims.First().Value);
+        bool result = await _recipesServices.MakeDonation(recipeId, amount, userId);
+        if (result)
+            return View(nameof(Donation));
+        ViewBag.Error = "Error al realizar la donación";
+        return RedirectToAction(nameof(View), new { idRecipe = recipeId});
     }
 }

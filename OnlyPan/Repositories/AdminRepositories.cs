@@ -72,4 +72,63 @@ public class AdminRepositories
             return false;
         }
     }
+
+    public async Task<List<DonationsDto>> RequestDonations()
+    {
+        try
+        {
+            var donations = await _dbContext.Donacions.Where(d => d.Estado == 4).Include(x => x.IdChefNavigation)
+                .Include(x => x.IdUsuarioNavigation).ToListAsync();
+            List<DonationsDto> result = new List<DonationsDto>();
+            foreach (var donation in donations)
+            {
+                DonationsDto donationsDto = new DonationsDto()
+                {
+                    Amount = (float?)donation.Monto,
+                    ChefName = donation.IdChefNavigation.Nombre,
+                    Date = donation.Fecha,
+                    DonationId = donation.IdDonacion,
+                    State = donation.Estado,
+                    UserName = donation.IdUsuarioNavigation.Nombre
+                };
+                result.Add(donationsDto);
+            }
+
+            return result;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> AcceptDonation(int donationId)
+    {
+        try
+        {
+            var donation = await _dbContext.Donacions.FirstOrDefaultAsync(x => x.IdDonacion == donationId);
+            if (donation != null) donation.Estado = 5;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+    
+    public async Task<bool> BlockDonation(int donationId)
+    {
+        try
+        {
+            var donation = await _dbContext.Donacions.FirstOrDefaultAsync(x => x.IdDonacion == donationId);
+            if (donation != null) donation.Estado = 6;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
 }

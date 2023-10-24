@@ -113,14 +113,15 @@ public class RecipesRepository
     public async Task<double> RequestRating(int recipeId)
     {
         double finalRating = 0;
-        List<Valoracion> ratings = await _dbContext.Valoracions.Where(v => v.IdReceta == recipeId).ToListAsync();
-        if (ratings.Count == 0) return 0;
-        foreach (var rating in ratings)
+        var recipe = await _dbContext.Receta.FindAsync(recipeId);
+        if (recipe!.NValoraciones == 0)
         {
-            finalRating += rating.Valoration!.Value;
+            finalRating = 0;
         }
-
-        finalRating /= ratings.Count;
+        else
+        {
+            finalRating = (double)(recipe.Valoracion / recipe.NValoraciones)!;
+        }
         return finalRating;
     }
 
@@ -137,6 +138,7 @@ public class RecipesRepository
         try
         {
             var request = await _dbContext.Valoracions.FindAsync(userId, recipeId);
+            var recipe = await _dbContext.Receta.FindAsync(recipeId);
             if (request == null)
             {
                 var newRating = new Valoracion()
@@ -147,12 +149,16 @@ public class RecipesRepository
                     FechaInteracion = DateTime.Now,
                     IdEstado = 5
                 };
+                recipe!.Valoracion += rating;
+                recipe.NValoraciones++;
                 await _dbContext.Valoracions.AddAsync(newRating);
             }
             else
             {
                 if (rating > 5 || rating < 0) return false;
+                recipe!.Valoracion -= request!.Valoration;
                 request!.Valoration = rating;
+                recipe.Valoracion += rating;
             }
 
             await _dbContext.SaveChangesAsync();
@@ -285,7 +291,9 @@ public class RecipesRepository
             string? category = ((await _dbContext.Categoria.FindAsync(recipe!.IdCategoria))!).NombreCategoria;
             string? tag = ((await _dbContext.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
             var listIngredientsRecipe =
-                await _dbContext.RecetaIngredientes.Where(i => i.IdReceta == recipe.IdReceta).Include(i => i.IdUnidadNavigation).ToListAsync();
+                await _dbContext.RecetaIngredientes
+                    .Where(i => i.IdReceta == recipe.IdReceta)
+                    .Include(i => i.IdUnidadNavigation).ToListAsync();
             List<string> ingredients = new List<string>();
             foreach (var ingredient in listIngredientsRecipe)
             {
@@ -308,7 +316,7 @@ public class RecipesRepository
                 Tag = tag,
                 Ingredients = ingredients,
                 Instructions = recipe.Instrucciones,
-                Photos = photos!.Select(p => p.Imagen).ToList(),
+                Photos = photos!.Select(p => p.Imagen).ToList()!,
                 Date = recipe.FechaCreacion,
                 ChefId = recipeChef.IdChef,
                 Chef = chef!.Nombre,
@@ -367,6 +375,32 @@ public class RecipesRepository
             if (comment!.Estado == 7)
                 return true;
             return false;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> MakeDonation(float amount, int userId, int recipeId)
+    {
+        try
+        {
+            var user = await _dbContext.Usuarios.FindAsync(userId);
+            var recipe = await _dbContext.Receta.FindAsync(recipeId);
+            var recipeChef = await _dbContext.RecetaChefs.Where(r => r.IdReceta == recipeId).FirstOrDefaultAsync();
+            if (user == null || recipe == null) return false;
+            var newDonation = new Donacion()
+            {
+                IdUsuario = userId,
+                Fecha = DateTime.Now,
+                IdChef = recipeChef!.IdChef,
+                Monto = (decimal?)amount,
+                Estado = 4
+            };
+            await _dbContext.Donacions.AddAsync(newDonation);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
         catch (SystemException)
         {

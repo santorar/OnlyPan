@@ -136,12 +136,17 @@ public partial class OnlyPanDbContext : DbContext
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
+            entity.Property(e => e.IdChef).HasColumnName("id_chef");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Monto)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("monto");
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Donacions)
+            entity.HasOne(d => d.IdChefNavigation).WithMany(p => p.DonacionIdChefNavigations)
+                .HasForeignKey(d => d.IdChef)
+                .HasConstraintName("FK_DONACION_CHEF");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.DonacionIdUsuarioNavigations)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK_DONACION_USUARIO");
         });

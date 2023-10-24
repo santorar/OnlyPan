@@ -185,4 +185,9 @@ public class RecipesServices
     {
         return await _recipesRepository.SearchReportedComment(commentId);
     }
+
+    public async Task<bool> MakeDonation(int recipeId, float amount, int userId)
+    {
+        return await _recipesRepository.MakeDonation(amount, userId, recipeId);
+    }
 }
