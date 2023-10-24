@@ -115,7 +115,7 @@ public class RecipesController : Controller
         return RedirectToAction(nameof(View), new { idRecipe = recipeId });
     }
     [Authorize]
-    public IActionResult Donation(int idRecipe)
+    public IActionResult Donation()
     {
         return View();
     }
