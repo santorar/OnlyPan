@@ -58,8 +58,8 @@
                 </ul>
             </div>
             @* Search Bar *@
-            <form class="d-flex m-1.5 space-x-1.5" role="search">
-                <input class="form-control rounded-md input-navbar" type="search" placeholder="¿Qué Cocinarás Hoy?" aria-label="Search">
+            <form class="d-flex m-1.5 space-x-1.5" asp-action="Search" asp-controller="Recipes" role="search" method="post">
+                <input class="form-control rounded-md input-navbar" type="search" placeholder="¿Qué Cocinarás Hoy?" aria-label="Search" name="searchText">
                 <button class="btn hover:bg-amber-600 hover:text-white rounded-md px-3 py-2 bg-[var(--second-color)]" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>

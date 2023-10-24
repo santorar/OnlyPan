@@ -407,4 +407,42 @@ public class RecipesRepository
             return false;
         }
     }
+
+    public async Task<List<RecipeFeedDto>> SearchRecipes(string searchText)
+    {
+        try
+        {
+            var recipes = await _dbContext.Receta.Where(r => r.NombreReceta!.Contains(searchText)).ToListAsync();
+            List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
+            foreach (var recipe in recipes)
+            {
+                var image = await _dbContext.ImagenReceta
+                    .Where(i => i.IdReceta == recipe.IdReceta).FirstOrDefaultAsync();
+                byte[]? imageBytes;
+                if (image == null)
+                {
+                    imageBytes = new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory()+"/wwwroot/icons/recipeDefault.jpg");
+                }
+                else
+                {
+                    imageBytes = image.Imagen;
+                }
+                var recipeDto = new RecipeFeedDto()
+                {
+                    IdRecipe = recipe.IdReceta,
+                    Name = recipe.NombreReceta,
+                    Rating = await RequestRating(recipe.IdReceta),
+                    Description = recipe.DescripcionReceta,
+                    Photo = imageBytes
+                };
+                recipesDtos.Add(recipeDto);
+            }
+
+            return recipesDtos;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
 }

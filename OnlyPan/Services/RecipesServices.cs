@@ -190,4 +190,31 @@ public class RecipesServices
     {
         return await _recipesRepository.MakeDonation(amount, userId, recipeId);
     }
+
+    public async Task<List<RecipeFeedViewModel>> SearchRecipes(string searchText)
+    {
+        try
+        {
+            List<RecipeFeedDto> recipesDtos = await _recipesRepository.SearchRecipes(searchText);
+            List<RecipeFeedViewModel> recipeFeedViewModels = new List<RecipeFeedViewModel>();
+            foreach (var recipeDto in recipesDtos)
+            {
+                var recipeViewModel = new RecipeFeedViewModel()
+                {
+                    IdRecipe = recipeDto.IdRecipe,
+                    Name = recipeDto.Name,
+                    Description = recipeDto.Description,
+                    Rating = recipeDto.Rating,
+                    Photo = recipeDto.Photo
+                };
+                recipeFeedViewModels.Add(recipeViewModel);
+            }
+
+            return recipeFeedViewModels;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
 }

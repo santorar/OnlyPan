@@ -18,9 +18,21 @@ public class RecipesController : Controller
     }
 
     // GET
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         List<RecipeFeedViewModel> model = await _recipesServices.GetRecipes();
+        return View(model);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Search(string searchText)
+    {
+        List<RecipeFeedViewModel> model = await _recipesServices.SearchRecipes(searchText);
+        if (model == null)
+        {
+            ViewData["Error"] = "Parametro de busqueda no valido";
+            return RedirectToAction(nameof(Index));
+        }
         return View(model);
     }
 
