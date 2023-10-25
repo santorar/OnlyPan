@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
 using OnlyPan.Models.Dtos.UserDtos;
-using OnlyPan.Models.ViewModels;
 using OnlyPan.Models.ViewModels.UserViewModels;
 using OnlyPan.Repositories;
 using OnlyPan.Utilities.Classes;
@@ -15,10 +14,12 @@ namespace OnlyPan.Services;
 public class UserServices
 {
     private readonly UserRepository _userRepository;
+    private readonly RecipesRepository _recipesRepository;
 
     public UserServices(OnlyPanDbContext dbContext)
     {
         _userRepository = new UserRepository(dbContext);
+        _recipesRepository = new RecipesRepository(dbContext);
     }
 
     public async Task<bool> CheckEmail(string email)
@@ -164,6 +165,15 @@ public class UserServices
         try
         {
             var user = await _userRepository.RequestProfile(idUser);
+            List<ReplicsViewModel> replics = new List<ReplicsViewModel>();
+            foreach (var replic in user.Replics)
+            {
+                replics.Add(new ReplicsViewModel()
+                {
+                    IdReplic = replic.IdReplic,
+                    Name = replic.Name
+                });
+            }
             return new ProfileViewModel()
             {
                 UserId = idUser,
@@ -173,7 +183,8 @@ public class UserServices
                 Name = user.Name,
                 Email = user.Email,
                 Followers = user.Followers,
-                Followed = user.Followed
+                Followed = user.Followed,
+                Replics = replics
             };
         }
         catch (SystemException)
@@ -267,5 +278,42 @@ public class UserServices
     public async Task<bool> UnFollow(int idUserLogged, int userId)
     {
         return await _userRepository.UnFollowUser(idUserLogged, userId);
+    }
+
+    public async Task<ReplicViewModel> GetReplic(int replicId)
+    {
+        try
+        {
+            var replic = await _recipesRepository.RequestReplic(replicId);
+            return new ReplicViewModel()
+            {
+                IdReplic = replic.IdReplic,
+                Name = replic.Name,
+                Description = replic.Description,
+                Category = replic.Category,
+                Tag = replic.Tag,
+                Ingredients = replic.Ingredients,
+                Instructions = replic.Instructions,
+                Photos = replic.Photos,
+                Date = replic.Date,
+                Chef = replic.Chef,
+                Rating = replic.Rating,
+                DateReplicated = replic.DateReplicated,
+                Comentary = replic.Comentary
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> DeleteReplic(int replicId)
+    {
+        return await _recipesRepository.DeleteReplic(replicId);
+    }
+    public async Task<bool> UpdateReplic(int replicId, string? comment)
+    {
+        return await _recipesRepository.UpdateReplic(replicId, comment);
     }
 }

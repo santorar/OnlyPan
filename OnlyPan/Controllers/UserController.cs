@@ -230,4 +230,32 @@ public class UserController : Controller
         var profileRol = await _userServices.GetProfileRol(idUser, idRol);
         return View(profileRol);
     }
+
+    public async  Task<IActionResult> ViewReplic(int replicId)
+    {
+        ReplicViewModel? replic = await _userServices.GetReplic(replicId);
+        if(replic != null) return View(replic);
+        return RedirectToAction(nameof(Profile));
+    }
+
+    public async Task<IActionResult> DeleteReplic(int replicId)
+    {
+        var result = await _userServices.DeleteReplic(replicId);
+        if (result)
+            ViewData["Success"] = "Replica eliminada correctamente";
+        else
+            ViewData["Error"] = "La replica no ha podido ser eliminada";
+        return RedirectToAction(nameof(Profile));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateReplic(int replicId, string? comment)
+    {
+        var result = await _userServices.UpdateReplic(replicId, comment);
+        if (result)
+            ViewData["Success"] = "Replica eliminada correctamente";
+        else
+            ViewData["Error"] = "La replica no ha podido ser eliminada";
+        return RedirectToAction(nameof(ViewReplic), new {replicId});
+    }
 }

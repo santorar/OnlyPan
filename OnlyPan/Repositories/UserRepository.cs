@@ -160,6 +160,19 @@ public class UserRepository
                 .FirstOrDefaultAsync();
             int followers = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguido == idUser);
             int followed = await _dbContext.SeguirUsuarios.CountAsync(r => r.IdSeguidor == idUser);
+            var replics = await _dbContext.ReplicaUsuarios
+                .Where(r => r.IdUsuario == idUser)
+                .Include(r => r.IdRecetaNavigation)
+                .ToListAsync();
+            List<ReplicsDto> replicsDtos = new List<ReplicsDto>();
+            foreach (var replic in replics)
+            {
+                replicsDtos.Add(new ReplicsDto()
+                {
+                    IdReplic = replic.IdReplica,
+                    Name = replic.IdRecetaNavigation.NombreReceta
+                });
+            }
             return new ProfileDto()
             {
                 RoleName = rol!.NombreRol,
@@ -168,7 +181,8 @@ public class UserRepository
                 Name = user.Nombre,
                 Email = user.Correo,
                 Followers = followers,
-                Followed = followed
+                Followed = followed,
+                Replics = replicsDtos
             };
         }
         catch (SystemException)
@@ -334,4 +348,5 @@ public class UserRepository
             return false;
         }
     }
+
 }

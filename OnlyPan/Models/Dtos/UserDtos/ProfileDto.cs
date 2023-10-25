@@ -10,4 +10,5 @@ public class ProfileDto : UserDto
     public int Followers { get; set; }
     
     public int Followed { get; set; }
+    public List<ReplicsDto> Replics { get; set; }
 }

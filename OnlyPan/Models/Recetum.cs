@@ -37,7 +37,7 @@ public partial class Recetum
 
     public virtual ICollection<RecetaIngrediente> RecetaIngredientes { get; set; } = new List<RecetaIngrediente>();
 
-    public virtual ReplicaUsuario? ReplicaUsuario { get; set; }
+    public virtual ICollection<ReplicaUsuario> ReplicaUsuarios { get; set; } = new List<ReplicaUsuario>();
 
     public virtual ICollection<Valoracion> Valoracions { get; set; } = new List<Valoracion>();
 }

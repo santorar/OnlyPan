@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
 using OnlyPan.Models.Dtos.RecipesDtos;
+using OnlyPan.Models.Dtos.UserDtos;
 using OnlyPan.Utilities.Classes;
 
 namespace OnlyPan.Repositories;
@@ -331,7 +332,7 @@ public class RecipesRepository
         }
     }
     
-    public async Task<RecipeDto> RequestRecipeAdmin(int recipeId)
+    public async Task<RecipeDto> RequestRecipeAdmin(int? recipeId)
     {
         try
         {
@@ -507,6 +508,68 @@ public class RecipesRepository
             await _dbContext.ReplicaUsuarios.AddAsync(recetaUsuario);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+    public async Task<ReplicDto> RequestReplic(int replicId)
+    {
+        try
+        {
+            var replic = await _dbContext.ReplicaUsuarios.FindAsync(replicId);
+            var recipe = await RequestRecipeAdmin(replic!.IdReceta);
+            return new ReplicDto()
+            {
+                IdReplic = replic.IdReplica,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                Category = recipe.Category,
+                Tag = recipe.Tag,
+                Ingredients = recipe.Ingredients,
+                Instructions = recipe.Instructions,
+                Photos = recipe.Photos,
+                Date = recipe.Date,
+                Chef = recipe.Chef,
+                Rating = recipe.Rating,
+                DateReplicated = replic.FechaReplica,
+                Comentary = replic.Comentario
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> DeleteReplic(int replicId)
+    {
+        try
+        {
+            var replic = await _dbContext.ReplicaUsuarios.FindAsync(replicId); 
+            _dbContext.ReplicaUsuarios.Remove(replic!);
+            await _dbContext.SaveChangesAsync();
+            return true;
+
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateReplic(int replicId, string? comentary)
+    {
+        try
+        {
+            var replic = await _dbContext.ReplicaUsuarios.FindAsync(replicId);
+            if (replic!.Comentario != null || comentary != replic!.Comentario)
+                replic.Comentario = comentary;
+            _dbContext.ReplicaUsuarios.Update(replic);
+            await _dbContext.SaveChangesAsync();
+            return true;
+
         }
         catch (SystemException)
         {

@@ -16,4 +16,5 @@ public class ProfileViewModel
     public int Followers { get; set; }
     public int Followed { get; set; }
     public bool isFollowed { get; set; }
+    public List<ReplicsViewModel> Replics { get; set; }
 }

@@ -309,9 +309,7 @@ public partial class OnlyPanDbContext : DbContext
 
             entity.ToTable("REPLICA_USUARIO");
 
-            entity.Property(e => e.IdReplica)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("id_replica");
+            entity.Property(e => e.IdReplica).HasColumnName("id_replica");
             entity.Property(e => e.Comentario)
                 .HasColumnType("text")
                 .HasColumnName("comentario");
@@ -321,9 +319,8 @@ public partial class OnlyPanDbContext : DbContext
             entity.Property(e => e.IdReceta).HasColumnName("id_receta");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
 
-            entity.HasOne(d => d.IdReplicaNavigation).WithOne(p => p.ReplicaUsuario)
-                .HasForeignKey<ReplicaUsuario>(d => d.IdReplica)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.IdRecetaNavigation).WithMany(p => p.ReplicaUsuarios)
+                .HasForeignKey(d => d.IdReceta)
                 .HasConstraintName("FK_REPLICA_USUARIO_RECETA");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.ReplicaUsuarios)

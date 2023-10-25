@@ -15,7 +15,7 @@ public partial class ReplicaUsuario
 
     public string? Comentario { get; set; }
 
-    public virtual Recetum IdReplicaNavigation { get; set; } = null!;
+    public virtual Recetum? IdRecetaNavigation { get; set; }
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 }
