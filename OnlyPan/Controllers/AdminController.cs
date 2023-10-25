@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels.AdminViewModels;
+using OnlyPan.Models.ViewModels.RecipesViewModels;
 using OnlyPan.Services;
 
 namespace OnlyPan.Controllers;
@@ -71,4 +72,42 @@ public class AdminController : Controller
             ViewData["Error"] = "Error al bloquear la donacion";
         return RedirectToAction(nameof(Donations));
     }
+
+    public async Task<IActionResult> Recipes()
+    {
+        List<RecipeModerateViewModel> model = await _adminServices.GetRecipes();
+        if (model == null)
+        {
+            ViewData["Error"] = "Error al cargar las recetas";
+            return RedirectToAction(nameof(Moderate));
+        }
+        return View(model);
+    }
+
+    public async Task<IActionResult> ViewRecipe(int idRecipe)
+    {
+        RecipeViewModel model = await _adminServices.GetRecipe(idRecipe);
+        if(model == null) return RedirectToAction(nameof(Recipes));
+        return View(model);
+    }
+
+    public async Task<IActionResult> AcceptRecipe(int idRecipe)
+    {
+        var result = await _adminServices.AcceptRecipe(idRecipe);
+        if (result)
+            ViewData["Success"] = "Receta aceptada con exito";
+        else
+            ViewData["Error"] = "Error al aceptar la receta";
+        return RedirectToAction(nameof(Recipes));
+    }
+    public async Task<IActionResult> BlockRecipe(int idRecipe)
+    {
+        var result = await _adminServices.BlockRecipe(idRecipe);
+        if (result)
+            ViewData["Success"] = "Receta bloqueada con exito";
+        else
+            ViewData["Error"] = "Error al bloquear la receta";
+        return RedirectToAction(nameof(Recipes));
+    }
+    
 }

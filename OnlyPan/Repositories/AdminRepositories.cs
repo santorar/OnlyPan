@@ -1,6 +1,7 @@
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using OnlyPan.Models;
+using OnlyPan.Models.Dtos;
 using OnlyPan.Models.Dtos.AdminDtos;
 
 namespace OnlyPan.Repositories;
@@ -123,6 +124,67 @@ public class AdminRepositories
         {
             var donation = await _dbContext.Donacions.FirstOrDefaultAsync(x => x.IdDonacion == donationId);
             if (donation != null) donation.Estado = 6;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<List<RecipeModerateDto>> RequestRecipes()
+    {
+        try
+        {
+            var recipes = await _dbContext.Receta.Where(x => x.IdEstado == 4).ToListAsync();
+            List<RecipeModerateDto> result = new List<RecipeModerateDto>();
+            foreach (var recipe in recipes)
+            {
+                var recipeChef = await _dbContext.RecetaChefs
+                .Where(r => r.IdReceta == recipe.IdReceta)
+                .Include(r => r.IdChefNavigation)
+                .FirstOrDefaultAsync();
+                RecipeModerateDto recipeModerateDto = new RecipeModerateDto()
+                {
+                    IdRecipe = recipe.IdReceta,
+                    Name = recipe.NombreReceta,
+                    ChefName = recipeChef!.IdChefNavigation.Nombre,
+                    Date = recipe.FechaCreacion
+                };
+                result.Add(recipeModerateDto);
+            }
+
+            return result;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> AcceptRecipe(int idRecipe)
+    {
+        try
+        {
+            var recipe = await _dbContext.Receta.FirstOrDefaultAsync(x => x.IdReceta == idRecipe);
+            if (recipe != null) recipe.IdEstado = 5;
+            else throw new SystemException();
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }catch (SystemException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> BlockRecipe(int idRecipe)
+    {
+        try
+        {
+            var recipe = await _dbContext.Receta.FirstOrDefaultAsync(x => x.IdReceta == idRecipe);
+            if (recipe != null) recipe.IdEstado = 6;
+            else throw new SystemException();
             await _dbContext.SaveChangesAsync();
             return true;
         }

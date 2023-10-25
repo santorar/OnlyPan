@@ -1,0 +1,59 @@
+@model List<OnlyPan.Models.ViewModels.AdminViewModels.RecipeModerateViewModel>
+<h1 class="uppercase font-bold my-3 text-center mt-5">Recetas Pendientes por aprobacion</h1>
+
+<div class="flex flex-col">
+    <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+            <div class="overflow-hidden">
+
+                <span class="alert-danger">@ViewBag.Error</span>
+                <table class="table min-w-full text-left text-sm">
+                    <thead class="border-b font-medium dark:border-neutral-500">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                Nombre de la receta
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Nombre del Chef
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Fecha de Publicación
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                Accion
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var recipe in Model)
+                        {
+                            <tr class=" border-b transition duration-300 ease-in-out hover:bg-orange-200 dark:border-orange-200 dark:hover:bg-orange-200">
+                                <td class="whitespace-nowrap px-6 py-4 font-medium">
+                                    @Html.DisplayFor(m => recipe.Name)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    @Html.DisplayFor(m => recipe.ChefName)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    @Html.DisplayFor(m => recipe.Date)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <a class="link-success space-x-1.5" asp-action="ViewRecipe" asp-controller="Admin"
+                                       asp-route-idRecipe="@recipe.IdRecipe">
+                                        Ver receta
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        <span class="alert-danger">@ViewBag.Error</span>
+                        <span class="alert-success">@ViewBag.Success</span>
+                    </tbody>
+                </table>
+
+            
+            
+            </div>
+        </div>
+    </div>
+</div>
+

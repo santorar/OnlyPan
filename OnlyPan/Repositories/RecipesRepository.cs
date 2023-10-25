@@ -228,7 +228,7 @@ public class RecipesRepository
     {
         try
         {
-            var recipes = await _dbContext.Receta.ToListAsync();
+            var recipes = await _dbContext.Receta.Where(r => r.IdEstado == 5).ToListAsync();
             List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
             foreach (var recipe in recipes)
             {
@@ -267,6 +267,7 @@ public class RecipesRepository
         try
         {
             Recetum? recipe = await _dbContext.Receta.FindAsync(recipeId);
+            if (recipe!.IdEstado != 5) throw new SystemException();
             List<ImagenRecetum>? photos =
                 await _dbContext.ImagenReceta.Where(p => p.IdReceta == recipeId).ToListAsync();
             RecetaChef? recipeChef =
@@ -321,6 +322,53 @@ public class RecipesRepository
                 ChefId = recipeChef.IdChef,
                 Chef = chef!.Nombre,
                 CommentsDto = comments
+            };
+            return recipeDto;
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+    
+    public async Task<RecipeDto> RequestRecipeAdmin(int recipeId)
+    {
+        try
+        {
+            Recetum? recipe = await _dbContext.Receta.FindAsync(recipeId);
+            List<ImagenRecetum>? photos =
+                await _dbContext.ImagenReceta.Where(p => p.IdReceta == recipeId).ToListAsync();
+            RecetaChef? recipeChef =
+                await _dbContext.RecetaChefs.Where(r => r.IdReceta == recipe!.IdReceta).FirstOrDefaultAsync();
+            var chef = await _dbContext.Usuarios.FindAsync(recipeChef!.IdChef);
+            string? category = ((await _dbContext.Categoria.FindAsync(recipe!.IdCategoria))!).NombreCategoria;
+            string? tag = ((await _dbContext.Etiqueta.FindAsync(recipe.IdEtiqueta))!).NombreEtiqueta;
+            var listIngredientsRecipe =
+                await _dbContext.RecetaIngredientes
+                    .Where(i => i.IdReceta == recipe.IdReceta)
+                    .Include(i => i.IdUnidadNavigation).ToListAsync();
+            List<string> ingredients = new List<string>();
+            foreach (var ingredient in listIngredientsRecipe)
+            {
+                string? type = ((await _dbContext.Ingredientes.FindAsync(ingredient.IdIngrediente))!).NombreIngrediente;
+                string stringIngredient =
+                    type + " " + ingredient.Cantidad + " " + ingredient.IdUnidadNavigation!.NombreCorto;
+                ingredients.Add(stringIngredient);
+            }
+
+            RecipeDto recipeDto = new RecipeDto()
+            {
+                IdRecipe = recipe.IdReceta,
+                Name = recipe.NombreReceta,
+                Description = recipe.DescripcionReceta,
+                Category = category,
+                Tag = tag,
+                Ingredients = ingredients,
+                Instructions = recipe.Instrucciones,
+                Photos = photos!.Select(p => p.Imagen).ToList()!,
+                Date = recipe.FechaCreacion,
+                ChefId = recipeChef.IdChef,
+                Chef = chef!.Nombre
             };
             return recipeDto;
         }
@@ -412,7 +460,7 @@ public class RecipesRepository
     {
         try
         {
-            var recipes = await _dbContext.Receta.Where(r => r.NombreReceta!.Contains(searchText)).ToListAsync();
+            var recipes = await _dbContext.Receta.Where(r => r.NombreReceta!.Contains(searchText) && r.IdEstado == 5).ToListAsync();
             List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
             foreach (var recipe in recipes)
             {

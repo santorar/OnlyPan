@@ -76,7 +76,6 @@ public class RecipesController : Controller
     {
         var userId = int.Parse(HttpContext.User.Claims.First().Value);
         var ratingList = _recipesServices.GetRatingList();
-        ;
         ViewData["Ratings"] = new SelectList(ratingList);
         RecipeViewModel? model = await _recipesServices.GetRecipe(idRecipe, userId);
         if (model == null) return RedirectToAction(nameof(Index));
