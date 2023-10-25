@@ -493,4 +493,24 @@ public class RecipesRepository
             return null!;
         }
     }
+
+    public async Task<bool> ReplicateRecipe(int recipeId, int idUser)
+    {
+        try
+        {
+            ReplicaUsuario recetaUsuario = new ReplicaUsuario()
+            {
+                IdReceta = recipeId,
+                IdUsuario = idUser,
+                FechaReplica = DateTime.Now
+            };
+            await _dbContext.ReplicaUsuarios.AddAsync(recetaUsuario);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
 }

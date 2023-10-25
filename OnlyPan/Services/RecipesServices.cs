@@ -217,4 +217,9 @@ public class RecipesServices
             return null!;
         }
     }
+
+    public async Task<bool> ReplicateRecipe(int recipeId, int idUser)
+    {
+        return await _recipesRepository.ReplicateRecipe(recipeId, idUser);
+    }
 }

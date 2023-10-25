@@ -141,4 +141,16 @@ public class RecipesController : Controller
         ViewBag.Error = "Error al realizar la donación";
         return RedirectToAction(nameof(View), new { idRecipe = recipeId});
     }
+
+    [Authorize]
+    public async Task<IActionResult> Replicate(int recipeId)
+    {
+        int idUser = int.Parse(HttpContext.User.Claims.First().Value);
+        var result = await _recipesServices.ReplicateRecipe(recipeId, idUser);
+        if (result)
+            ViewData["Success"] = "Receta replicada con exito";
+        else
+            ViewData["Error"] = "Error al replicar la receta";
+        return RedirectToAction(nameof(View), new { idRecipe = recipeId });
+    }
 }

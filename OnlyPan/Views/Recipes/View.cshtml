@@ -11,7 +11,7 @@
         <span>@Model.Date</span>
     </h3>
     <p> Categoria: @Model.Category, Etiqueta: @Model.Tag</p>
-    @foreach(var photo in Model.Photos!)
+    @foreach (var photo in Model.Photos!)
     {
         <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(photo)" alt="imagen @Model.Name"/>
     }
@@ -49,6 +49,13 @@
             <input type="submit" value="Aceptar"/>
         </form>
     </div>
+    <p>
+        Quieres Guardar esta receta para mas tarde?
+        <a class="link-success" asp-action="Replicate"
+           asp-controller="Recipes" asp-route-recipeId="@Model.IdRecipe">
+            Replicar Receta
+        </a>
+    </p>
     <h3 class="uppercase">Comentarios</h3>
     <div class="container">
         @if (Model.Comments == null || Model.Comments.Count == 0)
