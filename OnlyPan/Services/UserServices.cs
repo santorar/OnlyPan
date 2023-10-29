@@ -101,6 +101,7 @@ public class UserServices
             var encryptionHash1 = enc.Encrypt(model.Password!);
             var encryptionHash2 = enc.Encrypt(encryptionHash1);
             var usr = await _userRepository.LoginUser(model.Email!, encryptionHash2);
+            if (usr == null) return false;
             var result = await CreateCredentials(usr, model.Remember, hc);
             return result;
         }

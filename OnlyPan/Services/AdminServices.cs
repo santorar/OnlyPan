@@ -18,6 +18,10 @@ public class AdminServices
         _recipesRepository = new RecipesRepository(dbContext);
     }
 
+    public async Task<List<StateDto>> GetStates(int indicator)
+    {
+        return await _adminRepositories.RequestStates(indicator);
+    }
     public async Task<List<ReportedCommentViewModel>> GetReportedComments()
     {
         try
@@ -94,11 +98,11 @@ public class AdminServices
         return await _adminRepositories.BlockDonation(donationId);
     }
 
-    public async Task<List<RecipeModerateViewModel>> GetRecipes()
+    public async Task<List<RecipeModerateViewModel>> GetRecipes(int idState)
     {
         try
         {
-            List<RecipeModerateDto> recipes = await _adminRepositories.RequestRecipes();
+            List<RecipeModerateDto> recipes = await _adminRepositories.RequestRecipes(idState);
             List<RecipeModerateViewModel> recipesViewModels = new List<RecipeModerateViewModel>();
             foreach (var recipe in recipes)
             {
@@ -107,6 +111,7 @@ public class AdminServices
                     IdRecipe = recipe.IdRecipe,
                     Name = recipe.Name,
                     ChefName = recipe.ChefName,
+                    State = recipe.State,
                     Date = recipe.Date
                 });
             }

@@ -8,52 +8,63 @@
 
                 <span class="alert-danger">@ViewBag.Error</span>
                 <table class="table min-w-full text-left text-sm">
+                    <form method="post" asp-action="Recipes" asp-controller="Admin">
+                        <label> Estado></label>
+                        <select name="idState" class="block w-full rounded-md 
+                        border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+                        focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-items="ViewBag.States"></select>
+                        <input type="submit" value="Filtrar" class="btn btn-primary bg-blue-500 self-center">
+                    </form>
                     <thead class="border-b font-medium dark:border-neutral-500">
-                        <tr>
-                            <th scope="col" class="px-6 py-4">
-                                Nombre de la receta
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                Nombre del Chef
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                Fecha de Publicación
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                Accion
-                            </th>
-                        </tr>
+                    <tr>
+                        <th scope="col" class="px-6 py-4">
+                            Nombre de la receta
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Nombre del Chef
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Fecha de Publicación
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                        <th scope="col" class="px-6 py-4">
+                            Accion
+                        </th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach (var recipe in Model)
-                        {
-                            <tr class=" border-b transition duration-300 ease-in-out hover:bg-orange-200 dark:border-orange-200 dark:hover:bg-orange-200">
-                                <td class="whitespace-nowrap px-6 py-4 font-medium">
-                                    @Html.DisplayFor(m => recipe.Name)
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    @Html.DisplayFor(m => recipe.ChefName)
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    @Html.DisplayFor(m => recipe.Date)
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <a class="link-success space-x-1.5" asp-action="ViewRecipe" asp-controller="Admin"
-                                       asp-route-idRecipe="@recipe.IdRecipe">
-                                        Ver receta
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                        <span class="alert-danger">@ViewBag.Error</span>
-                        <span class="alert-success">@ViewBag.Success</span>
+                    @foreach (var recipe in Model)
+                    {
+                        <tr class=" border-b transition duration-300 ease-in-out hover:bg-orange-200 dark:border-orange-200 dark:hover:bg-orange-200">
+                            <td class="whitespace-nowrap px-6 py-4 font-medium">
+                                @Html.DisplayFor(m => recipe.Name)
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                @Html.DisplayFor(m => recipe.ChefName)
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                @Html.DisplayFor(m => recipe.Date)
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                @Html.DisplayFor(m => recipe.State)
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <a class="link-success space-x-1.5" asp-action="ViewRecipe" asp-controller="Admin"
+                                   asp-route-idRecipe="@recipe.IdRecipe">
+                                    Ver receta
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    <span class="alert-danger">@ViewBag.Error</span>
+                    <span class="alert-success">@ViewBag.Success</span>
                     </tbody>
                 </table>
 
-            
-            
+
             </div>
         </div>
     </div>
 </div>
-

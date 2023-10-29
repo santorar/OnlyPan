@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlyPan.Models;
 using OnlyPan.Models.ViewModels.AdminViewModels;
 using OnlyPan.Models.ViewModels.RecipesViewModels;
@@ -75,7 +76,9 @@ public class AdminController : Controller
 
     public async Task<IActionResult> Recipes()
     {
-        List<RecipeModerateViewModel> model = await _adminServices.GetRecipes();
+        List<RecipeModerateViewModel> model = await _adminServices.GetRecipes(4);
+        var states = await _adminServices.GetStates(1);
+        ViewData["States"] = new SelectList(states, "IdState", "State");
         if (model == null)
         {
             ViewData["Error"] = "Error al cargar las recetas";
@@ -84,6 +87,20 @@ public class AdminController : Controller
         return View(model);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Recipes(int idState)
+    {
+        List<RecipeModerateViewModel> model = await _adminServices.GetRecipes(idState);
+        var states = await _adminServices.GetStates(1);
+        ViewData["States"] = new SelectList(states, "IdState", "State");
+        if (model == null)
+        {
+            ViewData["Error"] = "Error al cargar las recetas";
+            return RedirectToAction(nameof(Moderate));
+        }
+        return View(model);
+    }
+    
     public async Task<IActionResult> ViewRecipe(int idRecipe)
     {
         RecipeViewModel model = await _adminServices.GetRecipe(idRecipe);
