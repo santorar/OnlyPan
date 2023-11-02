@@ -193,7 +193,7 @@ public class UserController : Controller
         }
 
         var profile = await _userServices.Profile(idUser);
-        ViewData["Success"] = "Datos actualizados";
+        TempData["Success"] = "Datos Actualizados";
         return View(nameof(Profile), profile);
     }
 
