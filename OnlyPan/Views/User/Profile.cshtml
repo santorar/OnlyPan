@@ -1,4 +1,4 @@
-@model OnlyPan.Models.ViewModels.UserViewModels.ProfileViewModel
+﻿@model OnlyPan.Models.ViewModels.UserViewModels.ProfileViewModel
 
 <div class="container-fluid m-3 flex align-items-center flex-column">
   <h1 class="uppercase font-bold my-3 text-xl">Perfil de usuario</h1>
@@ -23,7 +23,7 @@
                 @if (TempData["Success"] != null)
                 {
                     <!--Begin of Notification-->
-                    <div class="notification align-right">
+                    <div class="notification align-right" id="notificationDiv">
                         <div class="notification__body">
                             <svg class="notification__icon" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 
@@ -36,6 +36,7 @@
                             </svg>
 
                             <span class="">@TempData["Success"]</span>
+                            <span>@ViewBag.Error</span>
                         </div>
                         <div class="notification__progress"></div>
                     </div>
