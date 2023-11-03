@@ -89,7 +89,7 @@ public class UserController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        ViewBag.Error = "Los Datos Son Incorrectos";
+        TempData["Error"] = "Los Datos Son Incorrectos";
         return View();
     }
 
@@ -104,11 +104,11 @@ public class UserController : Controller
         var result = await _userServices.ForgotPassword(model.Email!);
         if (!result)
         {
-            ViewBag.Error = "Error, Intentalo De Nuevo";
+            TempData["Error"] = "Error, Intentalo De Nuevo";
             return View(model);
         }
 
-        ViewData["Success"] = "Verifique su correo electronico, para seguir con el proceso de recuperacion";
+        TempData["Success"] = "Verifique su correo electronico, para seguir con el proceso de recuperacion";
         return View(nameof(Login));
     }
 
@@ -193,7 +193,7 @@ public class UserController : Controller
         }
 
         var profile = await _userServices.Profile(idUser);
-        ViewData["Success"] = "Datos actualizados";
+        TempData["Success"] = "Datos Actualizados";
         return View(nameof(Profile), profile);
     }
 
