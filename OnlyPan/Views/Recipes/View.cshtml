@@ -1,4 +1,4 @@
-@model OnlyPan.Models.ViewModels.RecipesViewModels.RecipeViewModel
+﻿@model OnlyPan.Models.ViewModels.RecipesViewModels.RecipeViewModel
 <div class="container">
     <span class="text-danger">@ViewBag.Error</span>
     <span class="text-success">@ViewBag.Success</span>
@@ -12,6 +12,7 @@
 
     </h3>
     <p> <span class="font-bold text-black">Categoria: </span>@Model.Category, Etiqueta: @Model.Tag</p>
+    <div class="grid grid-cols-3"></div>
     @foreach (var photo in Model.Photos!)
     {
         <img class="img-thumbnail img-recipe" src="data:image;base64,@Convert.ToBase64String(photo)" alt="imagen @Model.Name"/>
