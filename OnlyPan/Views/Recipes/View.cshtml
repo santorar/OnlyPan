@@ -31,11 +31,11 @@
     <p class="text-black">@Model.Instructions</p>
     <div class="container">
         <h4 class="uppercase font-bold my-3">Te gustó la receta? ¡Apoya al chef con un donativo!</h4>
-        <form method="post" asp-action="MakeDonation" asp-controller="Recipes">
+        <form method="post" asp-action="MakeDonation" asp-controller="Recipes" class="my-2">
             <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
-            <label for="amount font-bold my-3">Cantidad:</label>
-            <input type="number" name="amount" min="0" step="0.01"/>
-            <input type="submit" value="Donar"/>
+            <label for="amount" class = "font-bold my-3">Cantidad:</label>
+            <input type="number" name="amount" class ="border-solid border-2 border-black rounded-md m-2" min="0" step="0.01"/>
+            <input type="submit" class ="inline-flex items-center px-4 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110" value="Donar"/>
         </form>
     </div>
     <div class="container">
@@ -49,7 +49,7 @@
             <h3 class="uppercase font-bold my-3">Valora esta receta</h3>
             <input type="hidden" name="recipeId" value="@Model.IdRecipe" class="bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"/>
             <select name="pRating" asp-items="@ViewBag.Ratings"></select>
-            <input type="submit" value="Aceptar"/>
+            <input type="submit" class = "inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-20" value="Aceptar"/>
         </form>
     </div>
     <p class="uppercase font-bold my-3">
@@ -77,7 +77,7 @@
                 </a>
             </div>
             -->
-            <div class="bg-white w-full p-5 h-full shadow-md relative rounded-md">
+            <div class="bg-white w-full p-5 h-full shadow-md relative border-black border-solid rounded-md">
                 <button
                 class="bg-green-200 text-green-700 rounded-xl px-3 py-1 absolute right-2 text-sm"
                 >
@@ -97,7 +97,7 @@
         @comment.Comment
   </div>
 
-      <a class="text-danger" asp-action="ReportComent"
+      <a class="inline-flex items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110" asp-action="ReportComent"
                    asp-controller="Recipes" asp-route-commentId="@comment.IdComment"
                    asp-route-recipeId="@Model.IdRecipe">
                     Reportar Comentario
@@ -111,6 +111,6 @@
         <label for="comment" class="uppercase font-bold">Deja tu comentario aquí</label>
         <textarea type="text" class ="resize-y min-w-full border-solid border-2 border-black rounded-md p-2" name="comment"></textarea>
         <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
-        <input type="submit" value="Comentar"/>
+        <input type="submit" class ="inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-24" value="Comentar"/>
     </form>
 </div>
