@@ -555,6 +555,10 @@ body {
   /*background-color: #BCA693;*/
 }
 
+.logo, .nav-title {
+  font-family:'Agbalumo',sans-serif;
+}
+
 a {
   text-decoration:none;
   color: inherit;

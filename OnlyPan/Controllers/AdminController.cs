@@ -34,9 +34,9 @@ public class AdminController : Controller
     {
         var result = await _adminServices.BlockComment(idComment);
         if (result)
-            ViewData["Success"] = "Comentario bloqueado con exito";
+            TempData["Success"] = "Comentario bloqueado con exito";
         else
-            ViewData["Error"] = "Error al bloquear el comentario";
+            TempData["Error"] = "Error al bloquear el comentario";
         return RedirectToAction(nameof(Comments));
     }
 
@@ -44,9 +44,9 @@ public class AdminController : Controller
     {
         var result = await _adminServices.AcceptComment(idComment);
         if (result)
-            ViewData["Success"] = "Comentario aceptado con exito";
+            TempData["Success"] = "Comentario aceptado con exito";
         else
-            ViewData["Error"] = "Error al aceptar el comentario";
+            TempData["Error"] = "Error al aceptar el comentario";
         return RedirectToAction(nameof(Comments));
     }
     public async Task<IActionResult> Donations()
@@ -58,9 +58,9 @@ public class AdminController : Controller
     {
         var result = await _adminServices.AcceptDonation(donationId);
         if (result)
-            ViewData["Success"] = "Donacion aceptada con exito";
+            TempData["Success"] = "Donacion aceptada con exito";
         else
-            ViewData["Error"] = "Error al aceptar la donacion";
+            TempData["Error"] = "Error al aceptar la donacion";
         return RedirectToAction(nameof(Donations));
     }
 
@@ -68,9 +68,9 @@ public class AdminController : Controller
     {
         var result = await _adminServices.BlockDonation(donationId);
         if(result)
-            ViewData["Success"] = "Donacion bloqueada con exito";
+            TempData["Success"] = "Donacion bloqueada con exito";
         else
-            ViewData["Error"] = "Error al bloquear la donacion";
+            TempData["Error"] = "Error al bloquear la donacion";
         return RedirectToAction(nameof(Donations));
     }
 
