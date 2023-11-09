@@ -661,6 +661,13 @@ a {
      object-fit:fill;
 }
 
+.img-recipes {
+  width: 300px;
+  height: 300px;
+  -o-object-fit: fill;
+     object-fit: fill;
+}
+
 .user-image {
   border-radius: 12px;
 }

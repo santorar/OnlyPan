@@ -1,4 +1,15 @@
+@model OnlyPan.Models.Dtos.RecipesDtos.DonationDto
 <h1>Checkout Donacion</h1>
 <div class="container">
     <p> Para completar el pago tiene que hacer un deposito en nequi al siguiente numero: <span>300 000 00 00</span></p>
+    <form method="post" asp-action="CheckoutDonation" asp-controller="Recipes" class="space-y-6" enctype="multipart/form-data">
+        <input type="hidden" name="donationId" value="@Model.donationId"/>
+        <input type="hidden" name="recipeId" value="@Model.recipeId"/>
+        <div class="group">
+            <label class="block text-sm font-medium leading-6 text-gray-900 text-uppercase">Comprobante de pago</label>
+            <input name="comprobante" type="file" class="block w-full rounded-md">
+        </div>
+        <input type="submit" value="Confirmar" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded"/>
+        <span class="text-danger">@ViewBag.Error</span>
+    </form>
 </div>

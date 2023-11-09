@@ -8,7 +8,7 @@ using OnlyPan.Services;
 
 namespace OnlyPan.Controllers;
 
-[Authorize(Roles = "2,3")]
+[Authorize]
 public class AdminController : Controller
 {
     AdminServices _adminServices;
@@ -24,12 +24,14 @@ public class AdminController : Controller
         return View();
     }
 
+    [Authorize(Roles = "3")]
     public async Task<IActionResult> Comments()
     {
         List<ReportedCommentViewModel> model = await _adminServices.GetReportedComments();
         return View(model);
     }
 
+    [Authorize(Roles = "3")]
     public async Task<IActionResult> BlockComment(int idComment)
     {
         var result = await _adminServices.BlockComment(idComment);
@@ -40,6 +42,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Comments));
     }
 
+    [Authorize(Roles = "3")]
     public async Task<IActionResult> AcceptComment(int idComment)
     {
         var result = await _adminServices.AcceptComment(idComment);
@@ -49,11 +52,13 @@ public class AdminController : Controller
             ViewData["Error"] = "Error al aceptar el comentario";
         return RedirectToAction(nameof(Comments));
     }
+    [Authorize(Roles = "3")]
     public async Task<IActionResult> Donations()
     {
         List<DonationsViewModel> model = await _adminServices.GetDonations();
         return View(model);
     }
+    [Authorize(Roles = "3")]
     public async Task<IActionResult> AcceptDonation(int donationId)
     {
         var result = await _adminServices.AcceptDonation(donationId);

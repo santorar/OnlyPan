@@ -103,6 +103,7 @@ public class RecipesRepository
                     LongName = unit.NombreLargo
                 });
             }
+
             return result;
         }
         catch (SystemException)
@@ -123,6 +124,7 @@ public class RecipesRepository
         {
             finalRating = (double)(recipe.Valoracion / recipe.NValoraciones)!;
         }
+
         return finalRating;
     }
 
@@ -200,15 +202,19 @@ public class RecipesRepository
                 await _dbContext.RecetaIngredientes.AddAsync(newRecipeIngredient);
             }
 
-            foreach(var image in recipe.Photos!)
+            if (recipe.Photos!.Count != 0)
             {
-                var newImage = new ImagenRecetum()
+                foreach (var image in recipe.Photos)
                 {
-                    IdReceta = idRecipe,
-                    Imagen = image
-                };
-                await _dbContext.ImagenReceta.AddAsync(newImage);
+                    var newImage = new ImagenRecetum()
+                    {
+                        IdReceta = idRecipe,
+                        Imagen = image
+                    };
+                    await _dbContext.ImagenReceta.AddAsync(newImage);
+                }
             }
+
             var newRecipeUser = new RecetaChef()
             {
                 IdReceta = idRecipe,
@@ -238,12 +244,15 @@ public class RecipesRepository
                 byte[]? imageBytes;
                 if (image == null)
                 {
-                    imageBytes = new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory()+"/wwwroot/icons/recipeDefault.jpg");
+                    imageBytes =
+                        new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory() +
+                                                              "/wwwroot/icons/recipeDefault.jpg");
                 }
                 else
                 {
                     imageBytes = image.Imagen;
                 }
+
                 var recipeDto = new RecipeFeedDto()
                 {
                     IdRecipe = recipe.IdReceta,
@@ -331,7 +340,7 @@ public class RecipesRepository
             return null!;
         }
     }
-    
+
     public async Task<RecipeDto> RequestRecipeAdmin(int? recipeId)
     {
         try
@@ -461,7 +470,8 @@ public class RecipesRepository
     {
         try
         {
-            var recipes = await _dbContext.Receta.Where(r => r.NombreReceta!.Contains(searchText) && r.IdEstado == 5).ToListAsync();
+            var recipes = await _dbContext.Receta.Where(r => r.NombreReceta!.Contains(searchText) && r.IdEstado == 5)
+                .ToListAsync();
             List<RecipeFeedDto> recipesDtos = new List<RecipeFeedDto>();
             foreach (var recipe in recipes)
             {
@@ -470,12 +480,15 @@ public class RecipesRepository
                 byte[]? imageBytes;
                 if (image == null)
                 {
-                    imageBytes = new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory()+"/wwwroot/icons/recipeDefault.jpg");
+                    imageBytes =
+                        new PhotoUtilities().GetPhotoFromFile(Directory.GetCurrentDirectory() +
+                                                              "/wwwroot/icons/recipeDefault.jpg");
                 }
                 else
                 {
                     imageBytes = image.Imagen;
                 }
+
                 var recipeDto = new RecipeFeedDto()
                 {
                     IdRecipe = recipe.IdReceta,
@@ -514,6 +527,7 @@ public class RecipesRepository
             return false;
         }
     }
+
     public async Task<ReplicDto> RequestReplic(int replicId)
     {
         try
@@ -547,7 +561,7 @@ public class RecipesRepository
     {
         try
         {
-            var replic = await _dbContext.ReplicaUsuarios.FindAsync(replicId); 
+            var replic = await _dbContext.ReplicaUsuarios.FindAsync(replicId);
             _dbContext.ReplicaUsuarios.Remove(replic!);
             await _dbContext.SaveChangesAsync();
             return true;
@@ -574,6 +588,27 @@ public class RecipesRepository
         catch (SystemException)
         {
             return false;
+        }
+    }
+
+    public async Task<DonationDto> RequestDonation(int recipeId, int userId)
+    {
+        try
+        {
+            var recipeChef = await _dbContext.RecetaChefs.Where(r => r.IdReceta == recipeId).FirstOrDefaultAsync();
+            var donation = await _dbContext.Donacions.Where(r => r.IdChef == recipeChef.IdChef || r.IdUsuario == userId).FirstOrDefaultAsync();
+            if (donation == null)
+                throw new SystemException();
+            return new DonationDto()
+            {
+                amount = (float)donation.Monto,
+                recipeId = recipeId,
+                donationId = donation.IdDonacion
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
         }
     }
 }

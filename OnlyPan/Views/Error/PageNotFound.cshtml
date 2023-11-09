@@ -1,0 +1,18 @@
+@{
+  ViewData["Title"] = "Home Page";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<main class="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+  <div class="text-center">
+    <p class="text-base font-semibold logo font-extrabold">404</p>
+    <h1 class="mt-4 text-3xl font-bold tracking-tight logo sm:text-5xl">Página No Encontrada</h1>
+    <div class="mt-10 flex items-center justify-center gap-x-6">
+      <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link text-dark hover:bg-amber-600 font-bold rounded-md px-3 py-2">Inicio</a>
+      <a href="" class="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</main>

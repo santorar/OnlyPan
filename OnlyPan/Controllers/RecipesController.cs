@@ -1,8 +1,10 @@
 using System.Net;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlyPan.Models;
+using OnlyPan.Models.Dtos.RecipesDtos;
 using OnlyPan.Models.ViewModels.RecipesViewModels;
 using OnlyPan.Services;
 
@@ -137,9 +139,21 @@ public class RecipesController : Controller
         var userId = int.Parse(HttpContext.User.Claims.First().Value);
         bool result = await _recipesServices.MakeDonation(recipeId, amount, userId);
         if (result)
-            return View(nameof(Donation));
+        {
+            DonationDto donationDto = await _recipesServices.GetDonation(recipeId, userId);
+            return View(nameof(Donation), donationDto);
+        }
+
         ViewBag.Error = "Error al realizar la donación";
         return RedirectToAction(nameof(View), new { idRecipe = recipeId});
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> CheckoutDonation(IFormFile comprobante, int recipeId, int donationId)
+    {
+        bool result = await _recipesServices.CheckoutDonation(donationId, comprobante);
+        return RedirectToAction(nameof(View), new {idRecipe = recipeId});
     }
 
     [Authorize]

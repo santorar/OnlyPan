@@ -25,6 +25,8 @@ if (!app.Environment.IsDevelopment())
   app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/404");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -34,6 +36,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
   "default",
-  "{controller=Home}/{action=Index}/{id?}");
+  "{controller=Recipes}/{action=Index}/{id?}");
 
 app.Run();

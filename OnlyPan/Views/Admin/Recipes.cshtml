@@ -5,16 +5,15 @@
     <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
             <div class="overflow-hidden">
-
+                <form method="post" asp-action="Recipes" asp-controller="Admin">
+                    <label> Estado></label>
+                    <select name="idState" class="block w-full rounded-md 
+                    border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
+                    focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-items="ViewBag.States"></select>
+                    <input type="submit" value="Filtrar" class="btn btn-primary bg-blue-500 self-center">
+                </form>
                 <span class="alert-danger">@ViewBag.Error</span>
                 <table class="table min-w-full text-left text-sm">
-                    <form method="post" asp-action="Recipes" asp-controller="Admin">
-                        <label> Estado></label>
-                        <select name="idState" class="block w-full rounded-md 
-                        border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
-                        focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-items="ViewBag.States"></select>
-                        <input type="submit" value="Filtrar" class="btn btn-primary bg-blue-500 self-center">
-                    </form>
                     <thead class="border-b font-medium dark:border-neutral-500">
                     <tr>
                         <th scope="col" class="px-6 py-4">

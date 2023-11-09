@@ -59,9 +59,12 @@ public class RecipesServices
                 quantitiesInt.Add(int.Parse(quantity));
             }
             List<byte[]> photos = new List<byte[]>();
-            foreach(var photo in model.Photos!)
+            if (model.Photos != null)
             {
-                photos.Add(await pu.convertToBytes(photo));
+                foreach(var photo in model.Photos)
+                {
+                    photos.Add(await pu.convertToBytes(photo));
+                }
             }
             List<string> unitsStringList = model.IngredientsUnit!.Split(',').ToList();
             List<int> units = new List<int>();
@@ -221,5 +224,15 @@ public class RecipesServices
     public async Task<bool> ReplicateRecipe(int recipeId, int idUser)
     {
         return await _recipesRepository.ReplicateRecipe(recipeId, idUser);
+    }
+
+    public async Task<DonationDto> GetDonation(int recipeId, int userId)
+    {
+        return await _recipesRepository.RequestDonation(recipeId, userId);
+    }
+
+    public async Task<bool> CheckoutDonation(int donationId, IFormFile comprobante)
+    {
+        throw new NotImplementedException();
     }
 }
