@@ -17,7 +17,8 @@
         <span asp-validation-for="Role" class="text-danger"></span>
       </div>
       <div>
-        <input type="submit" value="Registrar Peticion" class="btn btn-primary bg-blue-500 self-center">
+                <input type="submit" value="Registrar Peticion" class="inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-36">
+                <input type="submit" value="Cancelar Peticion" class="inline-flex items-center px-3 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-36" asp-controller="Home" asp-action="Index">
         <span class="alert-danger">@ViewBag.Error</span>
       </div>
     </form>
