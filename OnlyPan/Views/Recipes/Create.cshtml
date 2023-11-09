@@ -53,14 +53,18 @@
           border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2
           focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" asp-for="Unit" asp-items="ViewBag.Units"></select>
                 <div class="flex flex-row gap-1 my-2">
-                <button type="button" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded" onclick="AddIngredient(); UpdateHiddenField();">Agregar o Modificar Ingrediente</button>
+                <button type="button" class="bg-lime-600 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded" onclick="AddIngredient(); UpdateHiddenField();">Agregar o Modificar Ingrediente</button>
                 <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="RemoveIngredient(); UpdateHiddenField();">Eliminar Ingrediente</button>
                 </div>
             </div>
-            <a asp-action="Index" asp-controller="Recipes" class="btn btn-danger">
+
+            <div class="flex flex-row gap-2">
+                <input type="submit" value="Confirmar Nueva Receta" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-1 px-2 rounded" />
+
+                <a asp-action="Index" asp-controller="Recipes" class="bg-red-700 hover:bg-red-800 text-white font-bold py-1 px-2 rounded">
                 Cancelar Creacion
             </a>
-            <input type="submit" value="Confirmar Nueva Receta" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded"/>
+            </div>
             @if (ViewBag.Error != null)
             {
                 <!--Begin of Notification-->
