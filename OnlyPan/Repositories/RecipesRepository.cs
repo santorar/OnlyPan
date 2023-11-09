@@ -611,4 +611,39 @@ public class RecipesRepository
             return null!;
         }
     }
+    public async Task<DonationDto> RequestDonation(int donationId, int recipeId, int indicator)
+    {
+        try
+        {
+            var donation = await _dbContext.Donacions.FindAsync(donationId);
+            if (donation == null)
+                throw new SystemException();
+            return new DonationDto()
+            {
+                amount = (float)donation.Monto,
+                recipeId = recipeId,
+                donationId = donation.IdDonacion
+            };
+        }
+        catch (SystemException)
+        {
+            return null!;
+        }
+    }
+
+    public async Task<bool> CheckoutDonation(int donationId, byte[] photo)
+    {
+        try
+        {
+            var donation = await _dbContext.Donacions.FindAsync(donationId);
+            donation.Imagen = photo;
+            _dbContext.Donacions.Update(donation);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
+    }
 }

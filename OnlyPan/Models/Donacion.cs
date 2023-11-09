@@ -17,6 +17,8 @@ public partial class Donacion
 
     public int? Estado { get; set; }
 
+    public byte[]? Imagen { get; set; }
+
     public virtual Usuario? IdChefNavigation { get; set; }
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }

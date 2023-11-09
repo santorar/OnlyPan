@@ -153,7 +153,11 @@ public class RecipesController : Controller
     public async Task<IActionResult> CheckoutDonation(IFormFile comprobante, int recipeId, int donationId)
     {
         bool result = await _recipesServices.CheckoutDonation(donationId, comprobante);
-        return RedirectToAction(nameof(View), new {idRecipe = recipeId});
+        if(result)
+            return RedirectToAction(nameof(View), new {idRecipe = recipeId});
+        ViewBag.Error = "Error al subir la imagen intentalo denuevo";
+        DonationDto donationDto = await _recipesServices.GetDonation(donationId,recipeId,0);
+        return View(nameof(Donation), donationDto);
     }
 
     [Authorize]

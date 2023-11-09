@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using MimeKit.Cryptography;
 
 namespace OnlyPan.Models.ViewModels.RecipesViewModels;
@@ -27,6 +28,7 @@ public class RecipeCreateViewModel
     [Display(Name="Instrucciones"), DataType(DataType.Text), Required(ErrorMessage = "Las instrucciones de la receta son requeridas")]
     public string? Instructions { get; set; }
     [Display(Name="Foto"), DataType(DataType.Upload), Required(ErrorMessage = "La foto de la receta es requerida")]
+    [BindProperty]
     public List<IFormFile>? Photos { get; set; }
     
 }

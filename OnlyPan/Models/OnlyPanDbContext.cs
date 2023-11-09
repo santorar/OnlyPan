@@ -138,6 +138,9 @@ public partial class OnlyPanDbContext : DbContext
                 .HasColumnName("fecha");
             entity.Property(e => e.IdChef).HasColumnName("id_chef");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+            entity.Property(e => e.Imagen)
+                .HasColumnType("image")
+                .HasColumnName("imagen");
             entity.Property(e => e.Monto)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("monto");

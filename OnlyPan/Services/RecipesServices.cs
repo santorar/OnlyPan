@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using OnlyPan.Models;
 using OnlyPan.Models.Dtos;
 using OnlyPan.Models.Dtos.RecipesDtos;
@@ -63,6 +64,10 @@ public class RecipesServices
             {
                 foreach(var photo in model.Photos)
                 {
+                    if (photo.Length > 20 * 1024 * 1024)
+                        throw new SystemException();
+                    if (!photo.ContentType.StartsWith("image/"))
+                        throw new SystemException();
                     photos.Add(await pu.convertToBytes(photo));
                 }
             }
@@ -230,9 +235,26 @@ public class RecipesServices
     {
         return await _recipesRepository.RequestDonation(recipeId, userId);
     }
+    public async Task<DonationDto> GetDonation(int donationId,int recipeId, int indicator)
+    {
+        return await _recipesRepository.RequestDonation(donationId, recipeId, indicator);
+    }
 
     public async Task<bool> CheckoutDonation(int donationId, IFormFile comprobante)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (comprobante.Length > 20 * 1024 * 1024)
+                throw new SystemException();
+            if (!comprobante.ContentType.StartsWith("image/"))
+                throw new SystemException();
+            PhotoUtilities pu = new PhotoUtilities();
+            byte[] photo = await pu.convertToBytes(comprobante);
+            return await _recipesRepository.CheckoutDonation(donationId, photo);
+        }
+        catch (SystemException)
+        {
+            return false;
+        }
     }
 }
