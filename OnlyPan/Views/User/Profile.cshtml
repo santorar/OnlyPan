@@ -1,17 +1,17 @@
 ﻿@model OnlyPan.Models.ViewModels.UserViewModels.ProfileViewModel
 
-<div class="container-fluid m-3 flex align-items-center flex-column p-3">
+<div class="container-fluid flex align-items-center flex-column p-3">
   <h1 class="uppercase font-bold my-3 text-xl">Perfil de usuario</h1>
   <!--TODO Display the profile into a more atractive way-->
-    <div class="grid gap-1 lg:grid-cols-3  justify-items-center my-3 py-5">
-        <div class="img-prof flex align-items-center justify-items-center">
-    <img class="img-fluid user-image" src="data:image;base64,@Convert.ToBase64String(Model.Photo!)"
+    <div class="grid gap-2 lg:grid-cols-3  justify-items-center my-3 py-5 pr-3">
+        <div class="img-prof ">
+            <img class="img-fluid user-image" src="data:image;base64,@Convert.ToBase64String(Model.Photo!)"
          alt="User img"/>
         </div>
     <div class = "">
             <span class=" text-lg italic"> @Model.Rol</span>
             <h1 class="font-bold text-4xl mb-3 italic"> @Model.Name</h1>
-            <p class="font-normal normal-case my-3">@Model.Biography</p>
+            <p class="font-normal text-justify normal-case my-3">@Model.Biography</p>
             <p class="font-bold text-uppercase my-3">Correo Electronico:<span class="font-normal normal-case"> @Model.Email</span></p>
             <p class="font-bold text-uppercase my-3">Seguidores:<span class="font-normal normal-case"> @Model.Followers</span></p>
             <p class="font-bold text-uppercase my-3">Seguidos:<span class="font-normal normal-case"> @Model.Followed</span></p>
@@ -61,7 +61,7 @@
                             Nombre de la receta
                         </th>
                         <th scope="col" class="px-6 py-4">
-                            Eliminar
+                            Acciones
                         </th>
                     </tr>
                 </thead>
