@@ -52,13 +52,15 @@
             <input type="submit" class = "inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-20" value="Aceptar"/>
         </form>
     </div>
+    <div>
     <p class="uppercase font-bold my-3">
         Quieres Guardar esta receta para mas tarde?
-        <a class="link-success" asp-action="Replicate"
-           asp-controller="Recipes" asp-route-recipeId="@Model.IdRecipe">
-            Replicar Receta
-        </a>
     </p>
+    <a asp-action="Replicate"
+       asp-controller="Recipes" asp-route-recipeId="@Model.IdRecipe" class="inline-flex items-center px-4 py-2 bg-rose-700 transition ease-in-out delay-75 hover:bg-rose-950 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110">
+        Replicar Receta
+    </a>
+    </div>
     <h3 class="uppercase font-bold my-3">Comentarios</h3>
     <div class="container">
         @if (Model.Comments == null || Model.Comments.Count == 0)
