@@ -5,12 +5,13 @@
     <h2 class="uppercase font-bold">@Model.Name</h2>
     <h3 class="text-gray-500">
         <span class = "font-bold text-black">Autor:</span>
-        <a class="linkprimary" asp-controller="User" asp-action="ProfileUser" asp-route-userId="@Model.ChefId">
+        <a class="linkprimary linkprimary text-xl italic transition ease-in-out delay-150 duration-300 text-orange-900 hover:text-lime-800" asp-controller="User" asp-action="ProfileUser" asp-route-userId="@Model.ChefId">
             @Model.Chef
         </a>
-        <span>@Model.Date</span>
+        
 
     </h3>
+    <span>@Model.Date</span>
     <p> <span class="font-bold text-black">Categoria: </span>@Model.Category, Etiqueta: @Model.Tag</p>
     <div class="grid lg:grid-cols-3 gap-0">
     @foreach (var photo in Model.Photos!)
@@ -111,7 +112,7 @@
     <h3 class="uppercase font-bold my-3">Comenta tu Opinion</h3>
     <form asp-action="CreateComment" asp-controller="Recipes" method="post" class="flex flex-col gap-2">
         <label for="comment" class="uppercase font-bold">Deja tu comentario aquí</label>
-        <textarea type="text" class ="resize-y min-w-full border-solid border-2 border-black rounded-md p-2" name="comment"></textarea>
+        <textarea type="text" class ="resize-none min-w-full border-solid border-2 border-black rounded-md p-2" name="comment"></textarea>
         <input type="hidden" name="recipeId" value="@Model.IdRecipe"/>
         <input type="submit" class ="inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-24" value="Comentar"/>
     </form>
