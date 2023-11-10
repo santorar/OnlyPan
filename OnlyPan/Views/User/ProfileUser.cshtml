@@ -21,7 +21,7 @@
                 }
                 else
                 {
-                    <a asp-action="UnFollow" asp-controller="User" asp-route-userId="@Model.UserId" class="bg-[#069E2D] hover:bg-[#35605A] text-white font-bold py-2 px-4 rounded">Dejar de seguir</a>
+                    <a asp-action="UnFollow" asp-controller="User" asp-route-userId="@Model.UserId" class="inline-flex items-center px-2 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-32">Dejar de Seguir</a>
                 }
                 <span class="text-success">@ViewBag.Sucess</span>
             </div>

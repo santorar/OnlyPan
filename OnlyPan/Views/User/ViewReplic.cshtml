@@ -1,35 +1,39 @@
 @model OnlyPan.Models.ViewModels.UserViewModels.ReplicViewModel 
-<div class="container">
+<div class="container flex justify-center align-center flex-column w-1/2 my-5">
     <span class="text-danger">@ViewBag.Error</span>
     <span class="text-success">@ViewBag.Success</span>
-    <h2 class="uppercase">@Model.Name</h2>
+    <h2 class="uppercase font-bold">@Model.Name</h2>
     <h3 class="text-gray-500">
-        Autor:
-        <a class="linkprimary" asp-controller="User" asp-action="ProfileUser" asp-route-userId="@Model.ChefId">
+        <span class="font-bold text-black">Autor:</span>
+        <a class="linkprimary linkprimary linkprimary text-xl italic transition ease-in-out delay-150 duration-300 text-orange-900 hover:text-lime-800" asp-controller="User" asp-action="ProfileUser" asp-route-userId="@Model.ChefId">
             @Model.Chef
         </a>
-        <span>Fecha Creacion Receta:@Model.Date    Fecha Replica:@Model.DateReplicated</span>
+        
     </h3>
-    <p> Categoria: @Model.Category, Etiqueta: @Model.Tag</p>
+    <span>Fecha Creacion Receta:@Model.Date</span>
+    <span>Fecha Replica:@Model.DateReplicated</span>
+    <p> <span class="font-bold text-black">Categoria:</span> @Model.Category, Etiqueta: @Model.Tag</p>
+    <div class="grid lg:grid-cols-3 gap-0">
     @foreach (var photo in Model.Photos!)
     {
-        <img class="img-thumbnail" src="data:image;base64,@Convert.ToBase64String(photo)" alt="imagen @Model.Name"/>
+        <img class="img-thumbnail img-recipe" src="data:image;base64,@Convert.ToBase64String(photo)" alt="imagen @Model.Name"/>
     }
-    <h3 class="uppercase">Descripcion de la receta</h3>
+    </div>
+    <h3 class="uppercase font-bold my-3">Descripcion de la receta</h3>
     <p class="text-black">@Model.Description</p>
-    <h3 class="uppercase">Ingredientes de la receta</h3>
+    <h3 class="uppercase font-bold my-3">Ingredientes de la receta</h3>
     <ul class="list-disc">
         @foreach (var ingredient in Model.Ingredients!)
         {
             <li>@ingredient</li>
         }
     </ul>
-    <h3 class="uppercase">Pasos de la receta</h3>
+    <h3 class="uppercase font-bold my-3">Pasos de la receta</h3>
     <p class="text-black">@Model.Instructions</p>
-    <h2>Comentario del cliente</h2>
+    <h2 class="font-bold my-3 uppercase">Comentario del cliente</h2>
     <form method="post" asp-controller="User" asp-action="UpdateReplic">
         <input type="hidden" name="replicId" value="@Model.IdReplic"/>
-        <textarea name="comment" rows="10" cols="50">@Model.Comentary</textarea>
-        <input type="submit" value="Aceptar"/>
+        <textarea name="comment" rows="10" cols="50" class="resize-y min-w-full border-solid border-2 border-black rounded-md p-2">@Model.Comentary</textarea>
+        <input type="submit" class="inline-flex items-center px-3 py-2 bg-green-600 transition ease-in-out delay-75 hover:bg-green-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 w-20" value="Aceptar" />
     </form>
 </div>
