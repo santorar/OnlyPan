@@ -51,7 +51,7 @@ public class RoleController : Controller
             return View(model);
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), "Recipes");
     }
 
 

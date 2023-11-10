@@ -73,7 +73,7 @@ public class UserController : Controller
         {
             if (c.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Recipes");
             }
         }
 
