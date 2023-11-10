@@ -118,7 +118,8 @@ public class AdminRepositories
                     Date = donation.Fecha,
                     DonationId = donation.IdDonacion,
                     State = donation.Estado,
-                    UserName = donation.IdUsuarioNavigation.Nombre
+                    UserName = donation.IdUsuarioNavigation.Nombre,
+                    Photo = donation.Imagen
                 };
                 result.Add(donationsDto);
             }

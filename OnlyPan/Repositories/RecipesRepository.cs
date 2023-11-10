@@ -596,7 +596,7 @@ public class RecipesRepository
         try
         {
             var recipeChef = await _dbContext.RecetaChefs.Where(r => r.IdReceta == recipeId).FirstOrDefaultAsync();
-            var donation = await _dbContext.Donacions.Where(r => r.IdChef == recipeChef.IdChef || r.IdUsuario == userId).FirstOrDefaultAsync();
+            var donation = await _dbContext.Donacions.Where(r => r.IdChef == recipeChef.IdChef || r.IdUsuario == userId).OrderBy(r => r.IdDonacion).LastOrDefaultAsync();
             if (donation == null)
                 throw new SystemException();
             return new DonationDto()

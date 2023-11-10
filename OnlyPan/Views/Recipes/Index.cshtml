@@ -1,7 +1,10 @@
-@model List<OnlyPan.Models.ViewModels.RecipesViewModels.RecipeFeedViewModel>
-<a asp-action="Create" class="btn btn-primary bg-blue-500 m-11 mb-0">Crear Receta</a>
+@model OnlyPan.Models.ViewModels.RecipesViewModels.FeedViewModel
+@if (Model.rolId > 1)
+{
+    <a asp-action="Create" class="btn btn-primary bg-blue-500 m-11 mb-0">Crear Receta</a>
+}
  <div class = "grid lg:grid-cols-3 m-5 gap-2 max-w-7xl">
-@foreach (var recipe in Model)
+@foreach (var recipe in Model.RecipeFeedViewModels)
 {
     <a asp-action="View" asp-controller="Recipes" asp-route-idRecipe="@recipe.IdRecipe">
             <div class="max-w-sm rounded overflow-hidden shadow-lg ">

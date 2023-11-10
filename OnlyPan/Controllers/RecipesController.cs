@@ -23,7 +23,14 @@ public class RecipesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        List<RecipeFeedViewModel> model = await _recipesServices.GetRecipes();
+        int rolId = 1;
+        if (HttpContext.User.Claims.Count() > 0) //If user is logged show the rolId 
+            rolId = int.Parse(HttpContext.User.Claims.Last().Value);
+        FeedViewModel model = new FeedViewModel()
+        {
+            RecipeFeedViewModels = await _recipesServices.GetRecipes(),
+            rolId = rolId
+        };
         return View(model);
     }
     [HttpPost]

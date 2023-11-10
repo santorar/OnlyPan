@@ -12,5 +12,6 @@ public class DonationsDto
 
     public DateTime? Date { get; set; }
 
+    public byte[] Photo { get; set; }
     public int? State { get; set; }
 }

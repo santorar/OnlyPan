@@ -58,6 +58,17 @@ public class AdminController : Controller
         List<DonationsViewModel> model = await _adminServices.GetDonations();
         return View(model);
     }
+
+    public IActionResult ViewDonationPayment(string photo)
+    {
+        if (string.IsNullOrEmpty(photo))
+            return RedirectToAction(nameof(Donations));
+        var model = new PaymentViewModel()
+        {
+            imagen = Convert.FromBase64String(photo)
+        };
+        return View(model);
+    }
     [Authorize(Roles = "3")]
     public async Task<IActionResult> AcceptDonation(int donationId)
     {

@@ -75,7 +75,8 @@ public class AdminServices
                     ChefName = donation.ChefName,
                     Date = donation.Date,
                     State = donation.State,
-                    UserName = donation.UserName
+                    UserName = donation.UserName,
+                    Photo = donation.Photo
                 };
                 result.Add(donationsViewModelDto);
             }

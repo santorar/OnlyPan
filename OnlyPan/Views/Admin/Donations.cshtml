@@ -24,6 +24,9 @@
                                 Fecha de la donación
                             </th>
                             <th scope="col" class="px-6 py-4">
+                                Ver Comprobante
+                            </th>
+                            <th scope="col" class="px-6 py-4">
                                 Acciones
                             </th>
                         </tr>
@@ -43,6 +46,12 @@
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     @Html.DisplayFor(m => donation.Date)
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <a class="link-success space-x-1.5" asp-action="ViewDonationPayment" asp-controller="Admin"
+                                       asp-route-photo="@donation.Photo">
+                                        Ver Comprobante
+                                    </a>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <a class="link-success space-x-1.5" asp-action="AcceptDonation" asp-controller="Admin"

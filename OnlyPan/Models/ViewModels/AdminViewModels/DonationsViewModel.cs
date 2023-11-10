@@ -9,6 +9,7 @@ public class DonationsViewModel
     public string? ChefName { get; set; }
 
     public float? Amount { get; set; }
+    public byte[] Photo { get; set; }
 
     public DateTime? Date { get; set; }
 
