@@ -25,7 +25,7 @@ public class EmailService
     {
         string body = "Hola " + name + "<br> <br>";
         body += "Por favor ingresa al siguiente link para activar tu cuenta: <br>";
-        body += "<a href=\"https://localhost:7077/User/Activate?code=" + activationToken +
+        body += "<a href=\"https://onlypan.azurewebsites.net/User/Activate?code=" + activationToken +
                 "\">Activa tu cuenta aqui</a>";
         await SendEmail(email, "Activa tu cuenta en OnlyPan", body);
     }
@@ -34,7 +34,7 @@ public class EmailService
     {
         string body = "Hola " + name + "<br> <br>";
         body += "Para recuperar tu contraseña ingresa al siguiente link: <br>";
-        body += "<a href=\"https://localhost:7077/User/ResetPassword?token=" + recoveryToken +
+        body += "<a href=\"https://onlypan.azurewebsites.net/User/ResetPassword?token=" + recoveryToken +
                 "\">Recupera tu contraseña aqui</a>";
         await SendEmail(email, "Recupera tu contraseña en OnlyPan", body);
     }
