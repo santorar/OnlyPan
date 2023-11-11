@@ -19,6 +19,7 @@ public class AdminController : Controller
     }
 
     //Moderate View for Rol petition
+    [Authorize(Roles = "2,3")]
     public IActionResult Moderate()
     {
         return View();
@@ -59,6 +60,7 @@ public class AdminController : Controller
         return View(model);
     }
 
+    [Authorize(Roles = "2,3")]
     public IActionResult ViewDonationPayment(string photo)
     {
         if (string.IsNullOrEmpty(photo))
@@ -80,6 +82,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Donations));
     }
 
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> BlockDonation(int donationId)
     {
         var result = await _adminServices.BlockDonation(donationId);
@@ -90,6 +93,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Donations));
     }
 
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> Recipes()
     {
         List<RecipeModerateViewModel> model = await _adminServices.GetRecipes(4);
@@ -104,6 +108,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> Recipes(int idState)
     {
         List<RecipeModerateViewModel> model = await _adminServices.GetRecipes(idState);
@@ -117,6 +122,7 @@ public class AdminController : Controller
         return View(model);
     }
     
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> ViewRecipe(int idRecipe)
     {
         RecipeViewModel model = await _adminServices.GetRecipe(idRecipe);
@@ -124,6 +130,7 @@ public class AdminController : Controller
         return View(model);
     }
 
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> AcceptRecipe(int idRecipe)
     {
         var result = await _adminServices.AcceptRecipe(idRecipe);
@@ -133,6 +140,7 @@ public class AdminController : Controller
             ViewData["Error"] = "Error al aceptar la receta";
         return RedirectToAction(nameof(Recipes));
     }
+    [Authorize(Roles = "2,3")]
     public async Task<IActionResult> BlockRecipe(int idRecipe)
     {
         var result = await _adminServices.BlockRecipe(idRecipe);
